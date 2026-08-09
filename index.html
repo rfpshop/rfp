@@ -37,120 +37,22 @@
             --w98-title-text: #FFFFFF;
         }
 
-        body {
-            font-family: 'Tahoma', 'Verdana', 'MS Sans Serif', sans-serif;
-            background-color: #008080;
-            font-size: 12px;
-            color: #000;
-        }
-
-        .win98-window {
-            background: var(--w98-bg);
-            border-top: 2px solid var(--w98-highlight);
-            border-left: 2px solid var(--w98-highlight);
-            border-right: 2px solid var(--w98-shadow-darker);
-            border-bottom: 2px solid var(--w98-shadow-darker);
-            box-shadow: inset -1px -1px 0 var(--w98-shadow-dark), inset 1px 1px 0 #DFDFDF;
-        }
-        
-        .win98-titlebar {
-            background: linear-gradient(90deg, #000080 0%, #1084D0 100%);
-            color: var(--w98-title-text);
-            font-weight: bold;
-            padding: 3px 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .win98-inset {
-            background: #FFFFFF;
-            border-top: 2px solid var(--w98-shadow-dark);
-            border-left: 2px solid var(--w98-shadow-dark);
-            border-right: 2px solid var(--w98-highlight);
-            border-bottom: 2px solid var(--w98-highlight);
-            box-shadow: inset 1px 1px 0 var(--w98-shadow-darker);
-        }
-
-        .win98-outset {
-            background: var(--w98-bg);
-            border-top: 2px solid var(--w98-highlight);
-            border-left: 2px solid var(--w98-highlight);
-            border-right: 2px solid var(--w98-shadow-dark);
-            border-bottom: 2px solid var(--w98-shadow-dark);
-            box-shadow: inset -1px -1px 0 var(--w98-shadow-darker), inset 1px 1px 0 #DFDFDF;
-        }
-
-        .w98-btn {
-            background: var(--w98-bg);
-            border-top: 2px solid var(--w98-highlight);
-            border-left: 2px solid var(--w98-highlight);
-            border-right: 2px solid var(--w98-shadow-dark);
-            border-bottom: 2px solid var(--w98-shadow-dark);
-            box-shadow: inset -1px -1px 0 var(--w98-shadow-darker), inset 1px 1px 0 #DFDFDF;
-            padding: 4px 12px;
-            font-family: 'Tahoma', sans-serif;
-            font-size: 12px;
-            cursor: pointer;
-            color: #000;
-            min-width: 70px;
-        }
-        .w98-btn:active {
-            border-top: 2px solid var(--w98-shadow-dark);
-            border-left: 2px solid var(--w98-shadow-dark);
-            border-right: 2px solid var(--w98-highlight);
-            border-bottom: 2px solid var(--w98-highlight);
-            box-shadow: inset 1px 1px 0 var(--w98-shadow-darker);
-            padding: 5px 11px 3px 13px;
-        }
-
-        .w98-input, .w98-select, .w98-textarea {
-            background: #FFFFFF;
-            border-top: 2px solid var(--w98-shadow-dark);
-            border-left: 2px solid var(--w98-shadow-dark);
-            border-right: 2px solid var(--w98-highlight);
-            border-bottom: 2px solid var(--w98-highlight);
-            box-shadow: inset 1px 1px 0 var(--w98-shadow-darker);
-            padding: 3px;
-            font-family: 'Tahoma', sans-serif;
-            font-size: 12px;
-            outline: none;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .w98-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #FFFFFF;
-            border: 2px solid var(--w98-shadow-darker);
-        }
-        .w98-table th {
-            background: var(--w98-bg);
-            border-bottom: 1px solid var(--w98-shadow-darker);
-            border-right: 1px solid var(--w98-shadow-dark);
-            padding: 4px;
-            text-align: left;
-            font-weight: bold;
-        }
-        .w98-table td {
-            border-bottom: 1px solid var(--w98-shadow-dark);
-            border-right: 1px solid var(--w98-shadow-dark);
-            padding: 4px;
-        }
-
+        body { font-family: 'Tahoma', 'Verdana', 'MS Sans Serif', sans-serif; background-color: #008080; font-size: 12px; color: #000; }
+        .win98-window { background: var(--w98-bg); border-top: 2px solid var(--w98-highlight); border-left: 2px solid var(--w98-highlight); border-right: 2px solid var(--w98-shadow-darker); border-bottom: 2px solid var(--w98-shadow-darker); box-shadow: inset -1px -1px 0 var(--w98-shadow-dark), inset 1px 1px 0 #DFDFDF; }
+        .win98-titlebar { background: linear-gradient(90deg, #000080 0%, #1084D0 100%); color: var(--w98-title-text); font-weight: bold; padding: 3px 5px; display: flex; justify-content: space-between; align-items: center; }
+        .win98-inset { background: #FFFFFF; border-top: 2px solid var(--w98-shadow-dark); border-left: 2px solid var(--w98-shadow-dark); border-right: 2px solid var(--w98-highlight); border-bottom: 2px solid var(--w98-highlight); box-shadow: inset 1px 1px 0 var(--w98-shadow-darker); }
+        .win98-outset { background: var(--w98-bg); border-top: 2px solid var(--w98-highlight); border-left: 2px solid var(--w98-highlight); border-right: 2px solid var(--w98-shadow-dark); border-bottom: 2px solid var(--w98-shadow-dark); box-shadow: inset -1px -1px 0 var(--w98-shadow-darker), inset 1px 1px 0 #DFDFDF; }
+        .w98-btn { background: var(--w98-bg); border-top: 2px solid var(--w98-highlight); border-left: 2px solid var(--w98-highlight); border-right: 2px solid var(--w98-shadow-dark); border-bottom: 2px solid var(--w98-shadow-dark); box-shadow: inset -1px -1px 0 var(--w98-shadow-darker), inset 1px 1px 0 #DFDFDF; padding: 4px 12px; font-family: 'Tahoma', sans-serif; font-size: 12px; cursor: pointer; color: #000; min-width: 70px; }
+        .w98-btn:active { border-top: 2px solid var(--w98-shadow-dark); border-left: 2px solid var(--w98-shadow-dark); border-right: 2px solid var(--w98-highlight); border-bottom: 2px solid var(--w98-highlight); box-shadow: inset 1px 1px 0 var(--w98-shadow-darker); padding: 5px 11px 3px 13px; }
+        .w98-input, .w98-select, .w98-textarea { background: #FFFFFF; border-top: 2px solid var(--w98-shadow-dark); border-left: 2px solid var(--w98-shadow-dark); border-right: 2px solid var(--w98-highlight); border-bottom: 2px solid var(--w98-highlight); box-shadow: inset 1px 1px 0 var(--w98-shadow-darker); padding: 3px; font-family: 'Tahoma', sans-serif; font-size: 12px; outline: none; width: 100%; box-sizing: border-box; }
+        .w98-table { width: 100%; border-collapse: collapse; background: #FFFFFF; border: 2px solid var(--w98-shadow-darker); }
+        .w98-table th { background: var(--w98-bg); border-bottom: 1px solid var(--w98-shadow-darker); border-right: 1px solid var(--w98-shadow-dark); padding: 4px; text-align: left; font-weight: bold; }
+        .w98-table td { border-bottom: 1px solid var(--w98-shadow-dark); border-right: 1px solid var(--w98-shadow-dark); padding: 4px; }
         ::-webkit-scrollbar { width: 16px; height: 16px; }
         ::-webkit-scrollbar-track { background: #DFDFDF; border: 1px solid var(--w98-shadow-dark); }
         ::-webkit-scrollbar-thumb { background: var(--w98-bg); border-top: 2px solid var(--w98-highlight); border-left: 2px solid var(--w98-highlight); border-right: 2px solid var(--w98-shadow-darker); border-bottom: 2px solid var(--w98-shadow-darker); }
         ::-webkit-scrollbar-corner { background: var(--w98-bg); }
-
-        .menu-item {
-            padding: 4px 10px;
-            cursor: pointer;
-            color: #000;
-            text-decoration: none;
-            display: block;
-        }
+        .menu-item { padding: 4px 10px; cursor: pointer; color: #000; text-decoration: none; display: block; }
         .menu-item:hover { background: var(--w98-title-active); color: #FFF; }
         .menu-item.active { background: var(--w98-title-active); color: #FFF; }
 
@@ -184,7 +86,6 @@
         .status-shipped { background: #DBEAFE; color: #000; }
         .status-delivered { background: #D1FAE5; color: #000; }
         .status-cancelled { background: #FEE2E2; color: #000; }
-        .status-returned { background: #E0E7FF; color: #000; }
 
         @media print {
             @page { size: A4 portrait; margin: 15mm; }
@@ -245,9 +146,7 @@
                     </div>
                 </div>
                 <nav class="flex-1 p-1 text-xs">
-                    <div class="win98-outset m-1 mb-2">
-                        <a href="#" data-page="dashboard" class="menu-item active"><i class="fas fa-tachometer-alt w-4"></i> Dashboard</a>
-                    </div>
+                    <div class="win98-outset m-1 mb-2"><a href="#" data-page="dashboard" class="menu-item active"><i class="fas fa-tachometer-alt w-4"></i> Dashboard</a></div>
                     <div class="px-2 py-1 font-bold text-[11px]">Sales & Distribution</div>
                     <div class="win98-outset m-1 mb-2">
                         <a href="#" data-page="order-entry" class="menu-item"><i class="fas fa-cart-plus w-4"></i> Order Entry</a>
@@ -259,9 +158,7 @@
                         <a href="#" data-page="users" class="admin-only menu-item"><i class="fas fa-user-shield w-4"></i> User Mgmt</a>
                     </div>
                     <div class="px-2 py-1 font-bold text-[11px]">Reports</div>
-                    <div class="win98-outset m-1 mb-2">
-                        <a href="#" data-page="reports" class="menu-item"><i class="fas fa-chart-line w-4"></i> Sales & Due Reports</a>
-                    </div>
+                    <div class="win98-outset m-1 mb-2"><a href="#" data-page="reports" class="menu-item"><i class="fas fa-chart-line w-4"></i> Sales & Due Reports</a></div>
                 </nav>
             </aside>
 
@@ -300,45 +197,11 @@
     </div>
 
     <script>
-        // Strict HTML escaping to prevent JS crashes and broken table rows
-        function esc(s) {
-            if (s === null || s === undefined) return '';
-            return String(s)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;')
-                .replace(/`/g, '&#96;');
-        }
+        function esc(s) { if (s === null || s === undefined) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/`/g, '&#96;'); }
+        function safeDate(dateStr) { try { if(!dateStr) return 'N/A'; const d = new Date(dateStr); if (isNaN(d.getTime())) return 'N/A'; return d.toLocaleDateString(); } catch (e) { return 'N/A'; } }
+        function toArray(obj) { if (Array.isArray(obj)) return obj; if (typeof obj === 'object' && obj !== null) return Object.keys(obj).map(k => obj[k]); return []; }
 
-        // Safe date formatter
-        function safeDate(dateStr) {
-            try {
-                if(!dateStr) return 'N/A';
-                const d = new Date(dateStr);
-                if (isNaN(d.getTime())) return 'N/A';
-                return d.toLocaleDateString();
-            } catch (e) { return 'N/A'; }
-        }
-
-        // Convert Firebase Objects to Array safely
-        function toArray(obj) {
-            if (Array.isArray(obj)) return obj;
-            if (typeof obj === 'object' && obj !== null) return Object.keys(obj).map(k => obj[k]);
-            return [];
-        }
-
-        // Global State
-        const State = { 
-            currentUser: null, 
-            currentPage: null, 
-            currentView: null, 
-            products: [], 
-            users: [], 
-            orders: [], 
-            cart: [] 
-        };
+        const State = { currentUser: null, currentPage: null, currentView: null, products: [], users: [], orders: [], cart: [] };
 
         document.getElementById('login-form').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -352,12 +215,8 @@
             usersRef.once('value', (snapshot) => {
                 let loggedIn = false;
                 snapshot.forEach((childSnapshot) => {
-                    const user = childSnapshot.val();
-                    user.id = childSnapshot.key; 
-                    if (user.username === username && user.password === password) {
-                        if (user.status !== 'Active') return alert('User is inactive!');
-                        State.currentUser = user; loggedIn = true;
-                    }
+                    const user = childSnapshot.val(); user.id = childSnapshot.key; 
+                    if (user.username === username && user.password === password) { if (user.status !== 'Active') return alert('User is inactive!'); State.currentUser = user; loggedIn = true; }
                 });
                 if (loggedIn) showApp(); else alert('Invalid credentials!');
             });
@@ -381,69 +240,27 @@
 
         function openProfileSettings() {
             const u = State.currentUser;
-            openModal('Profile Settings', `
-                <form onsubmit="saveProfile(event)">
-                    <div class="mb-3 flex flex-col items-center">
-                        <img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black">
-                        <input type="file" id="p_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs">
-                    </div>
-                    <div class="mb-3"><label class="block mb-1">Full Name:</label><input type="text" id="p_name" value="${esc(u.name)}" class="w98-input" required></div>
-                    <div class="mb-3"><label class="block mb-1">Mobile:</label><input type="text" id="p_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div>
-                    <div class="mb-3"><label class="block mb-1">Address:</label><textarea id="p_address" class="w98-textarea">${esc(u.address || '')}</textarea></div>
-                    <div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save Changes</button></div>
-                </form>
-            `);
+            openModal('Profile Settings', `<form onsubmit="saveProfile(event)"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="p_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="mb-3"><label class="block mb-1">Full Name:</label><input type="text" id="p_name" value="${esc(u.name)}" class="w98-input" required></div><div class="mb-3"><label class="block mb-1">Mobile:</label><input type="text" id="p_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div><div class="mb-3"><label class="block mb-1">Address:</label><textarea id="p_address" class="w98-textarea">${esc(u.address || '')}</textarea></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save Changes</button></div></form>`);
         }
         function previewUserImage(input) { const r = new FileReader(); r.onload = (e) => document.getElementById('u_img_preview').src = e.target.result; r.readAsDataURL(input.files[0]); }
         function saveProfile(e) {
-            e.preventDefault();
-            const imageFile = document.getElementById('p_image').files[0];
+            e.preventDefault(); const imageFile = document.getElementById('p_image').files[0];
             const data = { name: document.getElementById('p_name').value, mobile: document.getElementById('p_mobile').value, address: document.getElementById('p_address').value };
             const saveToDB = (imgUrl) => {
                 if(imgUrl) data.image = imgUrl;
                 if (State.currentUser.id === 'superadmin') State.currentUser = { ...State.currentUser, ...data };
                 else { db.ref('users/' + State.currentUser.id).update(data); State.currentUser = { ...State.currentUser, ...data }; }
-                document.getElementById('user-name').textContent = data.name;
-                if(data.image) document.getElementById('nav-avatar').src = data.image;
-                alert('Profile updated successfully!'); closeModal();
+                document.getElementById('user-name').textContent = data.name; if(data.image) document.getElementById('nav-avatar').src = data.image; alert('Profile updated successfully!'); closeModal();
             };
             if(imageFile) { const r = new FileReader(); r.onload = (e) => saveToDB(e.target.result); r.readAsDataURL(imageFile); } else { saveToDB(); }
         }
         function openChangePassword() { openModal('Change Password', `<form onsubmit="savePassword(event)"><div class="mb-3"><label class="block mb-1">New Password:</label><input type="password" id="new_pass" class="w98-input" required></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update Password</button></div></form>`); }
         function savePassword(e) { e.preventDefault(); const n = document.getElementById('new_pass').value; if (State.currentUser.id === 'superadmin') alert('Super Admin password cannot be changed here.'); else { db.ref('users/' + State.currentUser.id).update({ password: n }); alert('Password updated successfully!'); } closeModal(); }
 
-        // FIREBASE LISTENERS: Ensure ALL records are fetched and pushed into arrays
         function initFirebaseListeners() {
-            db.ref('products').on('value', (s) => { 
-                State.products = []; // Reset array
-                s.forEach(c => { 
-                    State.products.push({ id: c.key, ...c.val() }); // Push all records
-                }); 
-                if (State.currentPage === 'products') renderProducts(); 
-                if (State.currentPage === 'dashboard') renderDashboard(); 
-                if (State.currentPage === 'order-entry') renderOrderEntry(); 
-            });
-            db.ref('users').on('value', (s) => { 
-                State.users = []; 
-                s.forEach(c => { 
-                    State.users.push({ id: c.key, ...c.val() }); 
-                }); 
-                if (State.currentPage === 'users') renderUsers(); 
-                if (State.currentPage === 'dashboard') renderDashboard(); 
-                if (State.currentPage === 'order-entry') renderOrderEntry(); 
-                if (State.currentPage === 'reports') renderReports(); 
-            });
-            db.ref('orders').on('value', (s) => { 
-                State.orders = []; 
-                s.forEach(c => { 
-                    let order = c.val();
-                    order.id = c.key;
-                    order.items = toArray(order.items); // Ensure items is an array
-                    State.orders.push(order); 
-                }); 
-                if (State.currentPage === 'invoices' && State.currentView !== 'invoice_view') renderInvoices(); 
-                if (State.currentPage === 'reports') renderReports(); 
-            });
+            db.ref('products').on('value', (s) => { State.products = []; s.forEach(c => { State.products.push({ id: c.key, ...c.val() }); }); if (State.currentPage === 'products') renderProducts(); if (State.currentPage === 'dashboard') renderDashboard(); if (State.currentPage === 'order-entry') renderOrderEntry(); });
+            db.ref('users').on('value', (s) => { State.users = []; s.forEach(c => { State.users.push({ id: c.key, ...c.val() }); }); if (State.currentPage === 'users') renderUsers(); if (State.currentPage === 'dashboard') renderDashboard(); if (State.currentPage === 'order-entry') renderOrderEntry(); if (State.currentPage === 'reports') renderReports(); });
+            db.ref('orders').on('value', (s) => { State.orders = []; s.forEach(c => { let order = c.val(); order.id = c.key; order.items = toArray(order.items); State.orders.push(order); }); if (State.currentPage === 'invoices' && State.currentView !== 'invoice_view') renderInvoices(); if (State.currentPage === 'reports') renderReports(); });
         }
 
         document.querySelectorAll('.menu-item').forEach(l => l.addEventListener('click', e => { e.preventDefault(); if(l.dataset.page) renderPage(l.dataset.page); }));
@@ -471,15 +288,7 @@
         function renderDashboard() {
             const isC = State.currentUser.role !== 'ADMIN' && State.currentUser.role !== 'SALES MAN';
             const tD = State.users.filter(u => u.role !== 'ADMIN' && u.role !== 'SALES MAN').reduce((s, u) => s + (u.due || 0), 0);
-            document.getElementById('main-content').innerHTML = `
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
-                    ${!isC ? `
-                    <div class="win98-outset p-2"><p class="text-xs">Total Products</p><p class="text-lg font-bold">${State.products.length}</p></div>
-                    <div class="win98-outset p-2"><p class="text-xs">Total Customers</p><p class="text-lg font-bold">${State.users.filter(u => u.role !== 'ADMIN' && u.role !== 'SALES MAN').length}</p></div>
-                    <div class="win98-outset p-2"><p class="text-xs">Total Due</p><p class="text-lg font-bold">৳ ${tD}</p></div>
-                    ` : `<div class="win98-outset p-2 col-span-2 md:col-span-4"><p class="text-xs">Welcome, ${esc(State.currentUser.name)}!</p><p class="text-lg font-bold mt-1">Your Current Due: ৳ ${State.currentUser.due || 0}</p></div>`}
-                </div>
-                <div class="win98-window p-2"><div class="win98-titlebar text-xs mb-2">Sales Overview</div><canvas id="salesChart" height="80"></canvas></div>`;
+            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">${!isC ? `<div class="win98-outset p-2"><p class="text-xs">Total Products</p><p class="text-lg font-bold">${State.products.length}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Customers</p><p class="text-lg font-bold">${State.users.filter(u => u.role !== 'ADMIN' && u.role !== 'SALES MAN').length}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Due</p><p class="text-lg font-bold">৳ ${tD}</p></div>` : `<div class="win98-outset p-2 col-span-2 md:col-span-4"><p class="text-xs">Welcome, ${esc(State.currentUser.name)}!</p><p class="text-lg font-bold mt-1">Your Current Due: ৳ ${State.currentUser.due || 0}</p></div>`}</div><div class="win98-window p-2"><div class="win98-titlebar text-xs mb-2">Sales Overview</div><canvas id="salesChart" height="80"></canvas></div>`;
             const ctx = document.getElementById('salesChart').getContext('2d');
             if(window.myChart) window.myChart.destroy();
             window.myChart = new Chart(ctx, { type: 'bar', data: { labels: ['Mon', 'Tue', 'Wed', 'Thu'], datasets: [{ label: 'Sales', data: [12, 19, 15, 25], backgroundColor: '#000080' }] } });
@@ -488,43 +297,8 @@
         function renderProducts() {
             const cE = State.currentUser.role === 'ADMIN';
             let rows = '';
-            if (State.products.length > 0) {
-                // MAP ALL RECORDS SECURELY
-                rows = State.products.map(p => `
-                    <tr>
-                        <td><img src="${p.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td>
-                        <td>${esc(p.code || 'N/A')}</td>
-                        <td>${esc(p.name || 'N/A')}</td>
-                        <td>৳${p.mrp || 0}</td>
-                        <td>৳${p.rPrice || 0} / ৳${p.dPrice || 0} / ৳${p.hPrice || 0}</td>
-                        <td>${p.stock || 0}</td>
-                        <td class="text-right">
-                            ${cE ? `<button onclick="editProduct('${p.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteProduct('${p.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>` : '-'}
-                        </td>
-                    </tr>
-                `).join('');
-            } else {
-                rows = `<tr><td colspan="7" class="text-center p-4">No products found.</td></tr>`;
-            }
-            
-            document.getElementById('main-content').innerHTML = `
-                <div class="win98-window p-2">
-                    <div class="flex justify-between mb-2">
-                        <h3 class="font-bold">Products List</h3>
-                        ${cE ? `<button onclick="addProduct()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add Product</button>` : ''}
-                    </div>
-                    <div class="win98-inset p-1 overflow-x-auto">
-                        <table class="w98-table text-xs">
-                            <thead>
-                                <tr>
-                                    <th>Img</th><th>Code</th><th>Name</th><th>MRP</th><th>R/D/H Price</th><th>Stock</th><th class="text-right">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>${rows}</tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
+            if (State.products.length > 0) { rows = State.products.map(p => `<tr><td><img src="${p.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(p.code || 'N/A')}</td><td>${esc(p.name || 'N/A')}</td><td>৳${p.mrp || 0}</td><td>৳${p.rPrice || 0} / ৳${p.dPrice || 0} / ৳${p.hPrice || 0}</td><td>${p.stock || 0}</td><td class="text-right">${cE ? `<button onclick="editProduct('${p.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteProduct('${p.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>` : '-'}</td></tr>`).join(''); } else { rows = `<tr><td colspan="7" class="text-center p-4">No products found.</td></tr>`; }
+            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">Products List</h3>${cE ? `<button onclick="addProduct()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add Product</button>` : ''}</div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>Code</th><th>Name</th><th>MRP</th><th>R/D/H Price</th><th>Stock</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
         }
         function addProduct() { openModal('Add Product', `<form onsubmit="saveProduct(event, '')"><div class="mb-3 flex flex-col items-center"><img id="img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="p_image" accept="image/*" onchange="previewImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2"><div><label>Code:</label><input type="text" id="p_code" class="w98-input" required></div><div><label>Name:</label><input type="text" id="p_name" class="w98-input" required></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Category:</label><input type="text" id="p_cat" class="w98-input" required></div><div><label>MRP:</label><input type="number" id="p_mrp" class="w98-input" required></div></div><div class="grid grid-cols-3 gap-2 mt-2"><div><label>R-Price:</label><input type="number" id="p_r" class="w98-input" required></div><div><label>D-Price:</label><input type="number" id="p_d" class="w98-input" required></div><div><label>H-Price:</label><input type="number" id="p_h" class="w98-input" required></div></div><div class="mt-2"><label>Stock:</label><input type="number" id="p_stock" class="w98-input" required></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save Product</button></div></form>`); }
         function editProduct(id) { const p = State.products.find(x => x.id === id); openModal('Edit Product', `<form onsubmit="saveProduct(event, '${p.id}')"><div class="mb-3 flex flex-col items-center"><img id="img_preview" src="${p.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="p_image" accept="image/*" onchange="previewImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2"><div><label>Code:</label><input type="text" id="p_code" value="${esc(p.code || '')}" class="w98-input" required></div><div><label>Name:</label><input type="text" id="p_name" value="${esc(p.name || '')}" class="w98-input" required></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Category:</label><input type="text" id="p_cat" value="${esc(p.category || '')}" class="w98-input" required></div><div><label>MRP:</label><input type="number" id="p_mrp" value="${p.mrp || 0}" class="w98-input" required></div></div><div class="grid grid-cols-3 gap-2 mt-2"><div><label>R-Price:</label><input type="number" id="p_r" value="${p.rPrice || 0}" class="w98-input" required></div><div><label>D-Price:</label><input type="number" id="p_d" value="${p.dPrice || 0}" class="w98-input" required></div><div><label>H-Price:</label><input type="number" id="p_h" value="${p.hPrice || 0}" class="w98-input" required></div></div><div class="mt-2"><label>Stock:</label><input type="number" id="p_stock" value="${p.stock || 0}" class="w98-input" required></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update Product</button></div></form>`); }
@@ -535,404 +309,104 @@
         function renderUsers() {
             const cE = State.currentUser.role === 'ADMIN';
             let rows = '';
-            if (State.users.length > 0) {
-                // MAP ALL RECORDS SECURELY
-                rows = State.users.map(u => `
-                    <tr>
-                        <td><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td>
-                        <td>${esc(u.userCode || 'N/A')}</td>
-                        <td>${esc(u.username || 'N/A')}</td>
-                        <td>${esc(u.name || 'N/A')}<br><span class="text-[10px]">${esc(u.shopName || '')}</span></td>
-                        <td>${esc(u.role || 'N/A')}</td>
-                        <td>৳${u.due || 0}</td>
-                        <td class="text-right">
-                            ${cE ? `<button onclick="editUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>` : '-'}
-                        </td>
-                    </tr>
-                `).join('');
-            } else {
-                rows = `<tr><td colspan="7" class="text-center p-4">No users found.</td></tr>`;
-            }
-            
-            document.getElementById('main-content').innerHTML = `
-                <div class="win98-window p-2">
-                    <div class="flex justify-between mb-2">
-                        <h3 class="font-bold">System Users / Customers</h3>
-                        ${cE ? `<button onclick="addUser()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add User</button>` : ''}
-                    </div>
-                    <div class="win98-inset p-1 overflow-x-auto">
-                        <table class="w98-table text-xs">
-                            <thead>
-                                <tr>
-                                    <th>Img</th><th>User ID</th><th>Username</th><th>Name / Shop</th><th>Role</th><th>Due</th><th class="text-right">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>${rows}</tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
+            if (State.users.length > 0) { rows = State.users.map(u => `<tr><td><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(u.userCode || 'N/A')}</td><td>${esc(u.username || 'N/A')}</td><td>${esc(u.name || 'N/A')}<br><span class="text-[10px]">${esc(u.shopName || '')}</span></td><td>${esc(u.role || 'N/A')}</td><td>৳${u.due || 0}</td><td class="text-right">${cE ? `<button onclick="editUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>` : '-'}</td></tr>`).join(''); } else { rows = `<tr><td colspan="7" class="text-center p-4">No users found.</td></tr>`; }
+            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">System Users / Customers</h3>${cE ? `<button onclick="addUser()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add User</button>` : ''}</div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>User ID</th><th>Username</th><th>Name / Shop</th><th>Role</th><th>Due</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
         }
 
         function renderRoleFields(role, u = {}) {
-            const c = document.getElementById('role-specific-fields');
-            let h = '';
+            const c = document.getElementById('role-specific-fields'); let h = '';
             if (role === 'DEALER' || role === 'RETAILER' || role === 'HOCKER') {
-                h = `
-                    <fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Business Information</legend>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div><label>Business/Shop Name:</label><input type="text" id="u_shop" value="${esc(u.shopName || '')}" class="w98-input"></div>
-                        <div><label>Proprietor Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <div><label>Business Type:</label><input type="text" id="u_b_type" value="${esc(u.businessType || '')}" class="w98-input"></div>
-                        <div><label>Trade License No.:</label><input type="text" id="u_trade_lic" value="${esc(u.tradeLicense || '')}" class="w98-input"></div>
-                    </div></fieldset>
-                    <fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Contact Information</legend>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div>
-                        <div><label>Alt Mobile:</label><input type="text" id="u_alt_mobile" value="${esc(u.altMobile || '')}" class="w98-input"></div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <div><label>Email:</label><input type="email" id="u_email" value="${esc(u.email || '')}" class="w98-input"></div>
-                        <div><label>NID Number:</label><input type="text" id="u_nid" value="${esc(u.nid || '')}" class="w98-input"></div>
-                    </div>
-                    ${role === 'DEALER' ? `<div class="mt-2"><label>TIN Number:</label><input type="text" id="u_tin" value="${esc(u.tin || '')}" class="w98-input"></div>` : ''}</fieldset>
-                    <fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Address & Financials</legend>
-                    <div class="mb-2"><label>Address:</label><textarea id="u_address" class="w98-textarea">${esc(u.address || '')}</textarea></div>
-                    <div><label>Opening Due:</label><input type="number" id="u_due" value="${u.due || 0}" class="w98-input"></div></fieldset>
-                `;
+                h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Business Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Business/Shop Name:</label><input type="text" id="u_shop" value="${esc(u.shopName || '')}" class="w98-input"></div><div><label>Proprietor Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Business Type:</label><input type="text" id="u_b_type" value="${esc(u.businessType || '')}" class="w98-input"></div><div><label>Trade License No.:</label><input type="text" id="u_trade_lic" value="${esc(u.tradeLicense || '')}" class="w98-input"></div></div></fieldset><fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Contact Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div><div><label>Alt Mobile:</label><input type="text" id="u_alt_mobile" value="${esc(u.altMobile || '')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Email:</label><input type="email" id="u_email" value="${esc(u.email || '')}" class="w98-input"></div><div><label>NID Number:</label><input type="text" id="u_nid" value="${esc(u.nid || '')}" class="w98-input"></div></div>${role === 'DEALER' ? `<div class="mt-2"><label>TIN Number:</label><input type="text" id="u_tin" value="${esc(u.tin || '')}" class="w98-input"></div>` : ''}</fieldset><fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Address & Financials</legend><div class="mb-2"><label>Address:</label><textarea id="u_address" class="w98-textarea">${esc(u.address || '')}</textarea></div><div><label>Opening Due:</label><input type="number" id="u_due" value="${u.due || 0}" class="w98-input"></div></fieldset>`;
             } else if (role === 'SALES MAN') {
-                h = `
-                    <fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div><label>Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div>
-                        <div><label>Designation:</label><input type="text" id="u_designation" value="${esc(u.designation || 'Sales Man')}" class="w98-input"></div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div>
-                        <div><label>Alt Mobile:</label><input type="text" id="u_alt_mobile" value="${esc(u.altMobile || '')}" class="w98-input"></div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <div><label>NID Number:</label><input type="text" id="u_nid" value="${esc(u.nid || '')}" class="w98-input"></div>
-                        <div><label>Joining Date:</label><input type="date" id="u_join_date" value="${esc(u.joinDate || '')}" class="w98-input"></div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <div><label>Status:</label><select id="u_emp_status" class="w98-select"><option value="Active" ${u.empStatus==='Active'?'selected':''}>Active</option><option value="Inactive" ${u.empStatus==='Inactive'?'selected':''}>Inactive</option></select></div>
-                        <div><label>Address:</label><input type="text" id="u_address" value="${esc(u.address || '')}" class="w98-input"></div>
-                    </div></fieldset>
-                `;
-            } else {
-                 h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend>
-                    <div class="grid grid-cols-2 gap-2"><div><label>Full Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div></div>
-                    <div class="mt-2"><label>Address:</label><textarea id="u_address" class="w98-textarea">${esc(u.address || '')}</textarea></div></fieldset>`;
-            }
+                h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div><div><label>Designation:</label><input type="text" id="u_designation" value="${esc(u.designation || 'Sales Man')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div><div><label>Alt Mobile:</label><input type="text" id="u_alt_mobile" value="${esc(u.altMobile || '')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>NID Number:</label><input type="text" id="u_nid" value="${esc(u.nid || '')}" class="w98-input"></div><div><label>Joining Date:</label><input type="date" id="u_join_date" value="${esc(u.joinDate || '')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Status:</label><select id="u_emp_status" class="w98-select"><option value="Active" ${u.empStatus==='Active'?'selected':''}>Active</option><option value="Inactive" ${u.empStatus==='Inactive'?'selected':''}>Inactive</option></select></div><div><label>Address:</label><input type="text" id="u_address" value="${esc(u.address || '')}" class="w98-input"></div></div></fieldset>`;
+            } else { h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Full Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div></div><div class="mt-2"><label>Address:</label><textarea id="u_address" class="w98-textarea">${esc(u.address || '')}</textarea></div></fieldset>`; }
             c.innerHTML = h;
         }
 
-        function addUser() {
-            openModal('Add User / Customer', `
-                <form onsubmit="saveUser(event, '')">
-                    <div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div>
-                    <div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value)" class="w98-select"><option value="ADMIN">Admin</option><option value="SALES MAN">Sales Man</option><option value="RETAILER">Retailer</option><option value="DEALER">Dealer</option><option value="HOCKER">Hocker</option></select></div><div><label>Username (Login):</label><input type="text" id="u_username" class="w98-input" required></div></div>
-                    <div class="mb-2"><label>Password:</label><input type="text" id="u_password" class="w98-input" required></div>
-                    <div id="role-specific-fields"></div>
-                    <div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save User</button></div>
-                </form>
-            `);
-            renderRoleFields('ADMIN');
-        }
-
-        function editUser(id) {
-            const u = State.users.find(x => x.id === id);
-            openModal('Edit User / Customer', `
-                <form onsubmit="saveUser(event, '${u.id}')">
-                    <div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div>
-                    <div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value, ${JSON.stringify(u).replace(/"/g, '&quot;')})" class="w98-select" disabled><option value="ADMIN" ${u.role==='ADMIN'?'selected':''}>Admin</option><option value="SALES MAN" ${u.role==='SALES MAN'?'selected':''}>Sales Man</option><option value="RETAILER" ${u.role==='RETAILER'?'selected':''}>Retailer</option><option value="DEALER" ${u.role==='DEALER'?'selected':''}>Dealer</option><option value="HOCKER" ${u.role==='HOCKER'?'selected':''}>Hocker</option></select></div><div><label>Username:</label><input type="text" id="u_username" value="${esc(u.username || '')}" class="w98-input" required></div></div>
-                    <div class="mb-2"><label>Password:</label><input type="text" id="u_password" value="${esc(u.password || '')}" class="w98-input" required></div>
-                    <div id="role-specific-fields"></div>
-                    <div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update User</button></div>
-                </form>
-            `);
-            renderRoleFields(u.role, u);
-        }
-
-        function saveUser(e, id) {
-            e.preventDefault();
-            const iF = document.getElementById('u_image').files[0];
-            const val = (id) => document.getElementById(id)?.value || '';
-            const role = val('u_role');
-            const data = {
-                username: val('u_username'), password: val('u_password'), role: role,
-                name: val('u_name'), shopName: val('u_shop'), mobile: val('u_mobile'),
-                altMobile: val('u_alt_mobile'), email: val('u_email'), address: val('u_address'),
-                nid: val('u_nid'), businessType: val('u_b_type'), tradeLicense: val('u_trade_lic'),
-                tin: val('u_tin'), designation: val('u_designation'), joinDate: val('u_join_date'),
-                empStatus: val('u_emp_status'), due: parseFloat(val('u_due') || 0), status: 'Active'
-            };
-            const s = (u) => {
-                if(u) data.image = u;
-                if (id) db.ref('users/' + id).update(data);
-                else {
-                    const rP = { 'ADMIN': 'RFPA', 'SALES MAN': 'RFPS', 'DEALER': 'RFPD', 'HOCKER': 'RFPH', 'RETAILER': 'RFPR' };
-                    const p = rP[role] || 'RFPX';
-                    const rU = State.users.filter(u => u.userCode && u.userCode.startsWith(p));
-                    let mS = 0; rU.forEach(u => { const s = parseInt(u.userCode.slice(p.length)); if (!isNaN(s) && s > mS) mS = s; });
-                    data.userCode = `${p}${String(mS + 1).padStart(2, '0')}`;
-                    db.ref('users').push(data);
-                }
-                closeModal();
-            };
-            if(iF) { const r = new FileReader(); r.onload = (e) => s(e.target.result); r.readAsDataURL(iF); } else s();
-        }
+        function addUser() { openModal('Add User / Customer', `<form onsubmit="saveUser(event, '')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value)" class="w98-select"><option value="ADMIN">Admin</option><option value="SALES MAN">Sales Man</option><option value="RETAILER">Retailer</option><option value="DEALER">Dealer</option><option value="HOCKER">Hocker</option></select></div><div><label>Username (Login):</label><input type="text" id="u_username" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save User</button></div></form>`); renderRoleFields('ADMIN'); }
+        function editUser(id) { const u = State.users.find(x => x.id === id); openModal('Edit User / Customer', `<form onsubmit="saveUser(event, '${u.id}')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value, ${JSON.stringify(u).replace(/"/g, '&quot;')})" class="w98-select" disabled><option value="ADMIN" ${u.role==='ADMIN'?'selected':''}>Admin</option><option value="SALES MAN" ${u.role==='SALES MAN'?'selected':''}>Sales Man</option><option value="RETAILER" ${u.role==='RETAILER'?'selected':''}>Retailer</option><option value="DEALER" ${u.role==='DEALER'?'selected':''}>Dealer</option><option value="HOCKER" ${u.role==='HOCKER'?'selected':''}>Hocker</option></select></div><div><label>Username:</label><input type="text" id="u_username" value="${esc(u.username || '')}" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" value="${esc(u.password || '')}" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update User</button></div></form>`); renderRoleFields(u.role, u); }
+        function saveUser(e, id) { e.preventDefault(); const iF = document.getElementById('u_image').files[0]; const val = (id) => document.getElementById(id)?.value || ''; const role = val('u_role'); const data = { username: val('u_username'), password: val('u_password'), role: role, name: val('u_name'), shopName: val('u_shop'), mobile: val('u_mobile'), altMobile: val('u_alt_mobile'), email: val('u_email'), address: val('u_address'), nid: val('u_nid'), businessType: val('u_b_type'), tradeLicense: val('u_trade_lic'), tin: val('u_tin'), designation: val('u_designation'), joinDate: val('u_join_date'), empStatus: val('u_emp_status'), due: parseFloat(val('u_due') || 0), status: 'Active' }; const s = (u) => { if(u) data.image = u; if (id) db.ref('users/' + id).update(data); else { const rP = { 'ADMIN': 'RFPA', 'SALES MAN': 'RFPS', 'DEALER': 'RFPD', 'HOCKER': 'RFPH', 'RETAILER': 'RFPR' }; const p = rP[role] || 'RFPX'; const rU = State.users.filter(u => u.userCode && u.userCode.startsWith(p)); let mS = 0; rU.forEach(u => { const s = parseInt(u.userCode.slice(p.length)); if (!isNaN(s) && s > mS) mS = s; }); data.userCode = `${p}${String(mS + 1).padStart(2, '0')}`; db.ref('users').push(data); } closeModal(); }; if(iF) { const r = new FileReader(); r.onload = (e) => s(e.target.result); r.readAsDataURL(iF); } else s(); }
         function deleteUser(id) { if (confirm('Are you sure?')) db.ref('users/' + id).remove(); }
 
-        function renderOrderEntry() {
-            State.cart = []; 
-            const isC = State.currentUser.role !== 'ADMIN' && State.currentUser.role !== 'SALES MAN';
-            document.getElementById('main-content').innerHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-2">
-                    <div class="lg:col-span-2 win98-window p-2">
-                        <h3 class="font-bold mb-2">Select Products (Click to add)</h3>
-                        <div class="win98-inset p-2 grid grid-cols-2 md:grid-cols-3 gap-2 max-h-[60vh] overflow-y-auto">
-                            ${State.products.map(p => `<div onclick="showQtyPrompt('${p.id}', '${esc(p.name).replace(/'/g, "\\'")}')" class="win98-outset p-2 cursor-pointer text-center"><img src="${p.image || 'https://via.placeholder.com/80'}" class="w-full h-20 mb-1"><p class="font-bold text-xs truncate">${esc(p.name || 'N/A')}</p><p class="text-[10px]">Stock: ${p.stock || 0}</p><p class="font-bold text-sm">৳ <span id="price_${p.id}">0</span></p></div>`).join('')}
-                        </div>
-                    </div>
-                    <div class="win98-window p-2 flex flex-col">
-                        <h3 class="font-bold mb-2 border-b border-black">Order Summary</h3>
-                        <div class="mb-2"><label class="text-xs">Customer Type:</label><select id="cust_type" onchange="handleCustomerTypeChange()" class="w98-select" ${isC ? 'disabled' : ''}><option value="RETAILER" ${isC && State.currentUser.role === 'RETAILER' ? 'selected' : ''}>Retailer</option><option value="DEALER" ${isC && State.currentUser.role === 'DEALER' ? 'selected' : ''}>Dealer</option><option value="HOCKER" ${isC && State.currentUser.role === 'HOCKER' ? 'selected' : ''}>Hocker</option></select></div>
-                        <div class="mb-2"><label class="text-xs">Customer:</label><select id="cust_id" class="w98-select" ${isC ? 'disabled' : ''}>${isC ? `<option value="${State.currentUser.id}" selected>${esc(State.currentUser.name)}</option>` : ''}</select></div>
-                        <div class="flex-1 win98-inset p-1 max-h-[30vh] overflow-y-auto mb-2"><table class="w-full text-xs text-left"><tbody id="cart-table"><tr><td colspan="3" class="text-center p-4">Cart is empty</td></tr></tbody></table></div>
-                        <div class="text-xs border-t border-black pt-2 space-y-1">
-                            <div class="flex justify-between"><span>Gross Total:</span> <span id="gross_total" class="font-bold">৳ 0.00</span></div>
-                            <div class="flex justify-between"><span>Paid Amount:</span> <input type="number" id="paid_amt" value="0" oninput="calcDue()" class="w98-input" style="width: 100px; text-align: right;"></div>
-                            <div class="flex justify-between font-bold text-sm"><span>Current Due:</span> <span id="final_due">৳ 0.00</span></div>
-                        </div>
-                        <button onclick="submitOrder()" class="w98-btn mt-4 w-full">Submit Order</button>
-                    </div>
-                </div>`;
-            handleCustomerTypeChange(); 
-        }
-        
-        function showQtyPrompt(productId, productName) {
-            openModal('Enter Quantity', `
-                <div class="mb-4">
-                    <p class="mb-2">Product: <strong>${esc(productName)}</strong></p>
-                    <label class="block mb-1">Quantity:</label>
-                    <input type="number" id="qty_input" value="1" min="1" class="w98-input" autofocus>
-                </div>
-                <div class="flex justify-end space-x-2 mt-4">
-                    <button onclick="closeModal()" class="w98-btn">Cancel</button>
-                    <button onclick="confirmQty('${productId}')" class="w98-btn">OK</button>
-                </div>
-            `);
-            setTimeout(() => {
-                const input = document.getElementById('qty_input');
-                if(input) {
-                    input.focus();
-                    input.select();
-                    input.addEventListener('keypress', function(e) {
-                        if (e.key === 'Enter') {
-                            e.preventDefault();
-                            confirmQty(productId);
-                        }
-                    });
-                }
-            }, 100);
-        }
-
-        function confirmQty(productId) {
-            const qty = parseInt(document.getElementById('qty_input').value) || 1;
-            if (qty > 0) {
-                addToCart(productId, qty);
-            }
-            closeModal();
-        }
-
+        function renderOrderEntry() { State.cart = []; const isC = State.currentUser.role !== 'ADMIN' && State.currentUser.role !== 'SALES MAN'; document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-1 lg:grid-cols-3 gap-2"><div class="lg:col-span-2 win98-window p-2"><h3 class="font-bold mb-2">Select Products (Click to add)</h3><div class="win98-inset p-2 grid grid-cols-2 md:grid-cols-3 gap-2 max-h-[60vh] overflow-y-auto">${State.products.map(p => `<div onclick="showQtyPrompt('${p.id}', '${esc(p.name).replace(/'/g, "\\'")}')" class="win98-outset p-2 cursor-pointer text-center"><img src="${p.image || 'https://via.placeholder.com/80'}" class="w-full h-20 mb-1"><p class="font-bold text-xs truncate">${esc(p.name || 'N/A')}</p><p class="text-[10px]">Stock: ${p.stock || 0}</p><p class="font-bold text-sm">৳ <span id="price_${p.id}">0</span></p></div>`).join('')}</div></div><div class="win98-window p-2 flex flex-col"><h3 class="font-bold mb-2 border-b border-black">Order Summary</h3><div class="mb-2"><label class="text-xs">Customer Type:</label><select id="cust_type" onchange="handleCustomerTypeChange()" class="w98-select" ${isC ? 'disabled' : ''}><option value="RETAILER" ${isC && State.currentUser.role === 'RETAILER' ? 'selected' : ''}>Retailer</option><option value="DEALER" ${isC && State.currentUser.role === 'DEALER' ? 'selected' : ''}>Dealer</option><option value="HOCKER" ${isC && State.currentUser.role === 'HOCKER' ? 'selected' : ''}>Hocker</option></select></div><div class="mb-2"><label class="text-xs">Customer:</label><select id="cust_id" class="w98-select" ${isC ? 'disabled' : ''}>${isC ? `<option value="${State.currentUser.id}" selected>${esc(State.currentUser.name)}</option>` : ''}</select></div><div class="flex-1 win98-inset p-1 max-h-[30vh] overflow-y-auto mb-2"><table class="w-full text-xs text-left"><tbody id="cart-table"><tr><td colspan="3" class="text-center p-4">Cart is empty</td></tr></tbody></table></div><div class="text-xs border-t border-black pt-2 space-y-1"><div class="flex justify-between"><span>Gross Total:</span> <span id="gross_total" class="font-bold">৳ 0.00</span></div><div class="flex justify-between"><span>Paid Amount:</span> <input type="number" id="paid_amt" value="0" oninput="calcDue()" class="w98-input" style="width: 100px; text-align: right;"></div><div class="flex justify-between font-bold text-sm"><span>Current Due:</span> <span id="final_due">৳ 0.00</span></div></div><button onclick="submitOrder()" class="w98-btn mt-4 w-full">Submit Order</button></div></div>`; handleCustomerTypeChange(); }
+        function showQtyPrompt(productId, productName) { openModal('Enter Quantity', `<div class="mb-4"><p class="mb-2">Product: <strong>${esc(productName)}</strong></p><label class="block mb-1">Quantity:</label><input type="number" id="qty_input" value="1" min="1" class="w98-input" autofocus></div><div class="flex justify-end space-x-2 mt-4"><button onclick="closeModal()" class="w98-btn">Cancel</button><button onclick="confirmQty('${productId}')" class="w98-btn">OK</button></div>`); setTimeout(() => { const input = document.getElementById('qty_input'); if(input) { input.focus(); input.select(); input.addEventListener('keypress', function(e) { if (e.key === 'Enter') { e.preventDefault(); confirmQty(productId); } }); } }, 100); }
+        function confirmQty(productId) { const qty = parseInt(document.getElementById('qty_input').value) || 1; if (qty > 0) { addToCart(productId, qty); } closeModal(); }
         function handleCustomerTypeChange() { const t = document.getElementById('cust_type').value; const isC = State.currentUser.role !== 'ADMIN' && State.currentUser.role !== 'SALES MAN'; if (isC) return; const fC = State.users.filter(u => u.role === t); const cS = document.getElementById('cust_id'); cS.innerHTML = fC.length ? fC.map(c => `<option value="${c.id}">${esc(c.name || 'N/A')} - ${esc(c.shopName || c.mobile || 'N/A')}</option>`).join('') : '<option value="">No customers found</option>'; updatePrices(); }
         function updatePrices() { const t = document.getElementById('cust_type').value; State.products.forEach(p => { let pr = p.mrp; if(t === 'RETAILER') pr = p.rPrice; if(t === 'DEALER') pr = p.dPrice; if(t === 'HOCKER') pr = p.hPrice; const el = document.getElementById(`price_${p.id}`); if(el) el.innerText = pr || 0; }); renderCart(); }
         function getActivePrice(p) { const t = document.getElementById('cust_type').value; if(t === 'RETAILER') return p.rPrice || 0; if(t === 'DEALER') return p.dPrice || 0; if(t === 'HOCKER') return p.hPrice || 0; return p.mrp || 0; }
-        function addToCart(id, qty = 1) { 
-            const p = State.products.find(x => x.id === id); 
-            if(!p) return;
-            const e = State.cart.find(i => i.id === id); 
-            if(e) e.qty += qty; 
-            else State.cart.push({ id: id, name: p.name, price: getActivePrice(p), qty: qty, mrp: p.mrp || 0 }); 
-            renderCart(); calcDue(); 
-        }
+        function addToCart(id, qty = 1) { const p = State.products.find(x => x.id === id); if(!p) return; const e = State.cart.find(i => i.id === id); if(e) e.qty += qty; else State.cart.push({ id: id, name: p.name, price: getActivePrice(p), qty: qty, mrp: p.mrp || 0 }); renderCart(); calcDue(); }
         function changeQty(id, a) { let i = State.cart.find(x => x.id === id); if(i) { if(a === 'inc') i.qty++; if(a === 'dec') i.qty--; if(i.qty <= 0) State.cart = State.cart.filter(x => x.id !== id); } renderCart(); calcDue(); }
         function renderCart() { const cT = document.getElementById('cart-table'); if(!cT) return; if(State.cart.length === 0) cT.innerHTML = `<tr><td colspan="3" class="text-center p-4">Cart is empty</td></tr>`; else cT.innerHTML = State.cart.map(i => `<tr class="border-b border-gray-400"><td class="py-1">${esc(i.name || 'N/A')}</td><td class="py-1 text-center"><button onclick="changeQty('${i.id}', 'dec')" class="w98-btn" style="padding: 0 4px; min-width: 0;">-</button> ${i.qty || 0} <button onclick="changeQty('${i.id}', 'inc')" class="w98-btn" style="padding: 0 4px; min-width: 0;">+</button></td><td class="py-1 text-right">৳${(i.qty || 0) * (i.price || 0)}</td></tr>`).join(''); let g = State.cart.reduce((s, i) => s + ((i.qty || 0) * (i.price || 0)), 0); document.getElementById('gross_total').innerText = `৳ ${g.toFixed(2)}`; }
         function calcDue() { let g = State.cart.reduce((s, i) => s + ((i.qty || 0) * (i.price || 0)), 0); let p = parseFloat(document.getElementById('paid_amt').value) || 0; document.getElementById('final_due').innerText = `৳ ${(g - p).toFixed(2)}`; }
         function generateInvoiceNo() { const n = new Date(); const y = n.getFullYear(); const m = String(n.getMonth() + 1).padStart(2, '0'); const p = `RFP${y}${m}`; const mO = State.orders.filter(o => o.invoiceNo && o.invoiceNo.startsWith(p)); let mS = 0; mO.forEach(o => { const s = parseInt(o.invoiceNo.slice(-2)); if (s > mS) mS = s; }); return `${p}${String(mS + 1).padStart(2, '0')}`; }
-        function submitOrder() {
-            if(State.cart.length === 0) return alert('Cart is empty!');
-            const cId = document.getElementById('cust_id').value; const c = State.users.find(u => u.id === cId); if(!c) return alert('Please select a customer!');
-            const g = State.cart.reduce((s, i) => s + ((i.qty || 0) * (i.price || 0)), 0); const p = parseFloat(document.getElementById('paid_amt').value) || 0; const d = g - p;
-            const oD = { 
-                invoiceNo: generateInvoiceNo(), 
-                customerId: cId, customerName: c.name || 'N/A', customerShopName: c.shopName || 'N/A', 
-                customerMobile: c.mobile || 'N/A', customerAddress: c.address || 'N/A', 
-                customerType: document.getElementById('cust_type').value, items: State.cart, 
-                grossTotal: g, paid: p, due: d, orderDate: new Date().toISOString(), status: 'Pending',
-                entryBy: State.currentUser.userCode || State.currentUser.name || 'N/A'
-            };
-            db.ref('orders').push(oD).then(() => { const nD = (c.due || 0) + d; db.ref('users/' + cId).update({ due: nD }); alert('Order Saved! Invoice No: ' + oD.invoiceNo); renderPage('invoices'); });
-        }
+        function submitOrder() { if(State.cart.length === 0) return alert('Cart is empty!'); const cId = document.getElementById('cust_id').value; const c = State.users.find(u => u.id === cId); if(!c) return alert('Please select a customer!'); const g = State.cart.reduce((s, i) => s + ((i.qty || 0) * (i.price || 0)), 0); const p = parseFloat(document.getElementById('paid_amt').value) || 0; const d = g - p; const oD = { invoiceNo: generateInvoiceNo(), customerId: cId, customerName: c.name || 'N/A', customerShopName: c.shopName || 'N/A', customerMobile: c.mobile || 'N/A', customerAddress: c.address || 'N/A', customerType: document.getElementById('cust_type').value, items: State.cart, grossTotal: g, paid: p, due: d, orderDate: new Date().toISOString(), status: 'Pending', entryBy: State.currentUser.userCode || State.currentUser.name || 'N/A' }; db.ref('orders').push(oD).then(() => { const nD = (c.due || 0) + d; db.ref('users/' + cId).update({ due: nD }); alert('Order Saved! Invoice No: ' + oD.invoiceNo); renderPage('invoices'); }); }
 
         function renderInvoices() {
             const iA = ['ADMIN', 'SALES MAN'].includes(State.currentUser.role); 
-            let oS = State.orders; 
-            if (!iA) oS = State.orders.filter(o => o.customerId === State.currentUser.id);
+            let oS = State.orders; if (!iA) oS = State.orders.filter(o => o.customerId === State.currentUser.id);
             const sC = (s) => `status-${s ? s.toLowerCase() : 'pending'}`;
-            
             let rows = '';
             if (oS.length > 0) {
-                // MAP ALL RECORDS SECURELY
                 rows = oS.map(o => {
-                    return `
-                    <tr>
-                        <td>${esc(o.invoiceNo || 'N/A')}</td>
-                        <td>${safeDate(o.orderDate)}</td>
-                        ${iA ? `<td>${esc(o.customerName || 'N/A')}</td>` : ''}
-                        <td>৳${o.grossTotal || 0}</td>
-                        <td>৳${o.due || 0}</td>
-                        <td class="text-center">
-                            ${iA ? `<select onchange="updateStatus('${o.id}', this.value)" class="w98-select text-xs"><option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option><option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option><option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option><option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option></select>` : `<span class="status-badge ${sC(o.status)}">${esc(o.status || 'Pending')}</span>`}
-                        </td>
-                        <td class="text-center whitespace-nowrap">
-                            <button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button>
-                            ${iA ? ` <button onclick="processReturn('${o.id}')" class="w98-btn" style="padding: 2px 6px;">Return</button>` : ''}
-                            ${State.currentUser.role === 'ADMIN' ? ` <button onclick="deleteOrder('${o.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>` : ''}
-                        </td>
-                    </tr>`;
-                }).join('');
-            } else {
-                rows = `<tr><td colspan="7" class="text-center p-4">No orders found.</td></tr>`;
-            }
+                    // Logic: Show 'Delivery' button if Pending or Shipped. 
+                    // Once Delivered, no Return or Delete is possible.
+                    let actionBtns = `<button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button>`;
+                    if (iA && (o.status === 'Pending' || o.status === 'Shipped')) {
+                        actionBtns += ` <button onclick="processReturn('${o.id}')" class="w98-btn" style="padding: 2px 6px;">Delivery</button>`;
+                    }
+                    if (State.currentUser.role === 'ADMIN' && o.status !== 'Delivered') {
+                        actionBtns += ` <button onclick="deleteOrder('${o.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>`;
+                    }
 
-            document.getElementById('main-content').innerHTML = `
-                <div class="win98-window p-2">
-                    <h3 class="font-bold mb-2">Order History</h3>
-                    <div class="win98-inset p-1 overflow-x-auto">
-                        <table class="w98-table text-xs">
-                            <thead>
-                                <tr>
-                                    <th>Invoice No</th><th>Date</th>${iA ? '<th>Customer</th>' : ''}<th>Total</th><th>Due</th><th class="text-center">Status</th><th class="text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>${rows}</tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
+                    return `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${safeDate(o.orderDate)}</td>${iA ? `<td>${esc(o.customerName || 'N/A')}</td>` : ''}<td>৳${o.grossTotal || 0}</td><td>৳${o.due || 0}</td><td class="text-center">${iA ? `<select onchange="updateStatus('${o.id}', this.value)" class="w98-select text-xs" ${o.status === 'Delivered' ? 'disabled' : ''}><option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option><option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option><option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option><option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option></select>` : `<span class="status-badge ${sC(o.status)}">${esc(o.status || 'Pending')}</span>`}</td><td class="text-center whitespace-nowrap">${actionBtns}</td></tr>`;
+                }).join('');
+            } else { rows = `<tr><td colspan="7" class="text-center p-4">No orders found.</td></tr>`; }
+            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><h3 class="font-bold mb-2">Order History</h3><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Invoice No</th><th>Date</th>${iA ? '<th>Customer</th>' : ''}<th>Total</th><th>Due</th><th class="text-center">Status</th><th class="text-center">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
         }
         function updateStatus(id, s) { db.ref('orders/' + id).update({ status: s }); alert(`Status updated to: ${s}`); }
+        
+        // Delivery & Return Adjustment Process
         function processReturn(id) {
             const o = State.orders.find(x => x.id === id); if(!o) return alert('Order not found!');
-            const items = toArray(o.items); // Ensure array
+            const items = toArray(o.items);
             const iH = items.map((i, idx) => `<tr><td>${esc(i.name || 'N/A')}</td><td class="text-center">${i.qty || 0}</td><td class="text-center"><input type="number" id="ret_qty_${idx}" min="0" max="${i.qty || 0}" value="0" class="w98-input" style="width: 60px; text-align: center;"></td></tr>`).join('');
-            openModal('Process Return / Adjustment', `<form onsubmit="submitReturn(event, '${id}')"><p class="text-xs mb-2">Enter returned quantity for each item.</p><div class="win98-inset p-1 mb-2"><table class="w98-table text-xs"><thead><tr><th>Product</th><th class="text-center">Ordered</th><th class="text-center">Return Qty</th></tr></thead><tbody>${iH}</tbody></table></div><div class="flex justify-end"><button type="submit" class="w98-btn">Confirm Return</button></div></form>`);
+            openModal('Delivery & Return Adjustment', `<form onsubmit="submitReturn(event, '${id}')"><p class="text-xs mb-2">Enter returned quantity (if any). The remaining quantity will be marked as Delivered.</p><div class="win98-inset p-1 mb-2"><table class="w98-table text-xs"><thead><tr><th>Product</th><th class="text-center">Ordered Qty</th><th class="text-center">Return Qty</th></tr></thead><tbody>${iH}</tbody></table></div><div class="flex justify-end"><button type="submit" class="w98-btn">Confirm Delivery</button></div></form>`);
         }
+        
         function submitReturn(e, id) {
             e.preventDefault(); const o = State.orders.find(x => x.id === id); if(!o) return;
             const items = toArray(o.items);
-            let nG = 0, hR = false; const uI = items.map((i, idx) => { const rQ = parseInt(document.getElementById(`ret_qty_${idx}`).value) || 0; if(rQ > 0) hR = true; if(rQ > (i.qty || 0)) { alert(`Return quantity cannot exceed ordered quantity for ${i.name || 'N/A'}`); throw new Error('Invalid'); } const nQ = (i.qty || 0) - rQ; nG += (nQ * (i.price || 0)); return { ...i, qty: nQ }; });
-            if(!hR) return alert('No return quantity entered.');
-            const rA = (o.grossTotal || 0) - nG; const nD = (o.due || 0) - rA;
+            let nG = 0; 
+            const uI = items.map((i, idx) => { 
+                const rQ = parseInt(document.getElementById(`ret_qty_${idx}`).value) || 0; 
+                if(rQ > (i.qty || 0)) { alert(`Return quantity cannot exceed ordered quantity for ${i.name || 'N/A'}`); throw new Error('Invalid'); } 
+                const nQ = (i.qty || 0) - rQ; // Delivered Qty = Order Qty - Return Qty
+                nG += (nQ * (i.price || 0)); 
+                return { ...i, qty: nQ }; // Update item to delivered qty
+            });
+
+            const rA = (o.grossTotal || 0) - nG; // Reduced Amount
+            const nD = (o.due || 0) - rA; // New Due
+
             if (o.customerId) { const c = State.users.find(u => u.id === o.customerId); if (c) { const nCD = (c.due || 0) - rA; db.ref('users/' + c.id).update({ due: nCD }); } }
-            db.ref('orders/' + id).update({ items: uI, grossTotal: nG, due: nD, status: 'Returned' }).then(() => { alert('Return processed! Amount adjusted.'); closeModal(); renderPage('invoices'); });
+
+            db.ref('orders/' + id).update({ items: uI, grossTotal: nG, due: nD, status: 'Delivered' }).then(() => { 
+                alert('Delivery completed successfully! Order marked as Delivered.'); 
+                closeModal(); renderPage('invoices'); 
+            });
         }
+        
         function deleteOrder(id) { const o = State.orders.find(x => x.id === id); if (!o) return alert('Order not found!'); if (confirm(`Delete Invoice ${o.invoiceNo || ''}?`)) { if (o.customerId && o.due) { const c = State.users.find(u => u.id === o.customerId); if (c) { const nD = (c.due || 0) - o.due; db.ref('users/' + c.id).update({ due: nD }); } } db.ref('orders/' + id).remove().then(() => { alert('Order deleted!'); if (State.currentView === 'invoice_view') renderPage('invoices'); }); } }
         function toBn(n) { const b = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']; return String(n).replace(/[0-9]/g, d => b[d]); }
-        function formatBnDate(dateStr) {
-            try {
-                const d = new Date(dateStr);
-                if (isNaN(d.getTime())) return 'N/A';
-                const months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
-                return `${toBn(d.getDate())} ${months[d.getMonth()]}, ${toBn(d.getFullYear())}`;
-            } catch(e) { return 'N/A'; }
-        }
+        function formatBnDate(dateStr) { try { const d = new Date(dateStr); if (isNaN(d.getTime())) return 'N/A'; const months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর']; return `${toBn(d.getDate())} ${months[d.getMonth()]}, ${toBn(d.getFullYear())}`; } catch(e) { return 'N/A'; } }
         function translateStatus(s) { const m = { 'Pending': 'পেন্ডিং', 'Shipped': 'প্রেরিত', 'Delivered': 'ডেলিভার্ড', 'Cancelled': 'বাতিল', 'Returned': 'রিটার্ন/এডজাস্টেড' }; return m[s] || 'পেন্ডিং'; }
+        
         function viewInvoice(id) {
             State.currentView = 'invoice_view'; const o = State.orders.find(x => x.id === id); if(!o) return alert('Invoice not found!');
             const gC = (t) => { 
-                const items = toArray(o.items); // Ensure array
+                const items = toArray(o.items);
                 const iH = items.map((i, idx) => `<tr><td>${toBn(idx + 1)}</td><td>${esc(i.name || 'N/A')}</td><td>${toBn((i.mrp || 0).toFixed(2))}</td><td>${toBn(i.qty || 0)}</td><td>${toBn((i.price || 0).toFixed(2))}</td><td>${toBn(((i.qty || 0) * (i.price || 0)).toFixed(2))}</td></tr>`).join(''); 
-                return `
-                <div class="invoice-box">
-                    <div class="copy-type">${t}</div>
-                    <div class="inv-header">
-                        <div class="logo-section">
-                            <img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="Logo">
-                        </div>
-                        <div class="company-info">
-                            <h1>Rafi Food Product</h1>
-                            <p>প্রিমিয়াম কোয়ালিটি বেকারি ও ফুড আইটেম</p>
-                            <p>ঠিকানা: Mosjid para Chuadanga, Chuadanga sadar-7200</p>
-                            <p>ফোন: +৮৮০ 1756144900</p>
-                            <p>ইমেইল: rafifoodproducts@gmail.com</p>
-                        </div>
-                    </div>
-
-                    <table class="meta-table">
-                        <tr>
-                            <td>
-                                <strong>গ্রাহকের বিবরণ:</strong><br>
-                                দোকানের নাম: ${esc(o.customerShopName || 'N/A')}<br>
-                                নাম: ${esc(o.customerName || 'N/A')}<br>
-                                ঠিকানা: ${esc(o.customerAddress || 'N/A')}<br>
-                                মোবাইল: ${toBn(o.customerMobile || 'N/A')}
-                            </td>
-                            <td style="text-align: right;">
-                                <strong>ইনভয়েস নম্বর:</strong> ${esc(o.invoiceNo || 'N/A')}<br>
-                                <strong>তারিখ:</strong> ${formatBnDate(o.orderDate)}<br>
-                                <strong>স্ট্যাটাস:</strong> ${translateStatus(o.status)}<br>
-                                <strong>অর্ডার গ্রহণকারী:</strong> ${esc(o.entryBy || 'N/A')}
-                            </td>
-                        </tr>
-                    </table>
-
-                    <table class="details-table">
-                        <thead>
-                            <tr>
-                                <th>SL</th>
-                                <th>পণ্যের বিবরণ</th>
-                                <th>MRP (টাকা)</th>
-                                <th>পরিমাণ</th>
-                                <th>বিক্রয় মূল্য (টাকা)</th>
-                                <th>মোট (টাকা)</th>
-                            </tr>
-                        </thead>
-                        <tbody>${iH}</tbody>
-                    </table>
-
-                    <div class="totals-section">
-                        <table class="totals-table">
-                            <tr>
-                                <td>সাব-টোটাল:</td>
-                                <td>${toBn((o.grossTotal || 0).toFixed(2))} ৳</td>
-                            </tr>
-                            <tr>
-                                <td>পরিশোধিত:</td>
-                                <td>${toBn((o.paid || 0).toFixed(2))} ৳</td>
-                            </tr>
-                            <tr>
-                                <td>বকেয়া:</td>
-                                <td>${toBn((o.due || 0).toFixed(2))} ৳</td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <div class="signatures">
-                        <div class="signature-box">গ্রাহকের স্বাক্ষর</div>
-                        <div class="signature-box">অনুমোদিত স্বাক্ষর</div>
-                    </div>
-
-                    <div class="inv-footer">
-                        <p>আমাদের সাথে থাকার জন্য ধন্যবাদ! পণ্য ক্রয়ের জন্য আবার আমন্ত্রণ জানাচ্ছি।</p>
-                        <p><strong>RafiFood Product</strong></p>
-                    </div>
-                </div>`; 
+                return `<div class="invoice-box"><div class="copy-type">${t}</div><div class="inv-header"><div class="logo-section"><img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="Logo"></div><div class="company-info"><h1>Rafi Food Product</h1><p>প্রিমিয়াম কোয়ালিটি বেকারি ও ফুড আইটেম</p><p>ঠিকানা: Mosjid para Chuadanga, Chuadanga sadar-7200</p><p>ফোন: +৮৮০ 1756144900</p><p>ইমেইল: rafifoodproducts@gmail.com</p></div></div><table class="meta-table"><tr><td><strong>গ্রাহকের বিবরণ:</strong><br>দোকানের নাম: ${esc(o.customerShopName || 'N/A')}<br>নাম: ${esc(o.customerName || 'N/A')}<br>ঠিকানা: ${esc(o.customerAddress || 'N/A')}<br>মোবাইল: ${toBn(o.customerMobile || 'N/A')}</td><td style="text-align: right;"><strong>ইনভয়েস নম্বর:</strong> ${esc(o.invoiceNo || 'N/A')}<br><strong>তারিখ:</strong> ${formatBnDate(o.orderDate)}<br><strong>স্ট্যাটাস:</strong> ${translateStatus(o.status)}<br><strong>অর্ডার গ্রহণকারী:</strong> ${esc(o.entryBy || 'N/A')}</td></tr></table><table class="details-table"><thead><tr><th>SL</th><th>পণ্যের বিবরণ</th><th>MRP (টাকা)</th><th>পরিমাণ</th><th>বিক্রয় মূল্য (টাকা)</th><th>মোট (টাকা)</th></tr></thead><tbody>${iH}</tbody></table><div class="totals-section"><table class="totals-table"><tr><td>সাব-টোটাল:</td><td>${toBn((o.grossTotal || 0).toFixed(2))} ৳</td></tr><tr><td>পরিশোধিত:</td><td>${toBn((o.paid || 0).toFixed(2))} ৳</td></tr><tr><td>বকেয়া:</td><td>${toBn((o.due || 0).toFixed(2))} ৳</td></tr></table></div><div class="signatures"><div class="signature-box">গ্রাহকের স্বাক্ষর</div><div class="signature-box">অনুমোদিত স্বাক্ষর</div></div><div class="inv-footer"><p>আমাদের সাথে থাকার জন্য ধন্যবাদ! পণ্য ক্রয়ের জন্য আবার আমন্ত্রণ জানাচ্ছি।</p><p><strong>RafiFood Product</strong></p></div></div>`; 
             };
             document.getElementById('main-content').innerHTML = `<div id="print-area"><span class="back-btn no-print" onclick="renderPage('invoices')"><< Back to Orders</span>${gC("Customer Copy")}<div class="page-break"></div>${gC("Office Copy")}<button class="print-btn no-print" onclick="window.print()">ইনভয়েস প্রিন্ট করুন / PDF সেভ করুন</button></div>`;
             window.scrollTo(0, 0);
@@ -940,23 +414,52 @@
 
         function renderReports() {
             const tS = State.orders.reduce((s, o) => s + (o.grossTotal || 0), 0); const tC = State.orders.reduce((s, o) => s + (o.paid || 0), 0); const tD = State.users.filter(u => u.role !== 'ADMIN' && u.role !== 'SALES MAN').reduce((s, u) => s + (u.due || 0), 0);
-            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4"><div class="win98-outset p-2"><p class="text-xs">Total Sales</p><p class="text-lg font-bold">৳ ${tS.toFixed(2)}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Collection</p><p class="text-lg font-bold">৳ ${tC.toFixed(2)}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Due</p><p class="text-lg font-bold">৳ ${tD.toFixed(2)}</p></div></div><div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">Detailed Sales Report</h3><input type="text" id="report-search" placeholder="Search..." oninput="filterReports()" class="w98-input" style="max-width: 200px;"></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Date</th><th>Invoice</th><th>Customer</th><th>Sales</th><th>Collected</th><th>Due</th><th>Status</th><th class="text-center">View</th></tr></thead><tbody id="report-tbody"></tbody><tfoot id="report-tfoot" class="font-bold"></tfoot></table></div></div>`;
+            const shops = [...new Set(State.orders.filter(o => o.status === 'Delivered').map(o => o.customerShopName).filter(Boolean))];
+            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4"><div class="win98-outset p-2"><p class="text-xs">Total Sales</p><p class="text-lg font-bold">৳ ${tS.toFixed(2)}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Collection</p><p class="text-lg font-bold">৳ ${tC.toFixed(2)}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Due</p><p class="text-lg font-bold">৳ ${tD.toFixed(2)}</p></div></div><div class="win98-window p-2"><div class="flex flex-col md:flex-row justify-between md:items-center mb-2 gap-2"><h3 class="font-bold">Detailed Sales Report (Delivered Only)</h3><div class="flex flex-wrap gap-2 items-center"><select id="report-shop-filter" onchange="filterReports()" class="w98-select" style="max-width: 150px;"><option value="">All Shops</option>${shops.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('')}</select><input type="text" id="report-search" placeholder="Search..." oninput="filterReports()" class="w98-input" style="max-width: 150px;"><button onclick="printReport()" class="w98-btn" style="padding: 2px 6px;">Print</button><button onclick="exportToExcel()" class="w98-btn" style="padding: 2px 6px;">Excel</button></div></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Date</th><th>Invoice</th><th>Customer</th><th>Sales</th><th>Collected</th><th>Due</th><th class="text-center">View</th></tr></thead><tbody id="report-tbody"></tbody><tfoot id="report-tfoot" class="font-bold"></tfoot></table></div></div>`;
             filterReports();
         }
+
         function filterReports() {
-            const t = (document.getElementById('report-search')?.value || '').toLowerCase(); const fO = State.orders.filter(o => (o.customerName || '').toLowerCase().includes(t) || (o.customerShopName || '').toLowerCase().includes(t) || (o.customerMobile || '').toLowerCase().includes(t));
-            let gS = 0, gC = 0, gD = 0;
-            let rows = '';
-            if (fO.length > 0) {
-                rows = fO.map(o => { 
-                    gS += (o.grossTotal || 0); gC += (o.paid || 0); gD += (o.due || 0); 
-                    return `<tr><td>${safeDate(o.orderDate)}</td><td>${esc(o.invoiceNo || 'N/A')}</td><td>${esc(o.customerName || 'N/A')}<br><span class="text-[10px]">${esc(o.customerShopName || '')}</span></td><td>৳${(o.grossTotal || 0).toFixed(2)}</td><td>৳${(o.paid || 0).toFixed(2)}</td><td>৳${(o.due || 0).toFixed(2)}</td><td><span class="status-badge status-${o.status ? o.status.toLowerCase() : 'pending'}">${esc(o.status || 'Pending')}</span></td><td class="text-center"><button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button></td></tr>`; 
-                }).join('');
-            } else {
-                rows = `<tr><td colspan="8" class="text-center p-4">No records found.</td></tr>`;
-            }
+            const shopFilter = document.getElementById('report-shop-filter')?.value || '';
+            const t = (document.getElementById('report-search')?.value || '').toLowerCase();
+            const fO = State.orders.filter(o => { if (o.status !== 'Delivered') return false; const matchShop = shopFilter ? (o.customerShopName === shopFilter) : true; const matchText = (o.customerName || '').toLowerCase().includes(t) || (o.customerShopName || '').toLowerCase().includes(t) || (o.customerMobile || '').toLowerCase().includes(t); return matchShop && matchText; });
+            let gS = 0, gC = 0, gD = 0; let rows = '';
+            if (fO.length > 0) { rows = fO.map(o => { gS += (o.grossTotal || 0); gC += (o.paid || 0); gD += (o.due || 0); return `<tr><td>${safeDate(o.orderDate)}</td><td>${esc(o.invoiceNo || 'N/A')}</td><td>${esc(o.customerName || 'N/A')}<br><span class="text-[10px]">${esc(o.customerShopName || '')}</span></td><td>৳${(o.grossTotal || 0).toFixed(2)}</td><td>৳${(o.paid || 0).toFixed(2)}</td><td>৳${(o.due || 0).toFixed(2)}</td><td class="text-center"><button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button></td></tr>`; }).join(''); } else { rows = `<tr><td colspan="7" class="text-center p-4">No delivered records found.</td></tr>`; }
             document.getElementById('report-tbody').innerHTML = rows;
-            document.getElementById('report-tfoot').innerHTML = `<tr><td colspan="3" class="text-right">GRAND TOTAL:</td><td>৳ ${gS.toFixed(2)}</td><td>৳ ${gC.toFixed(2)}</td><td>৳ ${gD.toFixed(2)}</td><td colspan="2"></td></tr>`;
+            document.getElementById('report-tfoot').innerHTML = `<tr><td colspan="3" class="text-right">GRAND TOTAL:</td><td>৳ ${gS.toFixed(2)}</td><td>৳ ${gC.toFixed(2)}</td><td>৳ ${gD.toFixed(2)}</td><td></td></tr>`;
+        }
+
+        function printReport() {
+            const shopFilter = document.getElementById('report-shop-filter')?.value || 'All Shops';
+            const search = (document.getElementById('report-search')?.value || '').toLowerCase();
+            const fO = State.orders.filter(o => { if (o.status !== 'Delivered') return false; const matchShop = shopFilter !== 'All Shops' ? (o.customerShopName === shopFilter) : true; const matchText = (o.customerName || '').toLowerCase().includes(search) || (o.customerShopName || '').toLowerCase().includes(search) || (o.customerMobile || '').toLowerCase().includes(search); return matchShop && matchText; });
+            let gS = 0, gC = 0, gD = 0;
+            let rows = fO.map(o => { gS += (o.grossTotal || 0); gC += (o.paid || 0); gD += (o.due || 0); return `<tr><td>${safeDate(o.orderDate)}</td><td>${esc(o.invoiceNo || 'N/A')}</td><td>${esc(o.customerName || 'N/A')}</td><td style="text-align:right;">${(o.grossTotal || 0).toFixed(2)}</td><td style="text-align:right;">${(o.paid || 0).toFixed(2)}</td><td style="text-align:right;">${(o.due || 0).toFixed(2)}</td></tr>`; }).join('');
+
+            const html = `<html><head><title>Print Report</title><style>body { font-family: Tahoma, sans-serif; margin: 20px; }h2 { text-align: center; margin-bottom: 5px; }p { text-align: center; margin-top: 0; }table { width: 100%; border-collapse: collapse; margin-top: 20px; }th, td { border: 1px solid #000; padding: 5px; font-size: 12px; text-align: left; }th { background: #e0e0e0; }tfoot td { border-top: 2px solid #000; font-weight: bold; background: #f0f0f0; text-align: right; }.right { text-align: right; }</style></head><body><h2>RAFI FOOD - Sales Report (Delivered Only)</h2><p>Shop: ${esc(shopFilter)}</p><table><thead><tr><th>Date</th><th>Invoice</th><th>Customer</th><th class="right">Sales</th><th class="right">Collected</th><th class="right">Due</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td colspan="3" class="right">GRAND TOTAL:</td><td>${gS.toFixed(2)}</td><td>${gC.toFixed(2)}</td><td>${gD.toFixed(2)}</td></tr></tfoot></table></body></html>`;
+            
+            const iframe = document.createElement('iframe');
+            iframe.style.position = "absolute"; iframe.style.width = "0px"; iframe.style.height = "0px"; iframe.style.border = "none";
+            document.body.appendChild(iframe);
+            iframe.contentWindow.document.open();
+            iframe.contentWindow.document.write(html);
+            iframe.contentWindow.document.close();
+            setTimeout(() => { iframe.contentWindow.focus(); iframe.contentWindow.print(); setTimeout(() => { if (iframe.parentNode) document.body.removeChild(iframe); }, 1000); }, 500);
+        }
+
+        function exportToExcel() {
+            const shopFilter = document.getElementById('report-shop-filter')?.value || 'All Shops';
+            const search = (document.getElementById('report-search')?.value || '').toLowerCase();
+            const fO = State.orders.filter(o => { if (o.status !== 'Delivered') return false; const matchShop = shopFilter !== 'All Shops' ? (o.customerShopName === shopFilter) : true; const matchText = (o.customerName || '').toLowerCase().includes(search) || (o.customerShopName || '').toLowerCase().includes(search) || (o.customerMobile || '').toLowerCase().includes(search); return matchShop && matchText; });
+
+            let csv = "Date,Invoice,Customer,Shop Name,Sales,Collected,Due\n";
+            fO.forEach(o => { csv += `"${safeDate(o.orderDate)}","${esc(o.invoiceNo || 'N/A')}","${esc(o.customerName || 'N/A')}","${esc(o.customerShopName || 'N/A')}","${(o.grossTotal || 0).toFixed(2)}","${(o.paid || 0).toFixed(2)}","${(o.due || 0).toFixed(2)}"\n`; });
+            
+            const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" }); 
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `Delivered_Sales_Report.csv`;
+            link.click();
         }
     </script>
 </body>
