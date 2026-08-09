@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAFI FOOD - Advanced System</title>
+    <title>RAFI FOOD - VB6/Win98 Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -13,7 +13,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#5C1D24', accent: '#D4AF37', lightbg: '#F9F6F0', darkbg: '#111827', darkcard: '#1f2937' } } } }
         const firebaseConfig = {
             apiKey: "AIzaSyBmogqpXzirZC-aUHZrFMwutSJ5fmbyDXk",
             authDomain: "e-commarcebd.firebaseapp.com",
@@ -29,38 +28,150 @@
     </script>
 
     <style>
+        /* Windows 98 / VB6 Theme Variables */
         :root {
-            --primary-maroon: #5C1D24;
-            --accent-gold: #D4AF37;
-            --light-bg: #F9F6F0;
-            --text-dark: #333333;
-        }
-        body { font-family: 'Inter', sans-serif; }
-        .sidebar-link.active { background-color: var(--primary-maroon); color: var(--accent-gold); }
-        .hidden { display: none !important; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
-        .dark ::-webkit-scrollbar-track { background: #333; }
-        .dark ::-webkit-scrollbar-thumb { background: #555; }
-        .modal-overlay { background: rgba(0,0,0,0.6); }
-        .app-layout { display: flex; width: 100%; min-height: 100vh; }
-        .main-area { flex: 1 1 0%; display: flex; flex-direction: column; }
-
-        .brand-logo {
-            width: 40px; height: 40px; border-radius: 50%; background-color: var(--primary-maroon);
-            border: 2px solid var(--accent-gold); color: var(--accent-gold); display: flex;
-            align-items: center; justify-content: center; font-weight: bold; font-size: 1.5rem;
+            --w98-bg: #C0C0C0;
+            --w98-shadow-dark: #808080;
+            --w98-shadow-darker: #000000;
+            --w98-highlight: #FFFFFF;
+            --w98-title-active: #000080;
+            --w98-title-text: #FFFFFF;
         }
 
-        /* Invoice Specific CSS */
-        .invoice-box { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 0; box-shadow: 0 0 15px rgba(0, 0, 0, 0.15); border: 2px solid #000; color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin-bottom: 40px; }
+        body {
+            font-family: 'Tahoma', 'Verdana', 'MS Sans Serif', sans-serif;
+            background-color: #008080; /* Classic Teal Desktop */
+            font-size: 12px;
+            color: #000;
+        }
+
+        /* Window/Panel Styles */
+        .win98-window {
+            background: var(--w98-bg);
+            border-top: 2px solid var(--w98-highlight);
+            border-left: 2px solid var(--w98-highlight);
+            border-right: 2px solid var(--w98-shadow-darker);
+            border-bottom: 2px solid var(--w98-shadow-darker);
+            box-shadow: inset -1px -1px 0 var(--w98-shadow-dark), inset 1px 1px 0 #DFDFDF;
+        }
+        
+        .win98-titlebar {
+            background: linear-gradient(90deg, #000080 0%, #1084D0 100%);
+            color: var(--w98-title-text);
+            font-weight: bold;
+            padding: 3px 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .win98-inset {
+            background: #FFFFFF;
+            border-top: 2px solid var(--w98-shadow-dark);
+            border-left: 2px solid var(--w98-shadow-dark);
+            border-right: 2px solid var(--w98-highlight);
+            border-bottom: 2px solid var(--w98-highlight);
+            box-shadow: inset 1px 1px 0 var(--w98-shadow-darker);
+        }
+
+        .win98-outset {
+            background: var(--w98-bg);
+            border-top: 2px solid var(--w98-highlight);
+            border-left: 2px solid var(--w98-highlight);
+            border-right: 2px solid var(--w98-shadow-dark);
+            border-bottom: 2px solid var(--w98-shadow-dark);
+            box-shadow: inset -1px -1px 0 var(--w98-shadow-darker), inset 1px 1px 0 #DFDFDF;
+        }
+
+        /* Button Style */
+        .w98-btn {
+            background: var(--w98-bg);
+            border-top: 2px solid var(--w98-highlight);
+            border-left: 2px solid var(--w98-highlight);
+            border-right: 2px solid var(--w98-shadow-dark);
+            border-bottom: 2px solid var(--w98-shadow-dark);
+            box-shadow: inset -1px -1px 0 var(--w98-shadow-darker), inset 1px 1px 0 #DFDFDF;
+            padding: 4px 12px;
+            font-family: 'Tahoma', sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+            color: #000;
+            min-width: 70px;
+        }
+        .w98-btn:active {
+            border-top: 2px solid var(--w98-shadow-dark);
+            border-left: 2px solid var(--w98-shadow-dark);
+            border-right: 2px solid var(--w98-highlight);
+            border-bottom: 2px solid var(--w98-highlight);
+            box-shadow: inset 1px 1px 0 var(--w98-shadow-darker);
+            padding: 5px 11px 3px 13px;
+        }
+
+        /* Input/Select/Textarea Style */
+        .w98-input, .w98-select, .w98-textarea {
+            background: #FFFFFF;
+            border-top: 2px solid var(--w98-shadow-dark);
+            border-left: 2px solid var(--w98-shadow-dark);
+            border-right: 2px solid var(--w98-highlight);
+            border-bottom: 2px solid var(--w98-highlight);
+            box-shadow: inset 1px 1px 0 var(--w98-shadow-darker);
+            padding: 3px;
+            font-family: 'Tahoma', sans-serif;
+            font-size: 12px;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Table Style */
+        .w98-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #FFFFFF;
+            border: 2px solid var(--w98-shadow-darker);
+        }
+        .w98-table th {
+            background: var(--w98-bg);
+            border-bottom: 1px solid var(--w98-shadow-darker);
+            border-right: 1px solid var(--w98-shadow-dark);
+            padding: 4px;
+            text-align: left;
+            font-weight: bold;
+        }
+        .w98-table td {
+            border-bottom: 1px solid var(--w98-shadow-dark);
+            border-right: 1px solid var(--w98-shadow-dark);
+            padding: 4px;
+        }
+
+        /* Scrollbar Retro Style */
+        ::-webkit-scrollbar { width: 16px; height: 16px; }
+        ::-webkit-scrollbar-track { background: #DFDFDF; border: 1px solid var(--w98-shadow-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--w98-bg); border-top: 2px solid var(--w98-highlight); border-left: 2px solid var(--w98-highlight); border-right: 2px solid var(--w98-shadow-darker); border-bottom: 2px solid var(--w98-shadow-darker); }
+        ::-webkit-scrollbar-corner { background: var(--w98-bg); }
+
+        /* Menu Item */
+        .menu-item {
+            padding: 4px 10px;
+            cursor: pointer;
+            color: #000;
+            text-decoration: none;
+            display: block;
+        }
+        .menu-item:hover { background: var(--w98-title-active); color: #FFF; }
+        .menu-item.active { background: var(--w98-title-active); color: #FFF; }
+
+        /* Invoice Specific CSS (Optimized for Print) */
+        .invoice-box { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 0; box-shadow: 0 0 15px rgba(0, 0, 0, 0.15); border: 2px solid #000; color: #000; font-family: 'Courier New', Courier, monospace; margin-bottom: 40px; }
         .copy-header { text-align: center; font-size: 1.2rem; font-weight: bold; color: #000; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 20px; text-transform: uppercase; }
         .page-break { page-break-after: always; }
         
         .invoice-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 20px; }
-        .invoice-header h2 { color: #000; font-size: 1.8rem; margin-bottom: 5px; }
-        .invoice-header p { font-size: 0.9rem; color: #000; }
+        .invoice-header .company-info { display: flex; gap: 10px; align-items: center; max-width: 60%; }
+        .invoice-header .company-logo { width: 75px; height: 75px; min-width: 75px; border: 1px solid #000; object-fit: cover; }
+        .invoice-header .company-text h2 { color: #000; font-size: 1.4rem; margin: 0 0 3px 0; font-weight: bold; line-height: 1.1; }
+        .invoice-header .company-text p { font-size: 0.75rem; color: #000; line-height: 1.2; margin: 0; }
+        
         .invoice-details { text-align: right; }
         .invoice-details h1 { color: #000; font-size: 1.6rem; margin-bottom: 5px; }
         .customer-info { margin-bottom: 25px; background: transparent; padding: 15px; border: 1px solid #000; border-radius: 0; }
@@ -76,128 +187,138 @@
         .total-table { width: 300px; }
         .total-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.95rem; border-bottom: 1px solid #000; color: #000; }
         .total-row.grand-total { font-weight: bold; font-size: 1.1rem; color: #000; border-bottom: 2px solid #000; border-top: 2px solid #000; margin-top: 5px; padding: 10px 0; }
-        
         .signature-area { display: flex; justify-content: space-between; margin-top: 60px; margin-bottom: 20px; }
         .signature-block { width: 45%; text-align: center; }
         .signature-line { border-top: 1px solid #000; margin-bottom: 5px; }
         .signature-text { font-size: 0.9rem; font-weight: bold; color: #000; }
-
         .invoice-footer { text-align: center; border-top: 1px solid #000; padding-top: 15px; font-size: 0.85rem; color: #000; }
-        .print-btn { display: block; width: 100%; background-color: #000; color: #fff; border: none; padding: 12px; font-size: 1rem; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+        .print-btn { display: block; width: 100%; background-color: #000; color: #fff; border: none; padding: 12px; font-size: 1rem; font-weight: bold; border-radius: 0; cursor: pointer; margin-top: 20px; }
         .back-btn { display: inline-block; margin-bottom: 20px; color: #000; font-weight: bold; text-decoration: underline; cursor: pointer; }
-        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
-        .status-pending { background: #FEF3C7; color: #D97706; }
-        .status-shipped { background: #DBEAFE; color: #2563EB; }
-        .status-delivered { background: #D1FAE5; color: #059669; }
-        .status-cancelled { background: #FEE2E2; color: #DC2626; }
-        .status-returned { background: #E0E7FF; color: #4F46E5; }
+        .status-badge { padding: 4px 8px; border-radius: 0; font-size: 0.75rem; font-weight: bold; border: 1px solid #000; }
+        .status-pending { background: #FEF3C7; color: #000; }
+        .status-shipped { background: #DBEAFE; color: #000; }
+        .status-delivered { background: #D1FAE5; color: #000; }
+        .status-cancelled { background: #FEE2E2; color: #000; }
+        .status-returned { background: #E0E7FF; color: #000; }
 
         @media print {
+            @page { size: A4 portrait; margin: 15mm; }
+            body { margin: 0; padding: 0; background: #FFF; }
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
-            #print-area { position: absolute; left: 0; top: 0; width: 100%; }
+            #print-area { position: absolute; left: 0; top: 0; width: 100%; display: flex; flex-direction: column; align-items: center; }
             .no-print { display: none !important; }
-            .invoice-box { box-shadow: none; border: none; margin: 0; padding: 0; border-bottom: 1px dashed #ccc; }
-            
-            /* Force all colors to black and background to transparent/white to save ink */
-            #print-area * {
-                color: #000 !important;
-                background: transparent !important;
-                border-color: #000 !important;
-                box-shadow: none !important;
-                text-shadow: none !important;
-            }
+            .invoice-box { box-shadow: none; border: none; margin: 0; padding: 0; width: 100%; max-width: 100%; border-bottom: 2px dashed #000; }
+            #print-area * { color: #000 !important; background: transparent !important; border-color: #000 !important; box-shadow: none !important; text-shadow: none !important; }
         }
     </style>
 </head>
-<body class="bg-gray-100 dark:bg-darkbg text-gray-900 dark:text-gray-100 transition-colors duration-300">
+<body>
 
     <!-- Login Screen -->
-    <div id="login-screen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-[#722F37] p-4">
-        <div class="bg-white dark:bg-darkcard w-full max-w-md p-8 rounded-xl shadow-2xl">
-            <div class="text-center mb-8">
-                <div class="brand-logo mx-auto mb-3" style="width: 60px; height: 60px; font-size: 2rem;">R</div>
-                <h1 class="text-3xl font-bold text-primary">RAFI FOOD</h1>
-                <p class="text-gray-500 dark:text-gray-400 mt-2">Sales & Distribution Management System</p>
+    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="win98-window w-full max-w-md">
+            <div class="win98-titlebar">
+                <span><i class="fas fa-bread-slice mr-2"></i> RAFI FOOD - Login</span>
+                <div class="flex space-x-1">
+                    <button class="w98-btn" style="padding: 0 5px; min-width: 20px;">_</button>
+                    <button class="w98-btn" style="padding: 0 5px; min-width: 20px;">X</button>
+                </div>
             </div>
-            <form id="login-form" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Username</label>
-                    <input type="text" id="username" class="w-full px-4 py-2 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 focus:ring-2 focus:ring-primary outline-none" placeholder="admin" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Password</label>
-                    <input type="password" id="password" class="w-full px-4 py-2 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 focus:ring-2 focus:ring-primary outline-none" placeholder="admin" required>
-                </div>
-                <button type="submit" class="w-full bg-primary hover:bg-[#722F37] text-white font-bold py-2 rounded-lg transition">Login</button>
-            </form>
+            <div class="p-6">
+                <form id="login-form" class="space-y-4">
+                    <div class="flex justify-center mb-4">
+                        <img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="Logo" class="w-20 h-20 border-2 border-black object-cover">
+                    </div>
+                    <h1 class="text-center text-xl font-bold mb-4">Sales & Distribution Management</h1>
+                    <div>
+                        <label class="block mb-1">Username:</label>
+                        <input type="text" id="username" class="w98-input" placeholder="admin" required>
+                    </div>
+                    <div>
+                        <label class="block mb-1">Password:</label>
+                        <input type="password" id="password" class="w98-input" placeholder="admin" required>
+                    </div>
+                    <div class="flex justify-end space-x-2 mt-4">
+                        <button type="submit" class="w98-btn">Login</button>
+                        <button type="button" class="w98-btn">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <!-- Main App Layout -->
-    <div id="app-screen" class="hidden app-layout">
-        <aside id="sidebar" class="bg-white dark:bg-darkcard w-64 space-y-6 py-7 px-4 fixed inset-y-0 left-0 z-40 transform md:translate-x-0 -translate-x-full transition duration-200 ease-in-out border-r dark:border-gray-700 overflow-y-auto">
-            <div class="flex items-center space-x-2 px-2">
-                <div class="brand-logo">R</div>
-                <div>
-                    <h1 class="text-xl font-bold text-primary dark:text-accent">RAFI FOOD</h1>
-                    <p class="text-[10px] text-gray-500">Distribution System</p>
-                </div>
-            </div>
-            <nav class="space-y-1 text-sm">
-                <a href="#" data-page="dashboard" class="sidebar-link active flex items-center space-x-2 py-2.5 px-4 rounded transition hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-tachometer-alt w-5"></i> <span>Dashboard</span></a>
-                <div class="pt-2 pb-1 px-4 text-[11px] uppercase font-bold text-gray-400">Sales & Distribution</div>
-                <a href="#" data-page="order-entry" class="sidebar-link flex items-center space-x-2 py-2.5 px-4 rounded transition hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-cart-plus w-5"></i> <span>Order Entry</span></a>
-                <a href="#" data-page="invoices" class="sidebar-link flex items-center space-x-2 py-2.5 px-4 rounded transition hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-file-invoice w-5"></i> <span>Order History</span></a>
-                <div class="pt-2 pb-1 px-4 text-[11px] uppercase font-bold text-gray-400">Management</div>
-                <a href="#" data-page="products" class="admin-only sidebar-link flex items-center space-x-2 py-2.5 px-4 rounded transition hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-boxes w-5"></i> <span>Product Mgmt</span></a>
-                <a href="#" data-page="users" class="admin-only sidebar-link flex items-center space-x-2 py-2.5 px-4 rounded transition hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-user-shield w-5"></i> <span>User Mgmt</span></a>
-                <div class="pt-2 pb-1 px-4 text-[11px] uppercase font-bold text-gray-400">Reports</div>
-                <a href="#" data-page="reports" class="sidebar-link flex items-center space-x-2 py-2.5 px-4 rounded transition hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-chart-line w-5"></i> <span>Sales & Due Reports</span></a>
-            </nav>
-        </aside>
-
-        <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black opacity-50 z-30 md:hidden"></div>
-
-        <div class="main-area md:ml-64">
-            <header class="bg-white dark:bg-darkcard shadow-sm py-4 px-6 flex items-center justify-between sticky top-0 z-20">
-                <div class="flex items-center space-x-4">
-                    <button id="menu-toggle" class="md:hidden text-gray-600 dark:text-gray-300"><i class="fas fa-bars text-xl"></i></button>
-                    <h2 id="page-title" class="text-xl font-semibold">Dashboard</h2>
-                </div>
-                <div class="flex items-center space-x-4 relative">
-                    <button id="theme-toggle" class="text-gray-500 dark:text-gray-300 hover:text-primary">
-                        <i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:inline"></i>
-                    </button>
-                    <div id="profile-container" class="relative">
-                        <div id="profile-toggle" class="flex items-center space-x-2 cursor-pointer">
-                            <img id="nav-avatar" src="https://ui-avatars.com/api/?name=Admin&background=5C1D24&color=fff" class="w-8 h-8 rounded-full" alt="User">
-                            <div class="hidden md:block text-left">
-                                <p class="text-sm font-medium" id="user-name">Admin</p>
-                                <p class="text-xs text-gray-500" id="user-role">ADMIN</p>
-                            </div>
-                            <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
-                        </div>
-                        <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-darkcard rounded-md shadow-xl py-1 z-50 border dark:border-gray-700">
-                            <a href="#" onclick="openProfileSettings()" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-user-cog mr-2"></i> Profile Setting</a>
-                            <a href="#" onclick="openChangePassword()" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-key mr-2"></i> Change Password</a>
-                            <div class="border-t dark:border-gray-700 my-1"></div>
-                            <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
-                        </div>
+    <div id="app-screen" class="hidden min-h-screen p-2">
+        <div class="win98-window flex flex-col md:flex-row h-[calc(100vh-20px)]">
+            
+            <!-- Sidebar -->
+            <aside id="sidebar" class="w-full md:w-64 win98-inset m-1 flex flex-col overflow-y-auto">
+                <div class="win98-outset m-1 p-2 flex items-center space-x-2">
+                    <img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="Logo" class="w-10 h-10 border border-black object-cover">
+                    <div>
+                        <h1 class="text-sm font-bold">RAFI FOOD</h1>
+                        <p class="text-[10px]">Distribution System</p>
                     </div>
                 </div>
-            </header>
-            <main id="main-content" class="flex-1 p-4 md:p-6 overflow-y-auto bg-gray-100 dark:bg-darkbg"></main>
+                <nav class="flex-1 p-1 text-xs">
+                    <div class="win98-outset m-1 mb-2">
+                        <a href="#" data-page="dashboard" class="menu-item active"><i class="fas fa-tachometer-alt w-4"></i> Dashboard</a>
+                    </div>
+                    
+                    <div class="px-2 py-1 font-bold text-[11px]">Sales & Distribution</div>
+                    <div class="win98-outset m-1 mb-2">
+                        <a href="#" data-page="order-entry" class="menu-item"><i class="fas fa-cart-plus w-4"></i> Order Entry</a>
+                        <a href="#" data-page="invoices" class="menu-item"><i class="fas fa-file-invoice w-4"></i> Order History</a>
+                    </div>
+
+                    <div class="px-2 py-1 font-bold text-[11px]">Management</div>
+                    <div class="win98-outset m-1 mb-2">
+                        <a href="#" data-page="products" class="admin-only menu-item"><i class="fas fa-boxes w-4"></i> Product Mgmt</a>
+                        <a href="#" data-page="users" class="admin-only menu-item"><i class="fas fa-user-shield w-4"></i> User Mgmt</a>
+                    </div>
+                    
+                    <div class="px-2 py-1 font-bold text-[11px]">Reports</div>
+                    <div class="win98-outset m-1 mb-2">
+                        <a href="#" data-page="reports" class="menu-item"><i class="fas fa-chart-line w-4"></i> Sales & Due Reports</a>
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 flex flex-col p-1">
+                <header class="win98-titlebar mb-1">
+                    <h2 id="page-title" class="text-sm font-bold">Dashboard</h2>
+                    <div class="flex items-center space-x-2">
+                        <button id="theme-toggle" class="text-xs hover:underline">Toggle Theme</button>
+                        <span class="hidden md:block">|</span>
+                        <div class="flex items-center space-x-1 cursor-pointer relative" id="profile-container">
+                            <img id="nav-avatar" src="https://ui-avatars.com/api/?name=Admin&background=5C1D24&color=fff" class="w-5 h-5" alt="User">
+                            <span id="user-name" class="hidden md:block text-xs">Admin</span>
+                            <i class="fas fa-chevron-down text-[10px]"></i>
+                            <div id="profile-menu" class="hidden absolute right-0 top-8 w-48 win98-window z-50">
+                                <a href="#" onclick="openProfileSettings()" class="menu-item"><i class="fas fa-user-cog mr-2"></i> Profile Setting</a>
+                                <a href="#" onclick="openChangePassword()" class="menu-item"><i class="fas fa-key mr-2"></i> Change Password</a>
+                                <div class="border-t border-gray-500 my-1"></div>
+                                <a href="#" onclick="logout()" class="menu-item"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <main id="main-content" class="flex-1 win98-inset p-2 overflow-y-auto bg-white"></main>
+            </div>
         </div>
     </div>
 
-    <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-overlay p-4">
-        <div class="bg-white dark:bg-darkcard w-full max-w-lg rounded-lg shadow-xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center p-4 border-b dark:border-gray-700 sticky top-0 bg-white dark:bg-darkcard">
-                <h3 id="modal-title" class="text-lg font-semibold">Modal Title</h3>
-                <button onclick="closeModal()" class="text-gray-500 hover:text-red-500"><i class="fas fa-times"></i></button>
+    <!-- Universal Modal -->
+    <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.5);">
+        <div class="win98-window w-full max-w-lg">
+            <div class="win98-titlebar">
+                <span id="modal-title">Modal Title</span>
+                <button onclick="closeModal()" class="w98-btn" style="padding: 0 5px; min-width: 20px;">X</button>
             </div>
-            <div id="modal-body" class="p-6"></div>
+            <div id="modal-body" class="p-4 max-h-[80vh] overflow-y-auto"></div>
         </div>
     </div>
 
@@ -232,7 +353,6 @@
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('app-screen').classList.remove('hidden');
             document.getElementById('user-name').textContent = State.currentUser.name;
-            document.getElementById('user-role').textContent = State.currentUser.role;
             const avatarUrl = State.currentUser.image || `https://ui-avatars.com/api/?name=${State.currentUser.name}&background=5C1D24&color=D4AF37`;
             document.getElementById('nav-avatar').src = avatarUrl;
             if (State.currentUser.role !== 'ADMIN') document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
@@ -242,7 +362,7 @@
         }
 
         function logout() { if (confirm('Are you sure you want to logout?')) location.reload(); }
-        document.getElementById('profile-toggle').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('profile-menu').classList.toggle('hidden'); });
+        document.getElementById('profile-container').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('profile-menu').classList.toggle('hidden'); });
         document.addEventListener('click', (e) => { const c = document.getElementById('profile-container'); if (!c.contains(e.target)) document.getElementById('profile-menu').classList.add('hidden'); });
 
         function openProfileSettings() {
@@ -250,13 +370,13 @@
             openModal('Profile Settings', `
                 <form onsubmit="saveProfile(event)">
                     <div class="mb-3 flex flex-col items-center">
-                        <img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 rounded-full object-cover mb-2 border-2 border-primary">
+                        <img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black">
                         <input type="file" id="p_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs">
                     </div>
-                    <div class="mb-3"><label class="block text-sm mb-1">Full Name</label><input type="text" id="p_name" value="${u.name}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
-                    <div class="mb-3"><label class="block text-sm mb-1">Mobile</label><input type="text" id="p_mobile" value="${u.mobile || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
-                    <div class="mb-3"><label class="block text-sm mb-1">Address</label><textarea id="p_address" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800">${u.address || ''}</textarea></div>
-                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded w-full">Save Changes</button>
+                    <div class="mb-3"><label class="block mb-1">Full Name:</label><input type="text" id="p_name" value="${u.name}" class="w98-input" required></div>
+                    <div class="mb-3"><label class="block mb-1">Mobile:</label><input type="text" id="p_mobile" value="${u.mobile || ''}" class="w98-input"></div>
+                    <div class="mb-3"><label class="block mb-1">Address:</label><textarea id="p_address" class="w98-textarea">${u.address || ''}</textarea></div>
+                    <div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save Changes</button></div>
                 </form>
             `);
         }
@@ -275,7 +395,7 @@
             };
             if(imageFile) { const r = new FileReader(); r.onload = (e) => saveToDB(e.target.result); r.readAsDataURL(imageFile); } else { saveToDB(); }
         }
-        function openChangePassword() { openModal('Change Password', `<form onsubmit="savePassword(event)"><div class="mb-3"><label class="block text-sm mb-1">New Password</label><input type="password" id="new_pass" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div><button type="submit" class="bg-primary text-white px-4 py-2 rounded w-full">Update Password</button></form>`); }
+        function openChangePassword() { openModal('Change Password', `<form onsubmit="savePassword(event)"><div class="mb-3"><label class="block mb-1">New Password:</label><input type="password" id="new_pass" class="w98-input" required></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update Password</button></div></form>`); }
         function savePassword(e) { e.preventDefault(); const n = document.getElementById('new_pass').value; if (State.currentUser.id === 'superadmin') alert('Super Admin password cannot be changed here.'); else { db.ref('users/' + State.currentUser.id).update({ password: n }); alert('Password updated successfully!'); } closeModal(); }
 
         function initFirebaseListeners() {
@@ -284,17 +404,14 @@
             db.ref('orders').on('value', (s) => { State.orders = []; s.forEach(c => State.orders.push({ id: c.key, ...c.val() })); if (State.currentPage === 'invoices' && State.currentView !== 'invoice_view') renderInvoices(); if (State.currentPage === 'reports') renderReports(); });
         }
 
-        document.querySelectorAll('.sidebar-link').forEach(l => l.addEventListener('click', e => { e.preventDefault(); renderPage(l.dataset.page); if (window.innerWidth < 768) toggleSidebar(false); }));
-        document.getElementById('menu-toggle').addEventListener('click', () => toggleSidebar(true));
-        document.getElementById('sidebar-overlay').addEventListener('click', () => toggleSidebar(false));
-        document.getElementById('theme-toggle').addEventListener('click', () => document.documentElement.classList.toggle('dark'));
-        function toggleSidebar(s) { const sb = document.getElementById('sidebar'), ov = document.getElementById('sidebar-overlay'); if(s) { sb.classList.remove('-translate-x-full'); ov.classList.remove('hidden'); } else { sb.classList.add('-translate-x-full'); ov.classList.add('hidden'); } }
+        document.querySelectorAll('.menu-item').forEach(l => l.addEventListener('click', e => { e.preventDefault(); if(l.dataset.page) renderPage(l.dataset.page); }));
+        document.getElementById('theme-toggle').addEventListener('click', () => alert('You are already in the classic VB6 theme!'));
 
         function renderPage(page) {
             State.currentPage = page; State.currentView = null;
-            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(l => l.classList.remove('active'));
             const a = document.querySelector(`[data-page="${page}"]`); if (a) a.classList.add('active');
-            document.getElementById('main-content').innerHTML = '<div class="flex justify-center items-center h-64"><i class="fas fa-spinner fa-spin text-primary text-3xl"></i></div>';
+            document.getElementById('main-content').innerHTML = '<div class="flex justify-center items-center h-64"><i class="fas fa-spinner fa-spin text-2xl"></i></div>';
             setTimeout(() => {
                 switch(page) {
                     case 'dashboard': document.getElementById('page-title').textContent = 'Dashboard'; renderDashboard(); break;
@@ -313,26 +430,26 @@
             const isC = State.currentUser.role !== 'ADMIN' && State.currentUser.role !== 'SALES MAN';
             const tD = State.users.filter(u => u.role !== 'ADMIN' && u.role !== 'SALES MAN').reduce((s, u) => s + (u.due || 0), 0);
             document.getElementById('main-content').innerHTML = `
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
                     ${!isC ? `
-                    <div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm border-l-4 border-primary"><p class="text-gray-500 text-xs md:text-sm">Total Products</p><p class="text-xl md:text-2xl font-bold">${State.products.length}</p></div>
-                    <div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm border-l-4 border-accent"><p class="text-gray-500 text-xs md:text-sm">Total Customers</p><p class="text-xl md:text-2xl font-bold">${State.users.filter(u => u.role !== 'ADMIN' && u.role !== 'SALES MAN').length}</p></div>
-                    <div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm border-l-4 border-red-500"><p class="text-gray-500 text-xs md:text-sm">Total Due</p><p class="text-xl md:text-2xl font-bold">৳ ${tD}</p></div>
-                    ` : `<div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm border-l-4 border-primary col-span-2 md:col-span-4"><p class="text-gray-500 text-sm">Welcome, ${State.currentUser.name}!</p><p class="text-xl font-bold mt-1">Your Current Due: ৳ ${State.currentUser.due || 0}</p></div>`}
+                    <div class="win98-outset p-2"><p class="text-xs">Total Products</p><p class="text-lg font-bold">${State.products.length}</p></div>
+                    <div class="win98-outset p-2"><p class="text-xs">Total Customers</p><p class="text-lg font-bold">${State.users.filter(u => u.role !== 'ADMIN' && u.role !== 'SALES MAN').length}</p></div>
+                    <div class="win98-outset p-2"><p class="text-xs">Total Due</p><p class="text-lg font-bold">৳ ${tD}</p></div>
+                    ` : `<div class="win98-outset p-2 col-span-2 md:col-span-4"><p class="text-xs">Welcome, ${State.currentUser.name}!</p><p class="text-lg font-bold mt-1">Your Current Due: ৳ ${State.currentUser.due || 0}</p></div>`}
                 </div>
-                <div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm"><h3 class="font-semibold mb-4">${isC ? 'My Order History' : 'Sales Overview'}</h3><canvas id="salesChart" height="100"></canvas></div>`;
+                <div class="win98-window p-2"><div class="win98-titlebar text-xs mb-2">Sales Overview</div><canvas id="salesChart" height="80"></canvas></div>`;
             const ctx = document.getElementById('salesChart').getContext('2d');
             if(window.myChart) window.myChart.destroy();
-            window.myChart = new Chart(ctx, { type: 'bar', data: { labels: ['Mon', 'Tue', 'Wed', 'Thu'], datasets: [{ label: 'Sales', data: [12, 19, 15, 25], backgroundColor: '#5C1D24' }] } });
+            window.myChart = new Chart(ctx, { type: 'bar', data: { labels: ['Mon', 'Tue', 'Wed', 'Thu'], datasets: [{ label: 'Sales', data: [12, 19, 15, 25], backgroundColor: '#000080' }] } });
         }
 
         function renderProducts() {
             const cE = State.currentUser.role === 'ADMIN';
-            const r = State.products.length ? State.products.map(p => `<tr class="border-b dark:border-gray-700"><td class="p-2"><img src="${p.image || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded object-cover"></td><td class="p-2">${p.code || 'N/A'}</td><td class="p-2">${p.name}</td><td class="p-2">৳${p.mrp}</td><td class="p-2">৳${p.rPrice} / ৳${p.dPrice} / ৳${p.hPrice}</td><td class="p-2">${p.stock}</td><td class="p-2 text-right">${cE ? `<button onclick="editProduct('${p.id}')" class="text-blue-500 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteProduct('${p.id}')" class="text-red-500"><i class="fas fa-trash"></i></button>` : '-'}</td></tr>`).join('') : `<tr><td colspan="7" class="text-center p-4 text-gray-500">No products found.</td></tr>`;
-            document.getElementById('main-content').innerHTML = `<div class="bg-white dark:bg-darkcard p-4 md:p-6 rounded-lg shadow-sm overflow-x-auto"><div class="flex justify-between mb-4"><h3 class="text-lg font-semibold">Products List</h3>${cE ? `<button onclick="addProduct()" class="bg-primary text-white px-4 py-2 rounded text-sm flex items-center"><i class="fas fa-plus mr-1"></i> Add Product</button>` : ''}</div><table class="w-full text-sm text-left min-w-[600px]"><thead class="bg-gray-50 dark:bg-gray-800 text-xs uppercase"><tr><th class="p-2">Image</th><th class="p-2">Code</th><th class="p-2">Name</th><th class="p-2">MRP</th><th class="p-2">R/D/H Price</th><th class="p-2">Stock</th><th class="p-2 text-right">Action</th></tr></thead><tbody>${r}</tbody></table></div>`;
+            const r = State.products.length ? State.products.map(p => `<tr><td><img src="${p.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${p.code || 'N/A'}</td><td>${p.name}</td><td>৳${p.mrp}</td><td>৳${p.rPrice} / ৳${p.dPrice} / ৳${p.hPrice}</td><td>${p.stock}</td><td class="text-right">${cE ? `<button onclick="editProduct('${p.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteProduct('${p.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>` : '-'}</td></tr>`).join('') : `<tr><td colspan="7" class="text-center p-4">No products found.</td></tr>`;
+            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">Products List</h3>${cE ? `<button onclick="addProduct()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add Product</button>` : ''}</div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>Code</th><th>Name</th><th>MRP</th><th>R/D/H Price</th><th>Stock</th><th class="text-right">Action</th></tr></thead><tbody>${r}</tbody></table></div></div>`;
         }
-        function addProduct() { openModal('Add Product', `<form onsubmit="saveProduct(event, '')"><div class="mb-3 flex flex-col items-center"><img id="img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 rounded-full object-cover mb-2 border-2 border-primary"><input type="file" id="p_image" accept="image/*" onchange="previewImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-3"><div><label class="block text-sm mb-1">Code</label><input type="text" id="p_code" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div><div><label class="block text-sm mb-1">Name</label><input type="text" id="p_name" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div></div><div class="grid grid-cols-2 gap-3 mt-2"><div><label class="block text-sm mb-1">Category</label><input type="text" id="p_cat" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div><div><label class="block text-sm mb-1">MRP</label><input type="number" id="p_mrp" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div></div><div class="grid grid-cols-3 gap-2 mt-2"><div><label class="block text-sm mb-1">R-Price</label><input type="number" id="p_r" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div><div><label class="block text-sm mb-1">D-Price</label><input type="number" id="p_d" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div><div><label class="block text-sm mb-1">H-Price</label><input type="number" id="p_h" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div></div><div class="mt-2"><label class="block text-sm mb-1">Stock</label><input type="number" id="p_stock" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div><button type="submit" class="bg-primary text-white px-4 py-2 rounded w-full mt-4">Save Product</button></form>`); }
-        function editProduct(id) { const p = State.products.find(x => x.id === id); openModal('Edit Product', `<form onsubmit="saveProduct(event, '${p.id}')"><div class="mb-3 flex flex-col items-center"><img id="img_preview" src="${p.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 rounded-full object-cover mb-2 border-2 border-primary"><input type="file" id="p_image" accept="image/*" onchange="previewImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-3"><div><label class="block text-sm mb-1">Code</label><input type="text" id="p_code" value="${p.code || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div><div><label class="block text-sm mb-1">Name</label><input type="text" id="p_name" value="${p.name}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div></div><div class="grid grid-cols-2 gap-3 mt-2"><div><label class="block text-sm mb-1">Category</label><input type="text" id="p_cat" value="${p.category}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div><div><label class="block text-sm mb-1">MRP</label><input type="number" id="p_mrp" value="${p.mrp}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div></div><div class="grid grid-cols-3 gap-2 mt-2"><div><label class="block text-sm mb-1">R-Price</label><input type="number" id="p_r" value="${p.rPrice}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div><div><label class="block text-sm mb-1">D-Price</label><input type="number" id="p_d" value="${p.dPrice}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div><div><label class="block text-sm mb-1">H-Price</label><input type="number" id="p_h" value="${p.hPrice}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div></div><div class="mt-2"><label class="block text-sm mb-1">Stock</label><input type="number" id="p_stock" value="${p.stock}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div><button type="submit" class="bg-primary text-white px-4 py-2 rounded w-full mt-4">Update Product</button></form>`); }
+        function addProduct() { openModal('Add Product', `<form onsubmit="saveProduct(event, '')"><div class="mb-3 flex flex-col items-center"><img id="img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="p_image" accept="image/*" onchange="previewImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2"><div><label>Code:</label><input type="text" id="p_code" class="w98-input" required></div><div><label>Name:</label><input type="text" id="p_name" class="w98-input" required></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Category:</label><input type="text" id="p_cat" class="w98-input" required></div><div><label>MRP:</label><input type="number" id="p_mrp" class="w98-input" required></div></div><div class="grid grid-cols-3 gap-2 mt-2"><div><label>R-Price:</label><input type="number" id="p_r" class="w98-input" required></div><div><label>D-Price:</label><input type="number" id="p_d" class="w98-input" required></div><div><label>H-Price:</label><input type="number" id="p_h" class="w98-input" required></div></div><div class="mt-2"><label>Stock:</label><input type="number" id="p_stock" class="w98-input" required></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save Product</button></div></form>`); }
+        function editProduct(id) { const p = State.products.find(x => x.id === id); openModal('Edit Product', `<form onsubmit="saveProduct(event, '${p.id}')"><div class="mb-3 flex flex-col items-center"><img id="img_preview" src="${p.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="p_image" accept="image/*" onchange="previewImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2"><div><label>Code:</label><input type="text" id="p_code" value="${p.code || ''}" class="w98-input" required></div><div><label>Name:</label><input type="text" id="p_name" value="${p.name}" class="w98-input" required></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Category:</label><input type="text" id="p_cat" value="${p.category}" class="w98-input" required></div><div><label>MRP:</label><input type="number" id="p_mrp" value="${p.mrp}" class="w98-input" required></div></div><div class="grid grid-cols-3 gap-2 mt-2"><div><label>R-Price:</label><input type="number" id="p_r" value="${p.rPrice}" class="w98-input" required></div><div><label>D-Price:</label><input type="number" id="p_d" value="${p.dPrice}" class="w98-input" required></div><div><label>H-Price:</label><input type="number" id="p_h" value="${p.hPrice}" class="w98-input" required></div></div><div class="mt-2"><label>Stock:</label><input type="number" id="p_stock" value="${p.stock}" class="w98-input" required></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update Product</button></div></form>`); }
         function previewImage(i) { const r = new FileReader(); r.onload = (e) => document.getElementById('img_preview').src = e.target.result; r.readAsDataURL(i.files[0]); }
         function saveProduct(e, id) { e.preventDefault(); const iF = document.getElementById('p_image').files[0]; const d = { code: document.getElementById('p_code').value, name: document.getElementById('p_name').value, category: document.getElementById('p_cat').value, mrp: parseFloat(document.getElementById('p_mrp').value), rPrice: parseFloat(document.getElementById('p_r').value), dPrice: parseFloat(document.getElementById('p_d').value), hPrice: parseFloat(document.getElementById('p_h').value), stock: parseInt(document.getElementById('p_stock').value) }; const s = (u) => { if(u) d.image = u; if(id) db.ref('products/' + id).update(d); else db.ref('products').push(d); closeModal(); }; if(iF) { const r = new FileReader(); r.onload = (e) => s(e.target.result); r.readAsDataURL(iF); } else s(); }
         function deleteProduct(id) { if (confirm('Are you sure?')) db.ref('products/' + id).remove(); }
@@ -340,8 +457,8 @@
         // --- USERS CRUD ---
         function renderUsers() {
             const cE = State.currentUser.role === 'ADMIN';
-            const r = State.users.length ? State.users.map(u => `<tr class="border-b dark:border-gray-700"><td class="p-2"><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full object-cover"></td><td class="p-2 font-bold text-primary">${u.userCode || 'N/A'}</td><td class="p-2">${u.username}</td><td class="p-2">${u.name}<br><span class="text-xs text-gray-500">${u.shopName || ''}</span></td><td class="p-2"><span class="bg-primary/10 text-primary px-2 py-1 rounded text-xs">${u.role}</span></td><td class="p-2">৳${u.due || 0}</td><td class="p-2 text-right">${cE ? `<button onclick="editUser('${u.id}')" class="text-blue-500 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteUser('${u.id}')" class="text-red-500"><i class="fas fa-trash"></i></button>` : '-'}</td></tr>`).join('') : `<tr><td colspan="7" class="text-center p-4 text-gray-500">No users found.</td></tr>`;
-            document.getElementById('main-content').innerHTML = `<div class="bg-white dark:bg-darkcard p-4 md:p-6 rounded-lg shadow-sm overflow-x-auto"><div class="flex justify-between mb-4"><h3 class="text-lg font-semibold">System Users / Customers</h3>${cE ? `<button onclick="addUser()" class="bg-primary text-white px-4 py-2 rounded text-sm flex items-center"><i class="fas fa-plus mr-1"></i> Add User</button>` : ''}</div><table class="w-full text-sm text-left min-w-[600px]"><thead class="bg-gray-50 dark:bg-gray-800 text-xs uppercase"><tr><th class="p-2">Img</th><th class="p-2">User ID</th><th class="p-2">Username</th><th class="p-2">Name / Shop</th><th class="p-2">Role</th><th class="p-2">Due</th><th class="p-2 text-right">Action</th></tr></thead><tbody>${r}</tbody></table></div>`;
+            const r = State.users.length ? State.users.map(u => `<tr><td><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${u.userCode || 'N/A'}</td><td>${u.username}</td><td>${u.name}<br><span class="text-[10px]">${u.shopName || ''}</span></td><td>${u.role}</td><td>৳${u.due || 0}</td><td class="text-right">${cE ? `<button onclick="editUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>` : '-'}</td></tr>`).join('') : `<tr><td colspan="7" class="text-center p-4">No users found.</td></tr>`;
+            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">System Users / Customers</h3>${cE ? `<button onclick="addUser()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add User</button>` : ''}</div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>User ID</th><th>Username</th><th>Name / Shop</th><th>Role</th><th>Due</th><th class="text-right">Action</th></tr></thead><tbody>${r}</tbody></table></div></div>`;
         }
 
         function renderRoleFields(role, u = {}) {
@@ -349,63 +466,53 @@
             let h = '';
             if (role === 'DEALER' || role === 'RETAILER' || role === 'HOCKER') {
                 h = `
-                    <h4 class="text-sm font-bold text-gray-600 dark:text-gray-300 mt-2 mb-2">Business Information</h4>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><label class="block text-sm mb-1">Business/Shop Name</label><input type="text" id="u_shop" value="${u.shopName || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
-                        <div><label class="block text-sm mb-1">Proprietor/Owner Name</label><input type="text" id="u_name" value="${u.name || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                    <fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Business Information</legend>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label>Business/Shop Name:</label><input type="text" id="u_shop" value="${u.shopName || ''}" class="w98-input"></div>
+                        <div><label>Proprietor Name:</label><input type="text" id="u_name" value="${u.name || ''}" class="w98-input" required></div>
                     </div>
-                    <div class="grid grid-cols-2 gap-3 mt-2">
-                        <div><label class="block text-sm mb-1">Business Type</label><input type="text" id="u_b_type" value="${u.businessType || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
-                        <div><label class="block text-sm mb-1">Trade License No.</label><input type="text" id="u_trade_lic" value="${u.tradeLicense || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <div><label>Business Type:</label><input type="text" id="u_b_type" value="${u.businessType || ''}" class="w98-input"></div>
+                        <div><label>Trade License No.:</label><input type="text" id="u_trade_lic" value="${u.tradeLicense || ''}" class="w98-input"></div>
+                    </div></fieldset>
+                    <fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Contact Information</legend>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label>Mobile:</label><input type="text" id="u_mobile" value="${u.mobile || ''}" class="w98-input"></div>
+                        <div><label>Alt Mobile:</label><input type="text" id="u_alt_mobile" value="${u.altMobile || ''}" class="w98-input"></div>
                     </div>
-                    <h4 class="text-sm font-bold text-gray-600 dark:text-gray-300 mt-4 mb-2">Contact Information</h4>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><label class="block text-sm mb-1">Mobile Number</label><input type="text" id="u_mobile" value="${u.mobile || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
-                        <div><label class="block text-sm mb-1">Alternative Mobile</label><input type="text" id="u_alt_mobile" value="${u.altMobile || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <div><label>Email:</label><input type="email" id="u_email" value="${u.email || ''}" class="w98-input"></div>
+                        <div><label>NID Number:</label><input type="text" id="u_nid" value="${u.nid || ''}" class="w98-input"></div>
                     </div>
-                    <div class="grid grid-cols-2 gap-3 mt-2">
-                        <div><label class="block text-sm mb-1">Email</label><input type="email" id="u_email" value="${u.email || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
-                        <div><label class="block text-sm mb-1">NID Number</label><input type="text" id="u_nid" value="${u.nid || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
-                    </div>
-                    ${role === 'DEALER' ? `<div class="mt-2"><label class="block text-sm mb-1">TIN Number</label><input type="text" id="u_tin" value="${u.tin || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>` : ''}
-                    <h4 class="text-sm font-bold text-gray-600 dark:text-gray-300 mt-4 mb-2">Address & Financials</h4>
-                    <div class="mb-3"><label class="block text-sm mb-1">Address</label><textarea id="u_address" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800">${u.address || ''}</textarea></div>
-                    <div><label class="block text-sm mb-1">Opening Due</label><input type="number" id="u_due" value="${u.due || 0}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
+                    ${role === 'DEALER' ? `<div class="mt-2"><label>TIN Number:</label><input type="text" id="u_tin" value="${u.tin || ''}" class="w98-input"></div>` : ''}</fieldset>
+                    <fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Address & Financials</legend>
+                    <div class="mb-2"><label>Address:</label><textarea id="u_address" class="w98-textarea">${u.address || ''}</textarea></div>
+                    <div><label>Opening Due:</label><input type="number" id="u_due" value="${u.due || 0}" class="w98-input"></div></fieldset>
                 `;
             } else if (role === 'SALES MAN') {
                 h = `
-                    <h4 class="text-sm font-bold text-gray-600 dark:text-gray-300 mt-2 mb-2">Personal Information</h4>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><label class="block text-sm mb-1">Name</label><input type="text" id="u_name" value="${u.name || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
-                        <div><label class="block text-sm mb-1">Designation</label><input type="text" id="u_designation" value="${u.designation || 'Sales Man'}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
+                    <fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label>Name:</label><input type="text" id="u_name" value="${u.name || ''}" class="w98-input" required></div>
+                        <div><label>Designation:</label><input type="text" id="u_designation" value="${u.designation || 'Sales Man'}" class="w98-input"></div>
                     </div>
-                    <div class="grid grid-cols-2 gap-3 mt-2">
-                        <div><label class="block text-sm mb-1">Mobile Number</label><input type="text" id="u_mobile" value="${u.mobile || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
-                        <div><label class="block text-sm mb-1">Alternative Mobile</label><input type="text" id="u_alt_mobile" value="${u.altMobile || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <div><label>Mobile:</label><input type="text" id="u_mobile" value="${u.mobile || ''}" class="w98-input"></div>
+                        <div><label>Alt Mobile:</label><input type="text" id="u_alt_mobile" value="${u.altMobile || ''}" class="w98-input"></div>
                     </div>
-                    <div class="grid grid-cols-2 gap-3 mt-2">
-                        <div><label class="block text-sm mb-1">NID Number</label><input type="text" id="u_nid" value="${u.nid || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
-                        <div><label class="block text-sm mb-1">Joining Date</label><input type="date" id="u_join_date" value="${u.joinDate || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <div><label>NID Number:</label><input type="text" id="u_nid" value="${u.nid || ''}" class="w98-input"></div>
+                        <div><label>Joining Date:</label><input type="date" id="u_join_date" value="${u.joinDate || ''}" class="w98-input"></div>
                     </div>
-                    <div class="grid grid-cols-2 gap-3 mt-2">
-                        <div><label class="block text-sm mb-1">Employee Status</label>
-                            <select id="u_emp_status" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800">
-                                <option value="Active" ${u.empStatus==='Active'?'selected':''}>Active</option>
-                                <option value="Inactive" ${u.empStatus==='Inactive'?'selected':''}>Inactive</option>
-                            </select>
-                        </div>
-                        <div><label class="block text-sm mb-1">Address</label><input type="text" id="u_address" value="${u.address || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
-                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <div><label>Status:</label><select id="u_emp_status" class="w98-select"><option value="Active" ${u.empStatus==='Active'?'selected':''}>Active</option><option value="Inactive" ${u.empStatus==='Inactive'?'selected':''}>Inactive</option></select></div>
+                        <div><label>Address:</label><input type="text" id="u_address" value="${u.address || ''}" class="w98-input"></div>
+                    </div></fieldset>
                 `;
             } else { // ADMIN
-                 h = `
-                    <h4 class="text-sm font-bold text-gray-600 dark:text-gray-300 mt-2 mb-2">Personal Information</h4>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><label class="block text-sm mb-1">Full Name</label><input type="text" id="u_name" value="${u.name || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
-                        <div><label class="block text-sm mb-1">Mobile</label><input type="text" id="u_mobile" value="${u.mobile || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
-                    </div>
-                    <div class="mb-3 mt-2"><label class="block text-sm mb-1">Address</label><textarea id="u_address" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800">${u.address || ''}</textarea></div>
-                `;
+                 h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend>
+                    <div class="grid grid-cols-2 gap-2"><div><label>Full Name:</label><input type="text" id="u_name" value="${u.name || ''}" class="w98-input" required></div><div><label>Mobile:</label><input type="text" id="u_mobile" value="${u.mobile || ''}" class="w98-input"></div></div>
+                    <div class="mt-2"><label>Address:</label><textarea id="u_address" class="w98-textarea">${u.address || ''}</textarea></div></fieldset>`;
             }
             c.innerHTML = h;
         }
@@ -413,26 +520,11 @@
         function addUser() {
             openModal('Add User / Customer', `
                 <form onsubmit="saveUser(event, '')">
-                    <div class="mb-3 flex flex-col items-center">
-                        <img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 rounded-full object-cover mb-2 border-2 border-primary">
-                        <input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs">
-                    </div>
-                    <div class="grid grid-cols-2 gap-3 mb-3">
-                        <div><label class="block text-sm mb-1">Role</label>
-                            <select id="u_role" onchange="renderRoleFields(this.value)" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800">
-                                <option value="ADMIN">Admin</option>
-                                <option value="SALES MAN">Sales Man</option>
-                                <option value="RETAILER">Retailer</option>
-                                <option value="DEALER">Dealer</option>
-                                <option value="HOCKER">Hocker</option>
-                            </select>
-                        </div>
-                        <div><label class="block text-sm mb-1">Username (Login)</label><input type="text" id="u_username" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
-                    </div>
-                    <div class="mb-3"><label class="block text-sm mb-1">Password</label><input type="text" id="u_password" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
-                    <hr class="my-4 dark:border-gray-700">
+                    <div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div>
+                    <div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value)" class="w98-select"><option value="ADMIN">Admin</option><option value="SALES MAN">Sales Man</option><option value="RETAILER">Retailer</option><option value="DEALER">Dealer</option><option value="HOCKER">Hocker</option></select></div><div><label>Username (Login):</label><input type="text" id="u_username" class="w98-input" required></div></div>
+                    <div class="mb-2"><label>Password:</label><input type="text" id="u_password" class="w98-input" required></div>
                     <div id="role-specific-fields"></div>
-                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded w-full mt-4">Save User</button>
+                    <div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save User</button></div>
                 </form>
             `);
             renderRoleFields('ADMIN');
@@ -442,26 +534,11 @@
             const u = State.users.find(x => x.id === id);
             openModal('Edit User / Customer', `
                 <form onsubmit="saveUser(event, '${u.id}')">
-                    <div class="mb-3 flex flex-col items-center">
-                        <img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 rounded-full object-cover mb-2 border-2 border-primary">
-                        <input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs">
-                    </div>
-                    <div class="grid grid-cols-2 gap-3 mb-3">
-                        <div><label class="block text-sm mb-1">Role</label>
-                            <select id="u_role" onchange="renderRoleFields(this.value, ${JSON.stringify(u).replace(/"/g, '&quot;')})" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" disabled>
-                                <option value="ADMIN" ${u.role==='ADMIN'?'selected':''}>Admin</option>
-                                <option value="SALES MAN" ${u.role==='SALES MAN'?'selected':''}>Sales Man</option>
-                                <option value="RETAILER" ${u.role==='RETAILER'?'selected':''}>Retailer</option>
-                                <option value="DEALER" ${u.role==='DEALER'?'selected':''}>Dealer</option>
-                                <option value="HOCKER" ${u.role==='HOCKER'?'selected':''}>Hocker</option>
-                            </select>
-                        </div>
-                        <div><label class="block text-sm mb-1">Username</label><input type="text" id="u_username" value="${u.username}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
-                    </div>
-                    <div class="mb-3"><label class="block text-sm mb-1">Password</label><input type="text" id="u_password" value="${u.password}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
-                    <hr class="my-4 dark:border-gray-700">
+                    <div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div>
+                    <div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value, ${JSON.stringify(u).replace(/"/g, '&quot;')})" class="w98-select" disabled><option value="ADMIN" ${u.role==='ADMIN'?'selected':''}>Admin</option><option value="SALES MAN" ${u.role==='SALES MAN'?'selected':''}>Sales Man</option><option value="RETAILER" ${u.role==='RETAILER'?'selected':''}>Retailer</option><option value="DEALER" ${u.role==='DEALER'?'selected':''}>Dealer</option><option value="HOCKER" ${u.role==='HOCKER'?'selected':''}>Hocker</option></select></div><div><label>Username:</label><input type="text" id="u_username" value="${u.username}" class="w98-input" required></div></div>
+                    <div class="mb-2"><label>Password:</label><input type="text" id="u_password" value="${u.password}" class="w98-input" required></div>
                     <div id="role-specific-fields"></div>
-                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded w-full mt-4">Update User</button>
+                    <div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update User</button></div>
                 </form>
             `);
             renderRoleFields(u.role, u);
@@ -501,20 +578,24 @@
             State.cart = []; 
             const isC = State.currentUser.role !== 'ADMIN' && State.currentUser.role !== 'SALES MAN';
             document.getElementById('main-content').innerHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm">
-                        <h3 class="text-lg font-semibold mb-4">Select Products</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 max-h-[60vh] overflow-y-auto p-1">
-                            ${State.products.map(p => `<div onclick="addToCart('${p.id}')" class="border rounded-lg p-2 cursor-pointer hover:border-primary hover:bg-gray-50 dark:hover:bg-gray-800 transition text-center"><img src="${p.image || 'https://via.placeholder.com/80'}" class="w-full h-20 object-cover rounded mb-2"><p class="font-medium text-sm truncate">${p.name}</p><p class="text-xs text-gray-500">Stock: ${p.stock}</p><p class="text-primary font-bold text-sm mt-1">৳ <span id="price_${p.id}">0</span></p></div>`).join('')}
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-2">
+                    <div class="lg:col-span-2 win98-window p-2">
+                        <h3 class="font-bold mb-2">Select Products</h3>
+                        <div class="win98-inset p-2 grid grid-cols-2 md:grid-cols-3 gap-2 max-h-[60vh] overflow-y-auto">
+                            ${State.products.map(p => `<div onclick="addToCart('${p.id}')" class="win98-outset p-2 cursor-pointer text-center"><img src="${p.image || 'https://via.placeholder.com/80'}" class="w-full h-20 mb-1"><p class="font-bold text-xs truncate">${p.name}</p><p class="text-[10px]">Stock: ${p.stock}</p><p class="font-bold text-sm">৳ <span id="price_${p.id}">0</span></p></div>`).join('')}
                         </div>
                     </div>
-                    <div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm flex flex-col">
-                        <h3 class="text-lg font-semibold mb-4 border-b pb-2 dark:border-gray-700">Order Summary</h3>
-                        <div class="mb-3"><label class="text-xs block mb-1">Customer Type</label><select id="cust_type" onchange="handleCustomerTypeChange()" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800 text-sm" ${isC ? 'disabled' : ''}><option value="RETAILER" ${isC && State.currentUser.role === 'RETAILER' ? 'selected' : ''}>Retailer</option><option value="DEALER" ${isC && State.currentUser.role === 'DEALER' ? 'selected' : ''}>Dealer</option><option value="HOCKER" ${isC && State.currentUser.role === 'HOCKER' ? 'selected' : ''}>Hocker</option></select></div>
-                        <div class="mb-3"><label class="text-xs block mb-1">Customer</label><select id="cust_id" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800 text-sm" ${isC ? 'disabled' : ''}>${isC ? `<option value="${State.currentUser.id}" selected>${State.currentUser.name} (${State.currentUser.role})</option>` : ''}</select></div>
-                        <div class="flex-1 overflow-y-auto max-h-[30vh] border rounded p-2 mb-3 dark:border-gray-700"><table class="w-full text-xs text-left"><tbody id="cart-table"><tr><td colspan="3" class="text-center text-gray-500 py-4">Cart is empty</td></tr></tbody></table></div>
-                        <div class="space-y-1 text-sm border-t pt-3 dark:border-gray-700"><div class="flex justify-between"><span>Gross Total:</span> <span id="gross_total" class="font-semibold">৳ 0.00</span></div><div class="flex justify-between"><span>Paid Amount:</span> <input type="number" id="paid_amt" value="0" oninput="calcDue()" class="w-24 p-1 border rounded bg-gray-50 dark:bg-gray-800 text-right"></div><div class="flex justify-between font-bold text-primary text-base"><span>Current Due:</span> <span id="final_due">৳ 0.00</span></div></div>
-                        <button onclick="submitOrder()" class="bg-primary text-white p-2 rounded w-full mt-4 hover:bg-[#722F37]">Submit Order</button>
+                    <div class="win98-window p-2 flex flex-col">
+                        <h3 class="font-bold mb-2 border-b border-black">Order Summary</h3>
+                        <div class="mb-2"><label class="text-xs">Customer Type:</label><select id="cust_type" onchange="handleCustomerTypeChange()" class="w98-select" ${isC ? 'disabled' : ''}><option value="RETAILER" ${isC && State.currentUser.role === 'RETAILER' ? 'selected' : ''}>Retailer</option><option value="DEALER" ${isC && State.currentUser.role === 'DEALER' ? 'selected' : ''}>Dealer</option><option value="HOCKER" ${isC && State.currentUser.role === 'HOCKER' ? 'selected' : ''}>Hocker</option></select></div>
+                        <div class="mb-2"><label class="text-xs">Customer:</label><select id="cust_id" class="w98-select" ${isC ? 'disabled' : ''}>${isC ? `<option value="${State.currentUser.id}" selected>${State.currentUser.name}</option>` : ''}</select></div>
+                        <div class="flex-1 win98-inset p-1 max-h-[30vh] overflow-y-auto mb-2"><table class="w-full text-xs text-left"><tbody id="cart-table"><tr><td colspan="3" class="text-center p-4">Cart is empty</td></tr></tbody></table></div>
+                        <div class="text-xs border-t border-black pt-2 space-y-1">
+                            <div class="flex justify-between"><span>Gross Total:</span> <span id="gross_total" class="font-bold">৳ 0.00</span></div>
+                            <div class="flex justify-between"><span>Paid Amount:</span> <input type="number" id="paid_amt" value="0" oninput="calcDue()" class="w98-input" style="width: 100px; text-align: right;"></div>
+                            <div class="flex justify-between font-bold text-sm"><span>Current Due:</span> <span id="final_due">৳ 0.00</span></div>
+                        </div>
+                        <button onclick="submitOrder()" class="w98-btn mt-4 w-full">Submit Order</button>
                     </div>
                 </div>`;
             handleCustomerTypeChange(); 
@@ -524,7 +605,7 @@
         function getActivePrice(p) { const t = document.getElementById('cust_type').value; if(t === 'RETAILER') return p.rPrice; if(t === 'DEALER') return p.dPrice; if(t === 'HOCKER') return p.hPrice; return p.mrp; }
         function addToCart(id) { const p = State.products.find(x => x.id === id); const e = State.cart.find(i => i.id === id); if(e) e.qty++; else State.cart.push({ id: id, name: p.name, price: getActivePrice(p), qty: 1, mrp: p.mrp }); renderCart(); calcDue(); }
         function changeQty(id, a) { let i = State.cart.find(x => x.id === id); if(i) { if(a === 'inc') i.qty++; if(a === 'dec') i.qty--; if(i.qty <= 0) State.cart = State.cart.filter(x => x.id !== id); } renderCart(); calcDue(); }
-        function renderCart() { const cT = document.getElementById('cart-table'); if(!cT) return; if(State.cart.length === 0) cT.innerHTML = `<tr><td colspan="3" class="text-center text-gray-500 py-4">Cart is empty</td></tr>`; else cT.innerHTML = State.cart.map(i => `<tr class="border-b dark:border-gray-700"><td class="py-1">${i.name}</td><td class="py-1 text-center"><button onclick="changeQty('${i.id}', 'dec')" class="text-red-500 px-1">-</button> ${i.qty} <button onclick="changeQty('${i.id}', 'inc')" class="text-green-500 px-1">+</button></td><td class="py-1 text-right">৳${i.qty * i.price}</td></tr>`).join(''); let g = State.cart.reduce((s, i) => s + (i.qty * i.price), 0); document.getElementById('gross_total').innerText = `৳ ${g.toFixed(2)}`; }
+        function renderCart() { const cT = document.getElementById('cart-table'); if(!cT) return; if(State.cart.length === 0) cT.innerHTML = `<tr><td colspan="3" class="text-center p-4">Cart is empty</td></tr>`; else cT.innerHTML = State.cart.map(i => `<tr class="border-b border-gray-400"><td class="py-1">${i.name}</td><td class="py-1 text-center"><button onclick="changeQty('${i.id}', 'dec')" class="w98-btn" style="padding: 0 4px; min-width: 0;">-</button> ${i.qty} <button onclick="changeQty('${i.id}', 'inc')" class="w98-btn" style="padding: 0 4px; min-width: 0;">+</button></td><td class="py-1 text-right">৳${i.qty * i.price}</td></tr>`).join(''); let g = State.cart.reduce((s, i) => s + (i.qty * i.price), 0); document.getElementById('gross_total').innerText = `৳ ${g.toFixed(2)}`; }
         function calcDue() { let g = State.cart.reduce((s, i) => s + (i.qty * i.price), 0); let p = parseFloat(document.getElementById('paid_amt').value) || 0; document.getElementById('final_due').innerText = `৳ ${(g - p).toFixed(2)}`; }
         function generateInvoiceNo() { const n = new Date(); const y = n.getFullYear(); const m = String(n.getMonth() + 1).padStart(2, '0'); const p = `RFP${y}${m}`; const mO = State.orders.filter(o => o.invoiceNo && o.invoiceNo.startsWith(p)); let mS = 0; mO.forEach(o => { const s = parseInt(o.invoiceNo.slice(-2)); if (s > mS) mS = s; }); return `${p}${String(mS + 1).padStart(2, '0')}`; }
         function submitOrder() {
@@ -537,22 +618,22 @@
                 customerMobile: c.mobile || 'N/A', customerAddress: c.address || 'N/A', 
                 customerType: document.getElementById('cust_type').value, items: State.cart, 
                 grossTotal: g, paid: p, due: d, orderDate: new Date().toISOString(), status: 'Pending',
-                entryBy: State.currentUser.userCode || State.currentUser.name // Added User ID who placed the order
+                entryBy: State.currentUser.userCode || State.currentUser.name
             };
-            db.ref('orders').push(oD).then(() => { const nD = (c.due || 0) + d; db.ref('users/' + cId).update({ due: nD }); alert('Order Saved Successfully! Invoice No: ' + oD.invoiceNo); renderPage('invoices'); });
+            db.ref('orders').push(oD).then(() => { const nD = (c.due || 0) + d; db.ref('users/' + cId).update({ due: nD }); alert('Order Saved! Invoice No: ' + oD.invoiceNo); renderPage('invoices'); });
         }
 
         function renderInvoices() {
             const iA = ['ADMIN', 'SALES MAN'].includes(State.currentUser.role); let oS = State.orders; if (!iA) oS = State.orders.filter(o => o.customerId === State.currentUser.id);
             const sC = (s) => `status-${s ? s.toLowerCase() : 'pending'}`;
-            const r = oS.length ? oS.map(o => `<tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"><td class="p-2 font-medium text-primary">${o.invoiceNo || 'N/A'}</td><td class="p-2">${new Date(o.orderDate).toLocaleDateString()}</td>${iA ? `<td class="p-2">${o.customerName}</td>` : ''}<td class="p-2">৳${o.grossTotal}</td><td class="p-2">৳${o.due}</td><td class="p-2 text-center">${iA ? `<select onchange="updateStatus('${o.id}', this.value)" class="p-1 border rounded bg-gray-50 dark:bg-gray-800 text-xs"><option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option><option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option><option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option><option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option></select>` : `<span class="status-badge ${sC(o.status)}">${o.status || 'Pending'}</span>`}</td><td class="p-2 text-center whitespace-nowrap"><button onclick="viewInvoice('${o.id}')" class="bg-primary text-white px-3 py-1 rounded text-xs">View</button>${iA ? `<button onclick="processReturn('${o.id}')" class="bg-yellow-500 text-white px-3 py-1 rounded text-xs ml-1">Return</button>` : ''}${State.currentUser.role === 'ADMIN' ? `<button onclick="deleteOrder('${o.id}')" class="bg-red-500 text-white px-3 py-1 rounded text-xs ml-1">Delete</button>` : ''}</td></tr>`).join('') : `<tr><td colspan="7" class="text-center p-4 text-gray-500">No orders found.</td></tr>`;
-            document.getElementById('main-content').innerHTML = `<div class="bg-white dark:bg-darkcard p-4 md:p-6 rounded-lg shadow-sm overflow-x-auto"><h3 class="text-lg font-semibold mb-4">Order History</h3><table class="w-full text-sm text-left min-w-[600px]"><thead class="bg-gray-50 dark:bg-gray-800 text-xs uppercase"><tr><th class="p-2">Invoice No</th><th class="p-2">Date</th>${iA ? '<th class="p-2">Customer</th>' : ''}<th class="p-2">Total</th><th class="p-2">Due</th><th class="p-2 text-center">Status</th><th class="p-2 text-center">Action</th></tr></thead><tbody>${r}</tbody></table></div>`;
+            const r = oS.length ? oS.map(o => `<tr><td>${o.invoiceNo || 'N/A'}</td><td>${new Date(o.orderDate).toLocaleDateString()}</td>${iA ? `<td>${o.customerName}</td>` : ''}<td>৳${o.grossTotal}</td><td>৳${o.due}</td><td class="text-center">${iA ? `<select onchange="updateStatus('${o.id}', this.value)" class="w98-select text-xs"><option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option><option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option><option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option><option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option></select>` : `<span class="status-badge ${sC(o.status)}">${o.status || 'Pending'}</span>`}</td><td class="text-center whitespace-nowrap"><button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button>${iA ? ` <button onclick="processReturn('${o.id}')" class="w98-btn" style="padding: 2px 6px;">Return</button>` : ''}${State.currentUser.role === 'ADMIN' ? ` <button onclick="deleteOrder('${o.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>` : ''}</td></tr>`).join('') : `<tr><td colspan="7" class="text-center p-4">No orders found.</td></tr>`;
+            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><h3 class="font-bold mb-2">Order History</h3><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Invoice No</th><th>Date</th>${iA ? '<th>Customer</th>' : ''}<th>Total</th><th>Due</th><th class="text-center">Status</th><th class="text-center">Action</th></tr></thead><tbody>${r}</tbody></table></div></div>`;
         }
-        function updateStatus(id, s) { db.ref('orders/' + id).update({ status: s }); alert(`Order status updated to: ${s}`); }
+        function updateStatus(id, s) { db.ref('orders/' + id).update({ status: s }); alert(`Status updated to: ${s}`); }
         function processReturn(id) {
             const o = State.orders.find(x => x.id === id); if(!o) return alert('Order not found!');
-            const iH = o.items.map((i, idx) => `<tr><td class="p-2">${i.name}</td><td class="p-2 text-center">${i.qty}</td><td class="p-2 text-center"><input type="number" id="ret_qty_${idx}" min="0" max="${i.qty}" value="0" class="w-16 p-1 border rounded bg-gray-50 dark:bg-gray-800 text-center"></td></tr>`).join('');
-            openModal('Process Return / Adjustment', `<p class="text-sm text-gray-500 mb-4">Enter returned quantity for each item. The total and customer due will be adjusted automatically.</p><form onsubmit="submitReturn(event, '${id}')"><table class="w-full text-sm text-left mb-4 border dark:border-gray-700"><thead class="bg-gray-100 dark:bg-gray-800"><tr><th class="p-2">Product</th><th class="p-2 text-center">Ordered Qty</th><th class="p-2 text-center">Return Qty</th></tr></thead><tbody>${iH}</tbody></table><button type="submit" class="bg-primary text-white px-4 py-2 rounded w-full">Confirm Return</button></form>`);
+            const iH = o.items.map((i, idx) => `<tr><td>${i.name}</td><td class="text-center">${i.qty}</td><td class="text-center"><input type="number" id="ret_qty_${idx}" min="0" max="${i.qty}" value="0" class="w98-input" style="width: 60px; text-align: center;"></td></tr>`).join('');
+            openModal('Process Return / Adjustment', `<form onsubmit="submitReturn(event, '${id}')"><p class="text-xs mb-2">Enter returned quantity for each item.</p><div class="win98-inset p-1 mb-2"><table class="w98-table text-xs"><thead><tr><th>Product</th><th class="text-center">Ordered</th><th class="text-center">Return Qty</th></tr></thead><tbody>${iH}</tbody></table></div><div class="flex justify-end"><button type="submit" class="w98-btn">Confirm Return</button></div></form>`);
         }
         function submitReturn(e, id) {
             e.preventDefault(); const o = State.orders.find(x => x.id === id); if(!o) return;
@@ -560,9 +641,9 @@
             if(!hR) return alert('No return quantity entered.');
             const rA = o.grossTotal - nG; const nD = o.due - rA;
             if (o.customerId) { const c = State.users.find(u => u.id === o.customerId); if (c) { const nCD = (c.due || 0) - rA; db.ref('users/' + c.id).update({ due: nCD }); } }
-            db.ref('orders/' + id).update({ items: uI, grossTotal: nG, due: nD, status: 'Returned' }).then(() => { alert('Return processed successfully! Amount adjusted.'); closeModal(); renderPage('invoices'); });
+            db.ref('orders/' + id).update({ items: uI, grossTotal: nG, due: nD, status: 'Returned' }).then(() => { alert('Return processed! Amount adjusted.'); closeModal(); renderPage('invoices'); });
         }
-        function deleteOrder(id) { const o = State.orders.find(x => x.id === id); if (!o) return alert('Order not found!'); if (confirm(`Are you sure you want to delete Invoice ${o.invoiceNo}? This will also adjust customer due.`)) { if (o.customerId && o.due) { const c = State.users.find(u => u.id === o.customerId); if (c) { const nD = (c.due || 0) - o.due; db.ref('users/' + c.id).update({ due: nD }); } } db.ref('orders/' + id).remove().then(() => { alert('Order deleted successfully!'); if (State.currentView === 'invoice_view') renderPage('invoices'); }); } }
+        function deleteOrder(id) { const o = State.orders.find(x => x.id === id); if (!o) return alert('Order not found!'); if (confirm(`Delete Invoice ${o.invoiceNo}?`)) { if (o.customerId && o.due) { const c = State.users.find(u => u.id === o.customerId); if (c) { const nD = (c.due || 0) - o.due; db.ref('users/' + c.id).update({ due: nD }); } } db.ref('orders/' + id).remove().then(() => { alert('Order deleted!'); if (State.currentView === 'invoice_view') renderPage('invoices'); }); } }
         function toBn(n) { const b = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']; return String(n).replace(/[0-9]/g, d => b[d]); }
         function formatBnDate(d) { const t = new Date(d); const m = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর']; return `${toBn(t.getDate())} ${m[t.getMonth()]}, ${toBn(t.getFullYear())}`; }
         function translateStatus(s) { const m = { 'Pending': 'পেন্ডিং', 'Shipped': 'প্রেরিত', 'Delivered': 'ডেলিভার্ড', 'Cancelled': 'বাতিল', 'Returned': 'রিটার্ন/এডজাস্টেড' }; return m[s] || 'পেন্ডিং'; }
@@ -575,11 +656,14 @@
                     <h2 class="copy-header">${t}</h2>
                     <div class="invoice-header">
                         <div class="company-info">
-                            <h2>Rafi Food Product</h2>
-                            <p>প্রিমিয়াম কোয়ালিটি বেকারি ও ফুড আইটেম</p>
-                            <p>ঠিকানা: Mosjid para Chuadanga, Chuadanga sadar-7200</p>
-                            <p>ফোন: +৮৮০ 1756144900</p>
-                            <p>ইমেইল: rafifoodproducts@gmail.com</p>
+                            <img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="Logo" class="company-logo">
+                            <div class="company-text">
+                                <h2>Rafi Food Product</h2>
+                                <p>প্রিমিয়াম কোয়ালিটি বেকারি ও ফুড আইটেম</p>
+                                <p>ঠিকানা: Mosjid para Chuadanga, Chuadanga sadar-7200</p>
+                                <p>ফোন: +৮৮০ 1756144900</p>
+                                <p>ইমেইল: rafifoodproducts@gmail.com</p>
+                            </div>
                         </div>
                         <div class="invoice-details">
                             <h1>INVOICE</h1>
@@ -596,16 +680,7 @@
                         <p><strong>মোবাইল:</strong> ${toBn(o.customerMobile)}</p>
                     </div>
                     <table class="invoice-table">
-                        <thead>
-                            <tr>
-                                <th class="center-align">SL</th>
-                                <th>পণ্যের বিবরণ</th>
-                                <th class="right-align">MRP (টাকা)</th>
-                                <th class="center-align">পরিমাণ</th>
-                                <th class="right-align">বিক্রয় মূল্য (টাকা)</th>
-                                <th class="right-align">মোট (টাকা)</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th class="center-align">SL</th><th>পণ্যের বিবরণ</th><th class="right-align">MRP (টাকা)</th><th class="center-align">পরিমাণ</th><th class="right-align">বিক্রয় মূল্য (টাকা)</th><th class="right-align">মোট (টাকা)</th></tr></thead>
                         <tbody>${iH}</tbody>
                     </table>
                     <div class="total-section">
@@ -616,14 +691,8 @@
                         </div>
                     </div>
                     <div class="signature-area">
-                        <div class="signature-block">
-                            <div class="signature-line"></div>
-                            <div class="signature-text">গ্রাহকের স্বাক্ষর</div>
-                        </div>
-                        <div class="signature-block">
-                            <div class="signature-line"></div>
-                            <div class="signature-text">অনুমোদিত স্বাক্ষর</div>
-                        </div>
+                        <div class="signature-block"><div class="signature-line"></div><div class="signature-text">গ্রাহকের স্বাক্ষর</div></div>
+                        <div class="signature-block"><div class="signature-line"></div><div class="signature-text">অনুমোদিত স্বাক্ষর</div></div>
                     </div>
                     <div class="invoice-footer">
                         <p><strong>অর্ডার গ্রহণকারী (Entry By):</strong> ${o.entryBy || 'N/A'}</p>
@@ -632,21 +701,21 @@
                     </div>
                 </div>`; 
             };
-            document.getElementById('main-content').innerHTML = `<div id="print-area"><span class="back-btn no-print" onclick="renderPage('invoices')"><i class="fas fa-arrow-left"></i> Back to Orders</span>${gC("Customer Copy")}<div class="page-break"></div>${gC("Office Copy")}<button class="print-btn no-print" onclick="window.print()">ইনভয়েস প্রিন্ট করুন / PDF সেভ করুন</button></div>`;
+            document.getElementById('main-content').innerHTML = `<div id="print-area"><span class="back-btn no-print" onclick="renderPage('invoices')"><< Back to Orders</span>${gC("Customer Copy")}<div class="page-break"></div>${gC("Office Copy")}<button class="print-btn no-print" onclick="window.print()">ইনভয়েস প্রিন্ট করুন / PDF সেভ করুন</button></div>`;
             window.scrollTo(0, 0);
         }
 
         function renderReports() {
             const tS = State.orders.reduce((s, o) => s + o.grossTotal, 0); const tC = State.orders.reduce((s, o) => s + o.paid, 0); const tD = State.users.filter(u => u.role !== 'ADMIN' && u.role !== 'SALES MAN').reduce((s, u) => s + (u.due || 0), 0);
-            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"><div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm border-l-4 border-primary"><p class="text-gray-500 text-sm">Total Sales</p><p class="text-2xl font-bold text-primary">৳ ${tS.toFixed(2)}</p></div><div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm border-l-4 border-accent"><p class="text-gray-500 text-sm">Total Collection</p><p class="text-2xl font-bold text-accent">৳ ${tC.toFixed(2)}</p></div><div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm border-l-4 border-red-500"><p class="text-gray-500 text-sm">Total Outstanding Due</p><p class="text-2xl font-bold text-red-500">৳ ${tD.toFixed(2)}</p></div></div><div class="bg-white dark:bg-darkcard p-4 md:p-6 rounded-lg shadow-sm overflow-x-auto"><div class="flex flex-col md:flex-row justify-between md:items-center mb-4 gap-2"><h3 class="text-lg font-semibold">Detailed Sales Report</h3><input type="text" id="report-search" placeholder="Search by customer/shop/mobile..." oninput="filterReports()" class="p-2 border rounded bg-gray-50 dark:bg-gray-800 text-sm w-full md:w-64"></div><table class="w-full text-sm text-left min-w-[800px]"><thead class="bg-gray-50 dark:bg-gray-800 text-xs uppercase"><tr><th class="p-2">Date</th><th class="p-2">Invoice</th><th class="p-2">Customer</th><th class="p-2">Sales</th><th class="p-2">Collected</th><th class="p-2">Due</th><th class="p-2">Status</th><th class="p-2 text-center">View</th></tr></thead><tbody id="report-tbody"></tbody><tfoot id="report-tfoot" class="bg-gray-50 dark:bg-gray-800 font-bold"></tfoot></table></div>`;
+            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4"><div class="win98-outset p-2"><p class="text-xs">Total Sales</p><p class="text-lg font-bold">৳ ${tS.toFixed(2)}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Collection</p><p class="text-lg font-bold">৳ ${tC.toFixed(2)}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Due</p><p class="text-lg font-bold">৳ ${tD.toFixed(2)}</p></div></div><div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">Detailed Sales Report</h3><input type="text" id="report-search" placeholder="Search..." oninput="filterReports()" class="w98-input" style="max-width: 200px;"></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Date</th><th>Invoice</th><th>Customer</th><th>Sales</th><th>Collected</th><th>Due</th><th>Status</th><th class="text-center">View</th></tr></thead><tbody id="report-tbody"></tbody><tfoot id="report-tfoot" class="font-bold"></tfoot></table></div></div>`;
             filterReports();
         }
         function filterReports() {
             const t = (document.getElementById('report-search')?.value || '').toLowerCase(); const fO = State.orders.filter(o => (o.customerName || '').toLowerCase().includes(t) || (o.customerShopName || '').toLowerCase().includes(t) || (o.customerMobile || '').toLowerCase().includes(t));
             let gS = 0, gC = 0, gD = 0;
-            const r = fO.map(o => { gS += o.grossTotal; gC += o.paid; gD += o.due; return `<tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"><td class="p-2">${new Date(o.orderDate).toLocaleDateString()}</td><td class="p-2 font-medium text-primary">${o.invoiceNo || 'N/A'}</td><td class="p-2">${o.customerName}<br><span class="text-xs text-gray-500">${o.customerShopName || ''}</span></td><td class="p-2">৳${o.grossTotal.toFixed(2)}</td><td class="p-2">৳${o.paid.toFixed(2)}</td><td class="p-2">৳${o.due.toFixed(2)}</td><td class="p-2"><span class="status-badge status-${o.status ? o.status.toLowerCase() : 'pending'}">${o.status || 'Pending'}</span></td><td class="p-2 text-center"><button onclick="viewInvoice('${o.id}')" class="text-blue-500 hover:text-blue-700 text-lg" title="View Invoice"><i class="fas fa-eye"></i></button></td></tr>`; }).join('') || `<tr><td colspan="8" class="text-center p-4 text-gray-500">No matching records found.</td></tr>`;
+            const r = fO.map(o => { gS += o.grossTotal; gC += o.paid; gD += o.due; return `<tr><td>${new Date(o.orderDate).toLocaleDateString()}</td><td>${o.invoiceNo || 'N/A'}</td><td>${o.customerName}<br><span class="text-[10px]">${o.customerShopName || ''}</span></td><td>৳${o.grossTotal.toFixed(2)}</td><td>৳${o.paid.toFixed(2)}</td><td>৳${o.due.toFixed(2)}</td><td><span class="status-badge status-${o.status ? o.status.toLowerCase() : 'pending'}">${o.status || 'Pending'}</span></td><td class="text-center"><button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button></td></tr>`; }).join('') || `<tr><td colspan="8" class="text-center p-4">No records found.</td></tr>`;
             document.getElementById('report-tbody').innerHTML = r;
-            document.getElementById('report-tfoot').innerHTML = `<tr><td colspan="3" class="p-2 text-right">GRAND TOTAL:</td><td class="p-2 text-primary">৳ ${gS.toFixed(2)}</td><td class="p-2 text-accent">৳ ${gC.toFixed(2)}</td><td class="p-2 text-red-500">৳ ${gD.toFixed(2)}</td><td colspan="2"></td></tr>`;
+            document.getElementById('report-tfoot').innerHTML = `<tr><td colspan="3" class="text-right">GRAND TOTAL:</td><td>৳ ${gS.toFixed(2)}</td><td>৳ ${gC.toFixed(2)}</td><td>৳ ${gD.toFixed(2)}</td><td colspan="2"></td></tr>`;
         }
     </script>
 </body>
