@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAFI FOOD - Advanced System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#5C1D24', accent: '#D4AF37', lightbg: '#F9F6F0', darkbg: '#111827', darkcard: '#1f2937' } } } }
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmogqpXzirZC-aUHZrFMwutSJ5fmbyDXk",
+            authDomain: "e-commarcebd.firebaseapp.com",
+            databaseURL: "https://e-commarcebd-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "e-commarcebd",
+            storageBucket: "e-commarcebd.firebasestorage.app",
+            messagingSenderId: "799252588942",
+            appId: "1:799252588942:web:985396062c3a1823c6dcdf",
+            measurementId: "G-FM6BH07VPM"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+    </script>
+
+    <style>
+        :root {
+            --primary-maroon: #5C1D24;
+            --accent-gold: #D4AF37;
+            --light-bg: #F9F6F0;
+            --text-dark: #333333;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-link.active { background-color: var(--primary-maroon); color: var(--accent-gold); }
+        .hidden { display: none !important; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
+        .dark ::-webkit-scrollbar-track { background: #333; }
+        .dark ::-webkit-scrollbar-thumb { background: #555; }
+        .modal-overlay { background: rgba(0,0,0,0.6); }
+        .app-layout { display: flex; width: 100%; min-height: 100vh; }
+        .main-area { flex: 1 1 0%; display: flex; flex-direction: column; }
+
+        /* Custom Logo Style */
+        .brand-logo {
+            width: 40px; height: 40px; border-radius: 50%; background-color: var(--primary-maroon);
+            border: 2px solid var(--accent-gold); color: var(--accent-gold); display: flex;
+            align-items: center; justify-content: center; font-weight: bold; font-size: 1.5rem;
+        }
+
+        /* Invoice Specific CSS */
+        .invoice-box { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.15); border-top: 6px solid var(--primary-maroon); color: var(--text-dark); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin-bottom: 40px; }
+        .copy-header { text-align: center; font-size: 1.2rem; font-weight: bold; color: var(--primary-maroon); border-bottom: 2px dashed #ccc; padding-bottom: 10px; margin-bottom: 20px; text-transform: uppercase; }
+        .page-break { page-break-after: always; }
+        
+        .invoice-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--accent-gold); padding-bottom: 20px; margin-bottom: 20px; }
+        .invoice-header h2 { color: var(--primary-maroon); font-size: 1.8rem; margin-bottom: 5px; }
+        .invoice-header p { font-size: 0.9rem; color: #555; }
+        .invoice-details { text-align: right; }
+        .invoice-details h1 { color: var(--primary-maroon); font-size: 1.6rem; margin-bottom: 5px; }
+        .customer-info { margin-bottom: 25px; background: var(--light-bg); padding: 15px; border-radius: 5px; border-left: 4px solid var(--accent-gold); }
+        .customer-info h3 { font-size: 1rem; color: var(--primary-maroon); margin-bottom: 5px; }
+        .customer-info p { font-size: 0.9rem; color: #444; }
+        .invoice-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
+        .invoice-table th, .invoice-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; font-size: 0.95rem; }
+        .invoice-table th { background-color: var(--primary-maroon); color: white; }
+        .invoice-table th.right-align, .invoice-table td.right-align { text-align: right; }
+        .invoice-table th.center-align, .invoice-table td.center-align { text-align: center; }
+        .invoice-table td:last-child { font-weight: 600; }
+        .total-section { display: flex; justify-content: flex-end; margin-bottom: 30px; }
+        .total-table { width: 300px; }
+        .total-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.95rem; border-bottom: 1px solid #eee; }
+        .total-row.grand-total { font-weight: bold; font-size: 1.1rem; color: var(--primary-maroon); border-bottom: 2px solid var(--primary-maroon); border-top: 2px solid var(--primary-maroon); margin-top: 5px; padding: 10px 0; }
+        .invoice-footer { text-align: center; border-top: 1px solid #ddd; padding-top: 15px; font-size: 0.85rem; color: #666; }
+        .print-btn { display: block; width: 100%; background-color: var(--accent-gold); color: var(--primary-maroon); border: none; padding: 12px; font-size: 1rem; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+        .back-btn { display: inline-block; margin-bottom: 20px; color: var(--primary-maroon); font-weight: bold; text-decoration: underline; cursor: pointer; }
+        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
+        .status-pending { background: #FEF3C7; color: #D97706; }
+        .status-shipped { background: #DBEAFE; color: #2563EB; }
+        .status-delivered { background: #D1FAE5; color: #059669; }
+        .status-cancelled { background: #FEE2E2; color: #DC2626; }
+        .status-returned { background: #E0E7FF; color: #4F46E5; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none !important; }
+            .invoice-box { box-shadow: none; border: none; margin: 0; padding: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-darkbg text-gray-900 dark:text-gray-100 transition-colors duration-300">
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-[#722F37] p-4">
+        <div class="bg-white dark:bg-darkcard w-full max-w-md p-8 rounded-xl shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="brand-logo mx-auto mb-3" style="width: 60px; height: 60px; font-size: 2rem;">R</div>
+                <h1 class="text-3xl font-bold text-primary">RAFI FOOD</h1>
+                <p class="text-gray-500 dark:text-gray-400 mt-2">Sales & Distribution Management System</p>
+            </div>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Username</label>
+                    <input type="text" id="username" class="w-full px-4 py-2 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 focus:ring-2 focus:ring-primary outline-none" placeholder="admin" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Password</label>
+                    <input type="password" id="password" class="w-full px-4 py-2 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 focus:ring-2 focus:ring-primary outline-none" placeholder="admin" required>
+                </div>
+                <button type="submit" class="w-full bg-primary hover:bg-[#722F37] text-white font-bold py-2 rounded-lg transition">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App Layout -->
+    <div id="app-screen" class="hidden app-layout">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="bg-white dark:bg-darkcard w-64 space-y-6 py-7 px-4 fixed inset-y-0 left-0 z-40 transform md:translate-x-0 -translate-x-full transition duration-200 ease-in-out border-r dark:border-gray-700 overflow-y-auto">
+            <div class="flex items-center space-x-2 px-2">
+                <div class="brand-logo">R</div>
+                <div>
+                    <h1 class="text-xl font-bold text-primary dark:text-accent">RAFI FOOD</h1>
+                    <p class="text-[10px] text-gray-500">Distribution System</p>
+                </div>
+            </div>
+            <nav class="space-y-1 text-sm">
+                <a href="#" data-page="dashboard" class="sidebar-link active flex items-center space-x-2 py-2.5 px-4 rounded transition hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-tachometer-alt w-5"></i> <span>Dashboard</span></a>
+                
+                <div class="pt-2 pb-1 px-4 text-[11px] uppercase font-bold text-gray-400">Sales & Distribution</div>
+                <a href="#" data-page="order-entry" class="sidebar-link flex items-center space-x-2 py-2.5 px-4 rounded transition hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-cart-plus w-5"></i> <span>Order Entry</span></a>
+                <a href="#" data-page="invoices" class="sidebar-link flex items-center space-x-2 py-2.5 px-4 rounded transition hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-file-invoice w-5"></i> <span>Order History</span></a>
+
+                <div class="pt-2 pb-1 px-4 text-[11px] uppercase font-bold text-gray-400">Management</div>
+                <a href="#" data-page="products" class="admin-only sidebar-link flex items-center space-x-2 py-2.5 px-4 rounded transition hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-boxes w-5"></i> <span>Product Mgmt</span></a>
+                <a href="#" data-page="users" class="admin-only sidebar-link flex items-center space-x-2 py-2.5 px-4 rounded transition hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-user-shield w-5"></i> <span>User Mgmt</span></a>
+                
+                <div class="pt-2 pb-1 px-4 text-[11px] uppercase font-bold text-gray-400">Reports</div>
+                <a href="#" data-page="reports" class="sidebar-link flex items-center space-x-2 py-2.5 px-4 rounded transition hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-chart-line w-5"></i> <span>Sales & Due Reports</span></a>
+            </nav>
+        </aside>
+
+        <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black opacity-50 z-30 md:hidden"></div>
+
+        <!-- Main Content Area -->
+        <div class="main-area md:ml-64">
+            <header class="bg-white dark:bg-darkcard shadow-sm py-4 px-6 flex items-center justify-between sticky top-0 z-20">
+                <div class="flex items-center space-x-4">
+                    <button id="menu-toggle" class="md:hidden text-gray-600 dark:text-gray-300"><i class="fas fa-bars text-xl"></i></button>
+                    <h2 id="page-title" class="text-xl font-semibold">Dashboard</h2>
+                </div>
+                <div class="flex items-center space-x-4 relative">
+                    <button id="theme-toggle" class="text-gray-500 dark:text-gray-300 hover:text-primary">
+                        <i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                    
+                    <!-- Profile Dropdown -->
+                    <div id="profile-container" class="relative">
+                        <div id="profile-toggle" class="flex items-center space-x-2 cursor-pointer">
+                            <img id="nav-avatar" src="https://ui-avatars.com/api/?name=Admin&background=5C1D24&color=fff" class="w-8 h-8 rounded-full" alt="User">
+                            <div class="hidden md:block text-left">
+                                <p class="text-sm font-medium" id="user-name">Admin</p>
+                                <p class="text-xs text-gray-500" id="user-role">ADMIN</p>
+                            </div>
+                            <i class="fas fa-chevron-down text-xs text-gray-400 hidden md:block"></i>
+                        </div>
+                        
+                        <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-darkcard rounded-md shadow-xl py-1 z-50 border dark:border-gray-700">
+                            <a href="#" onclick="openProfileSettings()" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-user-cog mr-2"></i> Profile Setting</a>
+                            <a href="#" onclick="openChangePassword()" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-key mr-2"></i> Change Password</a>
+                            <div class="border-t dark:border-gray-700 my-1"></div>
+                            <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main id="main-content" class="flex-1 p-4 md:p-6 overflow-y-auto bg-gray-100 dark:bg-darkbg"></main>
+        </div>
+    </div>
+
+    <!-- Universal Modal -->
+    <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-overlay p-4">
+        <div class="bg-white dark:bg-darkcard w-full max-w-lg rounded-lg shadow-xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-4 border-b dark:border-gray-700 sticky top-0 bg-white dark:bg-darkcard">
+                <h3 id="modal-title" class="text-lg font-semibold">Modal Title</h3>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-red-500"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="modal-body" class="p-6"></div>
+        </div>
+    </div>
+
+    <script>
+        const State = {
+            currentUser: null,
+            currentPage: null,
+            currentView: null,
+            products: [],
+            users: [],
+            orders: [],
+            cart: []
+        };
+
+        // --- AUTH ---
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'admin' && password === 'admin') {
+                State.currentUser = { id: 'superadmin', name: 'Super Admin', role: 'ADMIN', status: 'Active' };
+                showApp();
+                return;
+            }
+
+            const usersRef = db.ref('users');
+            usersRef.once('value', (snapshot) => {
+                let loggedIn = false;
+                snapshot.forEach((childSnapshot) => {
+                    const user = childSnapshot.val();
+                    user.id = childSnapshot.key; 
+                    if (user.username === username && user.password === password) {
+                        if (user.status !== 'Active') return alert('User is inactive!');
+                        State.currentUser = user;
+                        loggedIn = true;
+                    }
+                });
+                if (loggedIn) showApp();
+                else alert('Invalid credentials!');
+            });
+        });
+
+        function showApp() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app-screen').classList.remove('hidden');
+            document.getElementById('user-name').textContent = State.currentUser.name;
+            document.getElementById('user-role').textContent = State.currentUser.role;
+            
+            const avatarUrl = State.currentUser.image || `https://ui-avatars.com/api/?name=${State.currentUser.name}&background=5C1D24&color=D4AF37`;
+            document.getElementById('nav-avatar').src = avatarUrl;
+            
+            if (State.currentUser.role !== 'ADMIN') {
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+            } else {
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+            }
+
+            initFirebaseListeners();
+            renderPage('dashboard');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) location.reload();
+        }
+
+        // Profile Dropdown Logic
+        document.getElementById('profile-toggle').addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('profile-menu').classList.toggle('hidden');
+        });
+        document.addEventListener('click', (e) => {
+            const container = document.getElementById('profile-container');
+            if (!container.contains(e.target)) document.getElementById('profile-menu').classList.add('hidden');
+        });
+
+        function openProfileSettings() {
+            const u = State.currentUser;
+            openModal('Profile Settings', `
+                <form onsubmit="saveProfile(event)">
+                    <div class="mb-3 flex flex-col items-center">
+                        <img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 rounded-full object-cover mb-2 border-2 border-primary">
+                        <input type="file" id="p_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs">
+                    </div>
+                    <div class="mb-3"><label class="block text-sm mb-1">Full Name</label><input type="text" id="p_name" value="${u.name}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                    <div class="mb-3"><label class="block text-sm mb-1">Shop Name</label><input type="text" id="p_shop" value="${u.shopName || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
+                    <div class="mb-3"><label class="block text-sm mb-1">Mobile</label><input type="text" id="p_mobile" value="${u.mobile || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
+                    <div class="mb-3"><label class="block text-sm mb-1">Address</label><textarea id="p_address" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800">${u.address || ''}</textarea></div>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded w-full">Save Changes</button>
+                </form>
+            `);
+        }
+
+        function previewUserImage(input) {
+            const reader = new FileReader();
+            reader.onload = (e) => document.getElementById('u_img_preview').src = e.target.result;
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        function saveProfile(e) {
+            e.preventDefault();
+            const imageFile = document.getElementById('p_image').files[0];
+            const data = {
+                name: document.getElementById('p_name').value,
+                shopName: document.getElementById('p_shop').value,
+                mobile: document.getElementById('p_mobile').value,
+                address: document.getElementById('p_address').value
+            };
+
+            const saveToDB = (imgUrl) => {
+                if(imgUrl) data.image = imgUrl;
+                if (State.currentUser.id === 'superadmin') {
+                    State.currentUser = { ...State.currentUser, ...data };
+                } else {
+                    db.ref('users/' + State.currentUser.id).update(data);
+                    State.currentUser = { ...State.currentUser, ...data };
+                }
+                document.getElementById('user-name').textContent = data.name;
+                if(data.image) document.getElementById('nav-avatar').src = data.image;
+                alert('Profile updated successfully!');
+                closeModal();
+            };
+
+            if(imageFile) {
+                const reader = new FileReader();
+                reader.onload = (e) => saveToDB(e.target.result);
+                reader.readAsDataURL(imageFile);
+            } else { saveToDB(); }
+        }
+
+        function openChangePassword() {
+            openModal('Change Password', `
+                <form onsubmit="savePassword(event)">
+                    <div class="mb-3"><label class="block text-sm mb-1">New Password</label><input type="password" id="new_pass" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded w-full">Update Password</button>
+                </form>
+            `);
+        }
+
+        function savePassword(e) {
+            e.preventDefault();
+            const newPass = document.getElementById('new_pass').value;
+            if (State.currentUser.id === 'superadmin') alert('Super Admin password cannot be changed here.');
+            else {
+                db.ref('users/' + State.currentUser.id).update({ password: newPass });
+                alert('Password updated successfully!');
+            }
+            closeModal();
+        }
+
+        // --- FIREBASE REAL-TIME LISTENERS ---
+        function initFirebaseListeners() {
+            db.ref('products').on('value', (snapshot) => {
+                State.products = [];
+                snapshot.forEach(child => { State.products.push({ id: child.key, ...child.val() }); });
+                if (State.currentPage === 'products') renderProducts();
+                if (State.currentPage === 'dashboard') renderDashboard();
+                if (State.currentPage === 'order-entry') renderOrderEntry();
+            });
+
+            db.ref('users').on('value', (snapshot) => {
+                State.users = [];
+                snapshot.forEach(child => { State.users.push({ id: child.key, ...child.val() }); });
+                if (State.currentPage === 'users') renderUsers();
+                if (State.currentPage === 'dashboard') renderDashboard();
+                if (State.currentPage === 'order-entry') renderOrderEntry();
+                if (State.currentPage === 'reports') renderReports();
+            });
+
+            db.ref('orders').on('value', (snapshot) => {
+                State.orders = [];
+                snapshot.forEach(child => { State.orders.push({ id: child.key, ...child.val() }); });
+                if (State.currentPage === 'invoices' && State.currentView !== 'invoice_view') renderInvoices();
+                if (State.currentPage === 'reports') renderReports();
+            });
+        }
+
+        // --- ROUTING & UI ---
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                renderPage(link.dataset.page);
+                if (window.innerWidth < 768) toggleSidebar(false);
+            });
+        });
+        
+        document.getElementById('menu-toggle').addEventListener('click', () => toggleSidebar(true));
+        document.getElementById('sidebar-overlay').addEventListener('click', () => toggleSidebar(false));
+        document.getElementById('theme-toggle').addEventListener('click', () => document.documentElement.classList.toggle('dark'));
+
+        function toggleSidebar(show) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if(show) { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); } 
+            else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
+        }
+
+        function renderPage(page) {
+            State.currentPage = page;
+            State.currentView = null;
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            const activeLink = document.querySelector(`[data-page="${page}"]`);
+            if (activeLink) activeLink.classList.add('active');
+            const mainContent = document.getElementById('main-content');
+            const pageTitle = document.getElementById('page-title');
+            mainContent.innerHTML = '<div class="flex justify-center items-center h-64"><i class="fas fa-spinner fa-spin text-primary text-3xl"></i></div>';
+
+            setTimeout(() => {
+                switch(page) {
+                    case 'dashboard': pageTitle.textContent = 'Dashboard'; renderDashboard(); break;
+                    case 'products': pageTitle.textContent = 'Product Management'; renderProducts(); break;
+                    case 'users': pageTitle.textContent = 'User Management'; renderUsers(); break;
+                    case 'order-entry': pageTitle.textContent = 'Order Entry'; renderOrderEntry(); break;
+                    case 'invoices': pageTitle.textContent = 'Order History'; renderInvoices(); break;
+                    case 'reports': pageTitle.textContent = 'Sales & Due Reports'; renderReports(); break;
+                }
+            }, 200);
+        }
+
+        function openModal(title, htmlContent) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-body').innerHTML = htmlContent;
+            document.getElementById('modal').classList.remove('hidden');
+        }
+        function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+
+        // --- DASHBOARD ---
+        function renderDashboard() {
+            const isCustomer = State.currentUser.role !== 'ADMIN' && State.currentUser.role !== 'SALES MAN';
+            const totalDue = State.users.filter(u => u.role !== 'ADMIN' && u.role !== 'SALES MAN').reduce((s, u) => s + (u.due || 0), 0);
+            
+            document.getElementById('main-content').innerHTML = `
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    ${!isCustomer ? `
+                    <div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm border-l-4 border-primary">
+                        <p class="text-gray-500 text-xs md:text-sm">Total Products</p>
+                        <p class="text-xl md:text-2xl font-bold">${State.products.length}</p>
+                    </div>
+                    <div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm border-l-4 border-accent">
+                        <p class="text-gray-500 text-xs md:text-sm">Total Customers</p>
+                        <p class="text-xl md:text-2xl font-bold">${State.users.filter(u => u.role !== 'ADMIN' && u.role !== 'SALES MAN').length}</p>
+                    </div>
+                    <div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm border-l-4 border-red-500">
+                        <p class="text-gray-500 text-xs md:text-sm">Total Due</p>
+                        <p class="text-xl md:text-2xl font-bold">৳ ${totalDue}</p>
+                    </div>
+                    ` : `
+                    <div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm border-l-4 border-primary col-span-2 md:col-span-4">
+                        <p class="text-gray-500 text-sm">Welcome, ${State.currentUser.name}!</p>
+                        <p class="text-xl font-bold mt-1">Your Current Due: ৳ ${State.currentUser.due || 0}</p>
+                    </div>
+                    `}
+                </div>
+                <div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm">
+                    <h3 class="font-semibold mb-4">${isCustomer ? 'My Order History' : 'Sales Overview'}</h3>
+                    <canvas id="salesChart" height="100"></canvas>
+                </div>
+            `;
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            if(window.myChart) window.myChart.destroy();
+            window.myChart = new Chart(ctx, { type: 'bar', data: { labels: ['Mon', 'Tue', 'Wed', 'Thu'], datasets: [{ label: 'Sales', data: [12, 19, 15, 25], backgroundColor: '#5C1D24' }] } });
+        }
+
+        // --- PRODUCTS CRUD ---
+        function renderProducts() {
+            const canEdit = State.currentUser.role === 'ADMIN';
+            const tableRows = State.products.length ? State.products.map(p => `
+                <tr class="border-b dark:border-gray-700">
+                    <td class="p-2"><img src="${p.image || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded object-cover"></td>
+                    <td class="p-2">${p.code || 'N/A'}</td>
+                    <td class="p-2">${p.name}</td>
+                    <td class="p-2">৳${p.mrp}</td>
+                    <td class="p-2">৳${p.rPrice} / ৳${p.dPrice} / ৳${p.hPrice}</td>
+                    <td class="p-2">${p.stock}</td>
+                    <td class="p-2 text-right">
+                        ${canEdit ? `<button onclick="editProduct('${p.id}')" class="text-blue-500 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteProduct('${p.id}')" class="text-red-500"><i class="fas fa-trash"></i></button>` : '-'}
+                    </td>
+                </tr>
+            `).join('') : `<tr><td colspan="7" class="text-center p-4 text-gray-500">No products found.</td></tr>`;
+
+            document.getElementById('main-content').innerHTML = `
+                <div class="bg-white dark:bg-darkcard p-4 md:p-6 rounded-lg shadow-sm overflow-x-auto">
+                    <div class="flex justify-between mb-4">
+                        <h3 class="text-lg font-semibold">Products List</h3>
+                        ${canEdit ? `<button onclick="addProduct()" class="bg-primary text-white px-4 py-2 rounded text-sm flex items-center"><i class="fas fa-plus mr-1"></i> Add Product</button>` : ''}
+                    </div>
+                    <table class="w-full text-sm text-left min-w-[600px]">
+                        <thead class="bg-gray-50 dark:bg-gray-800 text-xs uppercase">
+                            <tr><th class="p-2">Image</th><th class="p-2">Code</th><th class="p-2">Name</th><th class="p-2">MRP</th><th class="p-2">R/D/H Price</th><th class="p-2">Stock</th><th class="p-2 text-right">Action</th></tr>
+                        </thead>
+                        <tbody>${tableRows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function addProduct() {
+            openModal('Add Product', `
+                <form onsubmit="saveProduct(event, '')">
+                    <div class="mb-3 flex flex-col items-center">
+                        <img id="img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 rounded-full object-cover mb-2 border-2 border-primary">
+                        <input type="file" id="p_image" accept="image/*" onchange="previewImage(this)" class="text-xs">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><label class="block text-sm mb-1">Code</label><input type="text" id="p_code" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                        <div><label class="block text-sm mb-1">Name</label><input type="text" id="p_name" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mt-2">
+                        <div><label class="block text-sm mb-1">Category</label><input type="text" id="p_cat" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                        <div><label class="block text-sm mb-1">MRP</label><input type="number" id="p_mrp" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 mt-2">
+                        <div><label class="block text-sm mb-1">R-Price</label><input type="number" id="p_r" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                        <div><label class="block text-sm mb-1">D-Price</label><input type="number" id="p_d" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                        <div><label class="block text-sm mb-1">H-Price</label><input type="number" id="p_h" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                    </div>
+                    <div class="mt-2"><label class="block text-sm mb-1">Stock</label><input type="number" id="p_stock" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded w-full mt-4">Save Product</button>
+                </form>
+            `);
+        }
+
+        function editProduct(id) {
+            const p = State.products.find(x => x.id === id);
+            openModal('Edit Product', `
+                <form onsubmit="saveProduct(event, '${p.id}')">
+                    <div class="mb-3 flex flex-col items-center">
+                        <img id="img_preview" src="${p.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 rounded-full object-cover mb-2 border-2 border-primary">
+                        <input type="file" id="p_image" accept="image/*" onchange="previewImage(this)" class="text-xs">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><label class="block text-sm mb-1">Code</label><input type="text" id="p_code" value="${p.code || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                        <div><label class="block text-sm mb-1">Name</label><input type="text" id="p_name" value="${p.name}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mt-2">
+                        <div><label class="block text-sm mb-1">Category</label><input type="text" id="p_cat" value="${p.category}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                        <div><label class="block text-sm mb-1">MRP</label><input type="number" id="p_mrp" value="${p.mrp}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 mt-2">
+                        <div><label class="block text-sm mb-1">R-Price</label><input type="number" id="p_r" value="${p.rPrice}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                        <div><label class="block text-sm mb-1">D-Price</label><input type="number" id="p_d" value="${p.dPrice}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                        <div><label class="block text-sm mb-1">H-Price</label><input type="number" id="p_h" value="${p.hPrice}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                    </div>
+                    <div class="mt-2"><label class="block text-sm mb-1">Stock</label><input type="number" id="p_stock" value="${p.stock}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded w-full mt-4">Update Product</button>
+                </form>
+            `);
+        }
+
+        function previewImage(input) {
+            const reader = new FileReader();
+            reader.onload = (e) => document.getElementById('img_preview').src = e.target.result;
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        function saveProduct(e, id) {
+            e.preventDefault();
+            const imageFile = document.getElementById('p_image').files[0];
+            const data = {
+                code: document.getElementById('p_code').value,
+                name: document.getElementById('p_name').value,
+                category: document.getElementById('p_cat').value,
+                mrp: parseFloat(document.getElementById('p_mrp').value),
+                rPrice: parseFloat(document.getElementById('p_r').value),
+                dPrice: parseFloat(document.getElementById('p_d').value),
+                hPrice: parseFloat(document.getElementById('p_h').value),
+                stock: parseInt(document.getElementById('p_stock').value)
+            };
+
+            const saveToDB = (imgUrl) => {
+                if(imgUrl) data.image = imgUrl;
+                if (id) db.ref('products/' + id).update(data);
+                else db.ref('products').push(data);
+                closeModal();
+            };
+
+            if(imageFile) {
+                const reader = new FileReader();
+                reader.onload = (e) => saveToDB(e.target.result);
+                reader.readAsDataURL(imageFile);
+            } else { saveToDB(); }
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Are you sure?')) db.ref('products/' + id).remove();
+        }
+
+        // --- USERS CRUD ---
+        function renderUsers() {
+            const canEdit = State.currentUser.role === 'ADMIN';
+            const rows = State.users.length ? State.users.map(u => `
+                <tr class="border-b dark:border-gray-700">
+                    <td class="p-2"><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full object-cover"></td>
+                    <td class="p-2">${u.username}</td>
+                    <td class="p-2">${u.name}<br><span class="text-xs text-gray-500">${u.shopName || ''}</span></td>
+                    <td class="p-2"><span class="bg-primary/10 text-primary px-2 py-1 rounded text-xs">${u.role}</span></td>
+                    <td class="p-2">৳${u.due || 0}</td>
+                    <td class="p-2 text-right">
+                        ${canEdit ? `<button onclick="editUser('${u.id}')" class="text-blue-500 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteUser('${u.id}')" class="text-red-500"><i class="fas fa-trash"></i></button>` : '-'}
+                    </td>
+                </tr>
+            `).join('') : `<tr><td colspan="6" class="text-center p-4 text-gray-500">No users found.</td></tr>`;
+
+            document.getElementById('main-content').innerHTML = `
+                <div class="bg-white dark:bg-darkcard p-4 md:p-6 rounded-lg shadow-sm overflow-x-auto">
+                    <div class="flex justify-between mb-4">
+                        <h3 class="text-lg font-semibold">System Users / Customers</h3>
+                        ${canEdit ? `<button onclick="addUser()" class="bg-primary text-white px-4 py-2 rounded text-sm flex items-center"><i class="fas fa-plus mr-1"></i> Add User</button>` : ''}
+                    </div>
+                    <table class="w-full text-sm text-left min-w-[600px]">
+                        <thead class="bg-gray-50 dark:bg-gray-800 text-xs uppercase">
+                            <tr><th class="p-2">Img</th><th class="p-2">Username</th><th class="p-2">Name / Shop</th><th class="p-2">Role</th><th class="p-2">Due</th><th class="p-2 text-right">Action</th></tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function addUser() {
+            openModal('Add User / Customer', `
+                <form onsubmit="saveUser(event, '')">
+                    <div class="mb-3 flex flex-col items-center">
+                        <img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 rounded-full object-cover mb-2 border-2 border-primary">
+                        <input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><label class="block text-sm mb-1">Full Name</label><input type="text" id="u_name" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                        <div><label class="block text-sm mb-1">Shop Name</label><input type="text" id="u_shop" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mt-2">
+                        <div><label class="block text-sm mb-1">Username</label><input type="text" id="u_username" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                        <div><label class="block text-sm mb-1">Password</label><input type="text" id="u_password" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mt-2">
+                        <div><label class="block text-sm mb-1">Mobile</label><input type="text" id="u_mobile" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
+                        <div><label class="block text-sm mb-1">Role (Customer Type)</label>
+                            <select id="u_role" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800">
+                                <option value="ADMIN">Admin</option>
+                                <option value="SALES MAN">Sales Man</option>
+                                <option value="RETAILER">Retailer</option>
+                                <option value="DEALER">Dealer</option>
+                                <option value="HOCKER">Hocker</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-2"><label class="block text-sm mb-1">Address</label><textarea id="u_address" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></textarea></div>
+                    <div class="mt-2"><label class="block text-sm mb-1">Opening Due</label><input type="number" id="u_due" value="0" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded w-full mt-4">Save User</button>
+                </form>
+            `);
+        }
+
+        function editUser(id) {
+            const u = State.users.find(x => x.id === id);
+            openModal('Edit User / Customer', `
+                <form onsubmit="saveUser(event, '${u.id}')">
+                    <div class="mb-3 flex flex-col items-center">
+                        <img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 rounded-full object-cover mb-2 border-2 border-primary">
+                        <input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><label class="block text-sm mb-1">Full Name</label><input type="text" id="u_name" value="${u.name}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                        <div><label class="block text-sm mb-1">Shop Name</label><input type="text" id="u_shop" value="${u.shopName || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mt-2">
+                        <div><label class="block text-sm mb-1">Username</label><input type="text" id="u_username" value="${u.username}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                        <div><label class="block text-sm mb-1">Password</label><input type="text" id="u_password" value="${u.password}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800" required></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mt-2">
+                        <div><label class="block text-sm mb-1">Mobile</label><input type="text" id="u_mobile" value="${u.mobile || ''}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
+                        <div><label class="block text-sm mb-1">Role (Customer Type)</label>
+                            <select id="u_role" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800">
+                                <option value="ADMIN" ${u.role==='ADMIN'?'selected':''}>Admin</option>
+                                <option value="SALES MAN" ${u.role==='SALES MAN'?'selected':''}>Sales Man</option>
+                                <option value="RETAILER" ${u.role==='RETAILER'?'selected':''}>Retailer</option>
+                                <option value="DEALER" ${u.role==='DEALER'?'selected':''}>Dealer</option>
+                                <option value="HOCKER" ${u.role==='HOCKER'?'selected':''}>Hocker</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-2"><label class="block text-sm mb-1">Address</label><textarea id="u_address" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800">${u.address || ''}</textarea></div>
+                    <div class="mt-2"><label class="block text-sm mb-1">Current Due</label><input type="number" id="u_due" value="${u.due || 0}" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800"></div>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded w-full mt-4">Update User</button>
+                </form>
+            `);
+        }
+
+        function saveUser(e, id) {
+            e.preventDefault();
+            const imageFile = document.getElementById('u_image').files[0];
+            const data = {
+                name: document.getElementById('u_name').value,
+                shopName: document.getElementById('u_shop').value,
+                username: document.getElementById('u_username').value,
+                password: document.getElementById('u_password').value,
+                mobile: document.getElementById('u_mobile').value,
+                address: document.getElementById('u_address').value,
+                role: document.getElementById('u_role').value,
+                due: parseFloat(document.getElementById('u_due').value),
+                status: 'Active'
+            };
+
+            const saveToDB = (imgUrl) => {
+                if(imgUrl) data.image = imgUrl;
+                if (id) db.ref('users/' + id).update(data);
+                else db.ref('users').push(data);
+                closeModal();
+            };
+
+            if(imageFile) {
+                const reader = new FileReader();
+                reader.onload = (e) => saveToDB(e.target.result);
+                reader.readAsDataURL(imageFile);
+            } else { saveToDB(); }
+        }
+
+        function deleteUser(id) {
+            if (confirm('Are you sure?')) db.ref('users/' + id).remove();
+        }
+
+        // --- ORDER ENTRY MODULE ---
+        function renderOrderEntry() {
+            State.cart = []; 
+            const isCustomer = State.currentUser.role !== 'ADMIN' && State.currentUser.role !== 'SALES MAN';
+            
+            document.getElementById('main-content').innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm">
+                        <h3 class="text-lg font-semibold mb-4">Select Products</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 max-h-[60vh] overflow-y-auto p-1">
+                            ${State.products.map(p => `
+                                <div onclick="addToCart('${p.id}')" class="border rounded-lg p-2 cursor-pointer hover:border-primary hover:bg-gray-50 dark:hover:bg-gray-800 transition text-center">
+                                    <img src="${p.image || 'https://via.placeholder.com/80'}" class="w-full h-20 object-cover rounded mb-2">
+                                    <p class="font-medium text-sm truncate">${p.name}</p>
+                                    <p class="text-xs text-gray-500">Stock: ${p.stock}</p>
+                                    <p class="text-primary font-bold text-sm mt-1">৳ <span id="price_${p.id}">0</span></p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm flex flex-col">
+                        <h3 class="text-lg font-semibold mb-4 border-b pb-2 dark:border-gray-700">Order Summary</h3>
+                        
+                        <div class="mb-3">
+                            <label class="text-xs block mb-1">Customer Type</label>
+                            <select id="cust_type" onchange="handleCustomerTypeChange()" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800 text-sm" ${isCustomer ? 'disabled' : ''}>
+                                <option value="RETAILER" ${isCustomer && State.currentUser.role === 'RETAILER' ? 'selected' : ''}>Retailer</option>
+                                <option value="DEALER" ${isCustomer && State.currentUser.role === 'DEALER' ? 'selected' : ''}>Dealer</option>
+                                <option value="HOCKER" ${isCustomer && State.currentUser.role === 'HOCKER' ? 'selected' : ''}>Hocker</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-xs block mb-1">Customer</label>
+                            <select id="cust_id" class="w-full p-2 border rounded bg-gray-50 dark:bg-gray-800 text-sm" ${isCustomer ? 'disabled' : ''}>
+                                ${isCustomer ? `<option value="${State.currentUser.id}" selected>${State.currentUser.name} (${State.currentUser.role})</option>` : ''}
+                            </select>
+                        </div>
+
+                        <div class="flex-1 overflow-y-auto max-h-[30vh] border rounded p-2 mb-3 dark:border-gray-700">
+                            <table class="w-full text-xs text-left">
+                                <tbody id="cart-table">
+                                    <tr><td colspan="3" class="text-center text-gray-500 py-4">Cart is empty</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="space-y-1 text-sm border-t pt-3 dark:border-gray-700">
+                            <div class="flex justify-between"><span>Gross Total:</span> <span id="gross_total" class="font-semibold">৳ 0.00</span></div>
+                            <div class="flex justify-between"><span>Paid Amount:</span> <input type="number" id="paid_amt" value="0" oninput="calcDue()" class="w-24 p-1 border rounded bg-gray-50 dark:bg-gray-800 text-right"></div>
+                            <div class="flex justify-between font-bold text-primary text-base"><span>Current Due:</span> <span id="final_due">৳ 0.00</span></div>
+                        </div>
+                        <button onclick="submitOrder()" class="bg-primary text-white p-2 rounded w-full mt-4 hover:bg-[#722F37]">Submit Order</button>
+                    </div>
+                </div>
+            `;
+            handleCustomerTypeChange(); 
+        }
+
+        function handleCustomerTypeChange() {
+            const type = document.getElementById('cust_type').value;
+            const isCustomer = State.currentUser.role !== 'ADMIN' && State.currentUser.role !== 'SALES MAN';
+            
+            if (isCustomer) return; 
+
+            const filteredCustomers = State.users.filter(u => u.role === type);
+            const custSelect = document.getElementById('cust_id');
+            custSelect.innerHTML = filteredCustomers.length ? filteredCustomers.map(c => 
+                `<option value="${c.id}">${c.name} - ${c.shopName || c.mobile || 'N/A'}</option>`
+            ).join('') : '<option value="">No customers found</option>';
+
+            updatePrices(); 
+        }
+
+        function updatePrices() {
+            const type = document.getElementById('cust_type').value;
+            State.products.forEach(p => {
+                let price = p.mrp;
+                if(type === 'RETAILER') price = p.rPrice;
+                if(type === 'DEALER') price = p.dPrice;
+                if(type === 'HOCKER') price = p.hPrice;
+                
+                const el = document.getElementById(`price_${p.id}`);
+                if(el) el.innerText = price;
+            });
+            renderCart();
+        }
+
+        function getActivePrice(product) {
+            const type = document.getElementById('cust_type').value;
+            if(type === 'RETAILER') return product.rPrice;
+            if(type === 'DEALER') return product.dPrice;
+            if(type === 'HOCKER') return product.hPrice;
+            return product.mrp;
+        }
+
+        function addToCart(prodId) {
+            const product = State.products.find(p => p.id === prodId);
+            const existing = State.cart.find(item => item.id === prodId);
+            if(existing) existing.qty++;
+            else State.cart.push({ id: prodId, name: product.name, price: getActivePrice(product), qty: 1, mrp: product.mrp });
+            renderCart();
+            calcDue();
+        }
+
+        function changeQty(prodId, action) {
+            let item = State.cart.find(i => i.id === prodId);
+            if(item) {
+                if(action === 'inc') item.qty++;
+                if(action === 'dec') item.qty--;
+                if(item.qty <= 0) State.cart = State.cart.filter(i => i.id !== prodId);
+            }
+            renderCart();
+            calcDue();
+        }
+
+        function renderCart() {
+            const cartTable = document.getElementById('cart-table');
+            if(!cartTable) return;
+            if(State.cart.length === 0) {
+                cartTable.innerHTML = `<tr><td colspan="3" class="text-center text-gray-500 py-4">Cart is empty</td></tr>`;
+            } else {
+                cartTable.innerHTML = State.cart.map(item => `
+                    <tr class="border-b dark:border-gray-700">
+                        <td class="py-1">${item.name}</td>
+                        <td class="py-1 text-center">
+                            <button onclick="changeQty('${item.id}', 'dec')" class="text-red-500 px-1">-</button>
+                            ${item.qty}
+                            <button onclick="changeQty('${item.id}', 'inc')" class="text-green-500 px-1">+</button>
+                        </td>
+                        <td class="py-1 text-right">৳${item.qty * item.price}</td>
+                    </tr>
+                `).join('');
+            }
+            let gross = State.cart.reduce((s, i) => s + (i.qty * i.price), 0);
+            document.getElementById('gross_total').innerText = `৳ ${gross.toFixed(2)}`;
+        }
+
+        function calcDue() {
+            let gross = State.cart.reduce((s, i) => s + (i.qty * i.price), 0);
+            let paid = parseFloat(document.getElementById('paid_amt').value) || 0;
+            document.getElementById('final_due').innerText = `৳ ${(gross - paid).toFixed(2)}`;
+        }
+
+        function submitOrder() {
+            if(State.cart.length === 0) return alert('Cart is empty!');
+            const custId = document.getElementById('cust_id').value;
+            const customer = State.users.find(u => u.id === custId);
+            if(!customer) return alert('Please select a customer!');
+            
+            const gross = State.cart.reduce((s, i) => s + (i.qty * i.price), 0);
+            const paid = parseFloat(document.getElementById('paid_amt').value) || 0;
+            const due = gross - paid;
+
+            const orderData = {
+                customerId: custId,
+                customerName: customer.name,
+                customerShopName: customer.shopName || 'N/A',
+                customerMobile: customer.mobile || 'N/A',
+                customerAddress: customer.address || 'N/A',
+                customerType: document.getElementById('cust_type').value,
+                items: State.cart,
+                grossTotal: gross,
+                paid: paid,
+                due: due,
+                orderDate: new Date().toISOString(),
+                status: 'Pending'
+            };
+
+            db.ref('orders').push(orderData).then(() => {
+                const newDue = (customer.due || 0) + due;
+                db.ref('users/' + custId).update({ due: newDue });
+                
+                alert('Order Saved Successfully!');
+                renderPage('invoices');
+            });
+        }
+
+        // --- ORDER HISTORY / INVOICES MODULE ---
+        function renderInvoices() {
+            const isAdminOrSales = ['ADMIN', 'SALES MAN'].includes(State.currentUser.role);
+            let ordersToShow = State.orders;
+            if (!isAdminOrSales) ordersToShow = State.orders.filter(o => o.customerId === State.currentUser.id);
+
+            const statusClass = (status) => `status-${status ? status.toLowerCase() : 'pending'}`;
+
+            const rows = ordersToShow.length ? ordersToShow.map(o => `
+                <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+                    <td class="p-2">#RFP-${o.id.slice(-4).toUpperCase()}</td>
+                    <td class="p-2">${new Date(o.orderDate).toLocaleDateString()}</td>
+                    ${isAdminOrSales ? `<td class="p-2">${o.customerName}</td>` : ''}
+                    <td class="p-2">৳${o.grossTotal}</td>
+                    <td class="p-2">৳${o.due}</td>
+                    <td class="p-2 text-center">
+                        ${isAdminOrSales ? `
+                            <select onchange="updateStatus('${o.id}', this.value)" class="p-1 border rounded bg-gray-50 dark:bg-gray-800 text-xs">
+                                <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
+                                <option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option>
+                                <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
+                                <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option>
+                            </select>
+                        ` : `<span class="status-badge ${statusClass(o.status)}">${o.status || 'Pending'}</span>`}
+                    </td>
+                    <td class="p-2 text-center whitespace-nowrap">
+                        <button onclick="viewInvoice('${o.id}')" class="bg-primary text-white px-3 py-1 rounded text-xs">View</button>
+                        ${isAdminOrSales ? `<button onclick="processReturn('${o.id}')" class="bg-yellow-500 text-white px-3 py-1 rounded text-xs ml-1">Return</button>` : ''}
+                        ${State.currentUser.role === 'ADMIN' ? `<button onclick="deleteOrder('${o.id}')" class="bg-red-500 text-white px-3 py-1 rounded text-xs ml-1">Delete</button>` : ''}
+                    </td>
+                </tr>
+            `).join('') : `<tr><td colspan="7" class="text-center p-4 text-gray-500">No orders found.</td></tr>`;
+
+            document.getElementById('main-content').innerHTML = `
+                <div class="bg-white dark:bg-darkcard p-4 md:p-6 rounded-lg shadow-sm overflow-x-auto">
+                    <h3 class="text-lg font-semibold mb-4">Order History</h3>
+                    <table class="w-full text-sm text-left min-w-[600px]">
+                        <thead class="bg-gray-50 dark:bg-gray-800 text-xs uppercase">
+                            <tr>
+                                <th class="p-2">Order No</th><th class="p-2">Date</th>
+                                ${isAdminOrSales ? '<th class="p-2">Customer</th>' : ''}
+                                <th class="p-2">Total</th><th class="p-2">Due</th><th class="p-2 text-center">Status</th><th class="p-2 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function updateStatus(orderId, newStatus) {
+            db.ref('orders/' + orderId).update({ status: newStatus });
+            alert(`Order status updated to: ${newStatus}`);
+        }
+
+        function processReturn(orderId) {
+            const order = State.orders.find(o => o.id === orderId);
+            if(!order) return alert('Order not found!');
+
+            const itemsHtml = order.items.map((item, index) => `
+                <tr>
+                    <td class="p-2">${item.name}</td>
+                    <td class="p-2 text-center">${item.qty}</td>
+                    <td class="p-2 text-center">
+                        <input type="number" id="ret_qty_${index}" min="0" max="${item.qty}" value="0" class="w-16 p-1 border rounded bg-gray-50 dark:bg-gray-800 text-center">
+                    </td>
+                </tr>
+            `).join('');
+
+            openModal('Process Return / Adjustment', `
+                <p class="text-sm text-gray-500 mb-4">Enter returned quantity for each item. The total and customer due will be adjusted automatically.</p>
+                <form onsubmit="submitReturn(event, '${orderId}')">
+                    <table class="w-full text-sm text-left mb-4 border dark:border-gray-700">
+                        <thead class="bg-gray-100 dark:bg-gray-800">
+                            <tr>
+                                <th class="p-2">Product</th>
+                                <th class="p-2 text-center">Ordered Qty</th>
+                                <th class="p-2 text-center">Return Qty</th>
+                            </tr>
+                        </thead>
+                        <tbody>${itemsHtml}</tbody>
+                    </table>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded w-full">Confirm Return</button>
+                </form>
+            `);
+        }
+
+        function submitReturn(e, orderId) {
+            e.preventDefault();
+            const order = State.orders.find(o => o.id === orderId);
+            if(!order) return;
+
+            let newGross = 0;
+            let hasReturn = false;
+            const updatedItems = order.items.map((item, index) => {
+                const retQty = parseInt(document.getElementById(`ret_qty_${index}`).value) || 0;
+                if(retQty > 0) hasReturn = true;
+                if(retQty > item.qty) {
+                    alert(`Return quantity cannot exceed ordered quantity for ${item.name}`);
+                    throw new Error('Invalid return quantity');
+                }
+                const newQty = item.qty - retQty;
+                newGross += (newQty * item.price);
+                return { ...item, qty: newQty };
+            });
+
+            if(!hasReturn) {
+                alert('No return quantity entered.');
+                return;
+            }
+
+            const reduceAmount = order.grossTotal - newGross;
+            const newDue = order.due - reduceAmount;
+
+            if (order.customerId) {
+                const customer = State.users.find(u => u.id === order.customerId);
+                if (customer) {
+                    const newCustomerDue = (customer.due || 0) - reduceAmount;
+                    db.ref('users/' + customer.id).update({ due: newCustomerDue });
+                }
+            }
+
+            db.ref('orders/' + orderId).update({
+                items: updatedItems,
+                grossTotal: newGross,
+                due: newDue,
+                status: 'Returned'
+            }).then(() => {
+                alert('Return processed successfully! Amount adjusted.');
+                closeModal();
+                renderPage('invoices');
+            });
+        }
+
+        function deleteOrder(orderId) {
+            const order = State.orders.find(o => o.id === orderId);
+            if (!order) return alert('Order not found!');
+            
+            if (confirm(`Are you sure you want to delete Order #RFP-${orderId.slice(-4).toUpperCase()}? This will also adjust customer due.`)) {
+                if (order.customerId && order.due) {
+                    const customer = State.users.find(u => u.id === order.customerId);
+                    if (customer) {
+                        const newDue = (customer.due || 0) - order.due;
+                        db.ref('users/' + customer.id).update({ due: newDue });
+                    }
+                }
+                db.ref('orders/' + orderId).remove().then(() => {
+                    alert('Order deleted successfully!');
+                    if (State.currentView === 'invoice_view') renderPage('invoices');
+                });
+            }
+        }
+
+        function toBn(num) {
+            const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+            return String(num).replace(/[0-9]/g, d => bn[d]);
+        }
+
+        function formatBnDate(dateStr) {
+            const d = new Date(dateStr);
+            const months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+            return `${toBn(d.getDate())} ${months[d.getMonth()]}, ${toBn(d.getFullYear())}`;
+        }
+        
+        function translateStatus(status) {
+            const map = { 'Pending': 'পেন্ডিং', 'Shipped': 'প্রেরিত', 'Delivered': 'ডেলিভার্ড', 'Cancelled': 'বাতিল', 'Returned': 'রিটার্ন/এডজাস্টেড' };
+            return map[status] || 'পেন্ডিং';
+        }
+
+        function viewInvoice(orderId) {
+            State.currentView = 'invoice_view';
+            const order = State.orders.find(o => o.id === orderId);
+            if(!order) return alert('Invoice not found!');
+
+            const generateCopy = (copyTitle) => {
+                const itemsHtml = order.items.map((item, index) => `
+                    <tr>
+                        <td class="center-align">${toBn(index + 1)}</td>
+                        <td>${item.name}</td>
+                        <td class="right-align">${toBn(item.mrp.toFixed(2))}</td>
+                        <td class="center-align">${toBn(item.qty)}</td>
+                        <td class="right-align">${toBn(item.price.toFixed(2))}</td>
+                        <td class="right-align">${toBn((item.qty * item.price).toFixed(2))}</td>
+                    </tr>
+                `).join('');
+
+                return `
+                    <div class="invoice-box">
+                        <h2 class="copy-header">${copyTitle}</h2>
+                        <div class="invoice-header">
+                            <div class="company-info">
+                                <h2>Rafi Food Product</h2>
+                                <p>প্রিমিয়াম কোয়ালিটি বেকারি ও ফুড আইটেম</p>
+                                <p>ফোন: +৮৮০ ১XXXXXXXXX</p>
+                                <p>ইমেইল: info@rafifood.com</p>
+                            </div>
+                            <div class="invoice-details">
+                                <h1>INVOICE</h1>
+                                <p><strong>ইনভয়েস নম্বর:</strong> #RFP-${order.id.slice(-4).toUpperCase()}</p>
+                                <p><strong>তারিখ:</strong> ${formatBnDate(order.orderDate)}</p>
+                                <p><strong>স্ট্যাটাস:</strong> ${translateStatus(order.status)}</p>
+                            </div>
+                        </div>
+
+                        <div class="customer-info">
+                            <h3>গ্রাহকের বিবরণ:</h3>
+                            <p><strong>নাম:</strong> ${order.customerName}</p>
+                            <p><strong>দোকানের নাম:</strong> ${order.customerShopName}</p>
+                            <p><strong>ঠিকানা:</strong> ${order.customerAddress}</p>
+                            <p><strong>মোবাইল:</strong> ${toBn(order.customerMobile)}</p>
+                        </div>
+
+                        <table class="invoice-table">
+                            <thead>
+                                <tr>
+                                    <th class="center-align">SL</th>
+                                    <th>পণ্যের বিবরণ</th>
+                                    <th class="right-align">MRP (টাকা)</th>
+                                    <th class="center-align">পরিমাণ</th>
+                                    <th class="right-align">বিক্রয় মূল্য (টাকা)</th>
+                                    <th class="right-align">মোট (টাকা)</th>
+                                </tr>
+                            </thead>
+                            <tbody>${itemsHtml}</tbody>
+                        </table>
+
+                        <div class="total-section">
+                            <div class="total-table">
+                                <div class="total-row">
+                                    <span>সাব-টোটাল:</span>
+                                    <span>${toBn(order.grossTotal.toFixed(2))} ৳</span>
+                                </div>
+                                <div class="total-row">
+                                    <span>পরিশোধিত:</span>
+                                    <span>${toBn(order.paid.toFixed(2))} ৳</span>
+                                </div>
+                                <div class="total-row grand-total">
+                                    <span>বকেয়া:</span>
+                                    <span>${toBn(order.due.toFixed(2))} ৳</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="invoice-footer">
+                            <p>আমাদের সাথে থাকার জন্য ধন্যবাদ! পণ্য ক্রয়ের জন্য আবার আমন্ত্রণ জানাচ্ছি।</p>
+                            <p>@RafiFoodProduct</p>
+                        </div>
+                    </div>
+                `;
+            };
+
+            document.getElementById('main-content').innerHTML = `
+                <div id="print-area">
+                    <span class="back-btn no-print" onclick="renderPage('invoices')"><i class="fas fa-arrow-left"></i> Back to Orders</span>
+                    
+                    ${generateCopy("Customer Copy")}
+                    <div class="page-break"></div>
+                    ${generateCopy("Office Copy")}
+                    
+                    <button class="print-btn no-print" onclick="window.print()">ইনভয়েস প্রিন্ট করুন / PDF সেভ করুন</button>
+                </div>
+            `;
+            window.scrollTo(0, 0);
+        }
+
+        // --- SALES & DUE REPORTS MODULE ---
+        function renderReports() {
+            const totalSales = State.orders.reduce((s, o) => s + o.grossTotal, 0);
+            const totalCollection = State.orders.reduce((s, o) => s + o.paid, 0);
+            const totalDue = State.users.filter(u => u.role !== 'ADMIN' && u.role !== 'SALES MAN').reduce((s, u) => s + (u.due || 0), 0);
+
+            document.getElementById('main-content').innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm border-l-4 border-primary">
+                        <p class="text-gray-500 text-sm">Total Sales</p>
+                        <p class="text-2xl font-bold text-primary">৳ ${totalSales.toFixed(2)}</p>
+                    </div>
+                    <div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm border-l-4 border-accent">
+                        <p class="text-gray-500 text-sm">Total Collection</p>
+                        <p class="text-2xl font-bold text-accent">৳ ${totalCollection.toFixed(2)}</p>
+                    </div>
+                    <div class="bg-white dark:bg-darkcard p-4 rounded-lg shadow-sm border-l-4 border-red-500">
+                        <p class="text-gray-500 text-sm">Total Outstanding Due</p>
+                        <p class="text-2xl font-bold text-red-500">৳ ${totalDue.toFixed(2)}</p>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-darkcard p-4 md:p-6 rounded-lg shadow-sm overflow-x-auto">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center mb-4 gap-2">
+                        <h3 class="text-lg font-semibold">Detailed Sales Report</h3>
+                        <input type="text" id="report-search" placeholder="Search by customer/shop/mobile..." oninput="filterReports()" class="p-2 border rounded bg-gray-50 dark:bg-gray-800 text-sm w-full md:w-64">
+                    </div>
+                    <table class="w-full text-sm text-left min-w-[800px]">
+                        <thead class="bg-gray-50 dark:bg-gray-800 text-xs uppercase">
+                            <tr>
+                                <th class="p-2">Date</th><th class="p-2">Invoice</th><th class="p-2">Customer</th>
+                                <th class="p-2">Sales</th><th class="p-2">Collected</th><th class="p-2">Due</th><th class="p-2">Status</th><th class="p-2 text-center">View</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-tbody"></tbody>
+                        <tfoot id="report-tfoot" class="bg-gray-50 dark:bg-gray-800 font-bold"></tfoot>
+                    </table>
+                </div>
+            `;
+            filterReports();
+        }
+
+        function filterReports() {
+            const searchTerm = (document.getElementById('report-search')?.value || '').toLowerCase();
+            const filteredOrders = State.orders.filter(o => 
+                (o.customerName || '').toLowerCase().includes(searchTerm) || 
+                (o.customerShopName || '').toLowerCase().includes(searchTerm) ||
+                (o.customerMobile || '').toLowerCase().includes(searchTerm)
+            );
+
+            let gSales = 0, gColl = 0, gDue = 0;
+            
+            const rows = filteredOrders.map(o => {
+                gSales += o.grossTotal;
+                gColl += o.paid;
+                gDue += o.due;
+                return `
+                    <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <td class="p-2">${new Date(o.orderDate).toLocaleDateString()}</td>
+                        <td class="p-2">#RFP-${o.id.slice(-4).toUpperCase()}</td>
+                        <td class="p-2">${o.customerName}<br><span class="text-xs text-gray-500">${o.customerShopName || ''}</span></td>
+                        <td class="p-2">৳${o.grossTotal.toFixed(2)}</td>
+                        <td class="p-2">৳${o.paid.toFixed(2)}</td>
+                        <td class="p-2">৳${o.due.toFixed(2)}</td>
+                        <td class="p-2"><span class="status-badge status-${o.status ? o.status.toLowerCase() : 'pending'}">${o.status || 'Pending'}</span></td>
+                        <td class="p-2 text-center">
+                            <button onclick="viewInvoice('${o.id}')" class="text-blue-500 hover:text-blue-700 text-lg" title="View Invoice">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('') || `<tr><td colspan="8" class="text-center p-4 text-gray-500">No matching records found.</td></tr>`;
+
+            document.getElementById('report-tbody').innerHTML = rows;
+            document.getElementById('report-tfoot').innerHTML = `
+                <tr>
+                    <td colspan="3" class="p-2 text-right">GRAND TOTAL:</td>
+                    <td class="p-2 text-primary">৳ ${gSales.toFixed(2)}</td>
+                    <td class="p-2 text-accent">৳ ${gColl.toFixed(2)}</td>
+                    <td class="p-2 text-red-500">৳ ${gDue.toFixed(2)}</td>
+                    <td colspan="2"></td>
+                </tr>
+            `;
+        }
+
+    </script>
+</body>
+</html>
