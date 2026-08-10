@@ -37,7 +37,7 @@
             --w98-title-text: #FFFFFF;
         }
 
-        body { font-family: 'Tahoma', 'Verdana', 'MS Sans Serif', sans-serif; background-color: #008080; font-size: 12px; color: #000; }
+        body { font-family: 'Tahoma', 'Verdana', 'MS Sans Serif', sans-serif; background-color: #008080; font-size: 12px; color: #000; margin: 0; padding: 0; }
         .win98-window { background: var(--w98-bg); border-top: 2px solid var(--w98-highlight); border-left: 2px solid var(--w98-highlight); border-right: 2px solid var(--w98-shadow-darker); border-bottom: 2px solid var(--w98-shadow-darker); box-shadow: inset -1px -1px 0 var(--w98-shadow-dark), inset 1px 1px 0 #DFDFDF; }
         .win98-titlebar { background: linear-gradient(90deg, #000080 0%, #1084D0 100%); color: var(--w98-title-text); font-weight: bold; padding: 3px 5px; display: flex; justify-content: space-between; align-items: center; }
         .win98-inset { background: #FFFFFF; border-top: 2px solid var(--w98-shadow-dark); border-left: 2px solid var(--w98-shadow-dark); border-right: 2px solid var(--w98-highlight); border-bottom: 2px solid var(--w98-highlight); box-shadow: inset 1px 1px 0 var(--w98-shadow-darker); }
@@ -46,7 +46,7 @@
         .w98-btn:active { border-top: 2px solid var(--w98-shadow-dark); border-left: 2px solid var(--w98-shadow-dark); border-right: 2px solid var(--w98-highlight); border-bottom: 2px solid var(--w98-highlight); box-shadow: inset 1px 1px 0 var(--w98-shadow-darker); padding: 5px 11px 3px 13px; }
         .w98-input, .w98-select, .w98-textarea { background: #FFFFFF; border-top: 2px solid var(--w98-shadow-dark); border-left: 2px solid var(--w98-shadow-dark); border-right: 2px solid var(--w98-highlight); border-bottom: 2px solid var(--w98-highlight); box-shadow: inset 1px 1px 0 var(--w98-shadow-darker); padding: 3px; font-family: 'Tahoma', sans-serif; font-size: 12px; outline: none; width: 100%; box-sizing: border-box; }
         .w98-table { width: 100%; border-collapse: collapse; background: #FFFFFF; border: 2px solid var(--w98-shadow-darker); }
-        .w98-table th { background: var(--w98-bg); border-bottom: 1px solid var(--w98-shadow-darker); border-right: 1px solid var(--w98-shadow-dark); padding: 4px; text-align: left; font-weight: bold; }
+        .w98-table th { background: var(--w98-bg); border-bottom: 1px solid var(--w98-shadow-darker); border-right: 1px solid var(--w98-shadow-dark); padding: 4px; text-align: left; font-weight: bold; white-space: nowrap; }
         .w98-table td { border-bottom: 1px solid var(--w98-shadow-dark); border-right: 1px solid var(--w98-shadow-dark); padding: 4px; }
         ::-webkit-scrollbar { width: 16px; height: 16px; }
         ::-webkit-scrollbar-track { background: #DFDFDF; border: 1px solid var(--w98-shadow-dark); }
@@ -66,13 +66,13 @@
         .cat-subtotal { background: #dbeafe; font-weight: bold; }
 
         /* Invoice CSS */
-        .invoice-box { max-width: 800px; margin: auto; background: white; padding: 30px; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0,0,0,0.15); color: #000; font-family: 'SolaimanLipi', 'Tahoma', sans-serif; margin-bottom: 40px; position: relative; display: flex; flex-direction: column; min-height: 90vh; }
+        .invoice-box { max-width: 800px; width: 100%; margin: 0 auto 20px auto; background: white; padding: 20px; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0,0,0,0.15); color: #000; font-family: 'SolaimanLipi', 'Tahoma', sans-serif; box-sizing: border-box; }
         .copy-type { text-align: right; font-weight: bold; color: #000; font-size: 12px; text-transform: uppercase; border: 1px solid #000; padding: 2px 6px; background: #fff; display: inline-block; margin-bottom: 10px; align-self: flex-end; }
         .page-break { page-break-after: always; }
-        .inv-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 15px; }
+        .inv-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 15px; gap: 10px; flex-wrap: wrap; }
         .logo-section { width: 120px; height: 100px; min-width: 120px; border: 1px solid #000; display: flex; align-items: center; justify-content: center; background: #fff; }
         .logo-section img { width: 100%; height: 100%; object-fit: contain; }
-        .company-info { text-align: right; align-self: center; }
+        .company-info { text-align: right; align-self: center; flex: 1; min-width: 250px; }
         .company-info h1 { margin: 0 0 5px 0; color: #000; font-size: 28px; font-weight: bold; line-height: 1.1; }
         .company-info p { margin: 4px 0; color: #000; font-size: 14px; line-height: 1.4; }
         .meta-table { width: 100%; margin-bottom: 20px; border-collapse: collapse; }
@@ -80,19 +80,19 @@
         .details-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         .details-table th, .details-table td { border: 1px solid #000; padding: 8px; text-align: center; font-size: 14px; color: #000; }
         .details-table th { background-color: #f0f0f0; color: #000; font-weight: bold; }
-        .totals-section { width: 100%; margin-bottom: 30px; }
-        .totals-table { float: right; width: 300px; border-collapse: collapse; }
+        .totals-section { width: 100%; margin-bottom: 30px; overflow: hidden; }
+        .totals-table { width: 300px; max-width: 100%; float: right; border-collapse: collapse; }
         .totals-table td { padding: 8px; border: 1px solid #000; color: #000; font-size: 14px; }
         .totals-table td:first-child { font-weight: bold; text-align: left; background: #f0f0f0; }
         .totals-table td:last-child { text-align: right; }
-        .signatures { clear: both; display: flex; justify-content: space-between; margin-top: auto; padding-top: 60px; }
-        .signature-box { text-align: center; border-top: 1px solid #000; width: 200px; padding-top: 5px; font-size: 14px; color: #000; font-weight: bold; }
+        .signatures { clear: both; display: flex; justify-content: space-between; margin-top: 40px; padding-top: 40px; gap: 10px; }
+        .signature-box { text-align: center; border-top: 1px solid #000; width: 200px; max-width: 45%; padding-top: 5px; font-size: 14px; color: #000; font-weight: bold; }
         .inv-footer { text-align: center; margin-top: 30px; font-size: 13px; color: #000; border-top: 1px solid #000; padding-top: 15px; }
         .print-btn { display: block; width: 100%; background-color: #000; color: #fff; border: none; padding: 12px; font-size: 1rem; font-weight: bold; border-radius: 0; cursor: pointer; margin-top: 20px; }
-        .back-btn { display: inline-block; margin-bottom: 20px; color: #000; font-weight: bold; text-decoration: underline; cursor: pointer; }
-        .status-badge { padding: 4px 8px; border-radius: 0; font-size: 0.75rem; font-weight: bold; border: 1px solid #000; }
+        .back-btn { display: inline-block; margin-bottom: 20px; color: #fff; background: #000080; font-weight: bold; text-decoration: none; cursor: pointer; padding: 6px 12px; border: 1px solid #000; }
+        .status-badge { padding: 4px 8px; border-radius: 0; font-size: 0.75rem; font-weight: bold; border: 1px solid #000; display: inline-block; }
         .status-pending { background: #FEF3C7; color: #000; }
-        .status-shipped { background: #DBEAFE; color: #000; }
+        .status-accepted { background: #DBEAFE; color: #000; }
         .status-delivered { background: #D1FAE5; color: #000; }
         .status-cancelled { background: #FEE2E2; color: #000; }
 
@@ -103,10 +103,29 @@
             #print-area, #print-area * { visibility: visible; }
             #print-area { position: absolute; left: 0; top: 0; width: 100%; display: flex; flex-direction: column; align-items: center; }
             .no-print { display: none !important; }
-            .invoice-box { box-shadow: none; border: none; margin: 0; padding: 0; width: 100%; max-width: 100%; min-height: 260mm; border-bottom: 2px dashed #000; }
+            .invoice-box { box-shadow: none; border: none; margin: 0; padding: 0; width: 100%; max-width: 100%; border-bottom: 2px dashed #000; }
             #print-area * { color: #000 !important; background: transparent !important; border-color: #000 !important; box-shadow: none !important; text-shadow: none !important; }
             .details-table th { background: #e0e0e0 !important; }
             .totals-table td:first-child { background: #e0e0e0 !important; }
+        }
+        
+        /* Mobile Menu / Responsive */
+        #sidebar { transition: transform 0.3s ease; z-index: 50; }
+        @media (max-width: 768px) {
+            .inv-header { flex-direction: column; align-items: flex-start; }
+            .company-info { text-align: left; min-width: 100%; }
+            .signatures { flex-direction: column; gap: 30px; align-items: center; }
+            .signature-box { width: 100%; }
+            .totals-table { float: none; width: 100%; }
+            #sidebar {
+                position: absolute; top: 0; left: 0; height: 100%; max-height: 100vh; width: 250px;
+                transform: translateX(-100%);
+            }
+            #sidebar.open { transform: translateX(0); box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+            #mobile-menu-btn { display: block !important; }
+        }
+        @media (min-width: 769px) {
+            #mobile-menu-btn { display: none !important; }
         }
     </style>
 </head>
@@ -144,8 +163,8 @@
         </div>
     </div>
 
-    <div id="app-screen" class="hidden min-h-screen p-2">
-        <div class="win98-window flex flex-col md:flex-row h-[calc(100vh-20px)]">
+    <div id="app-screen" class="hidden min-h-screen p-1 sm:p-2 relative">
+        <div class="win98-window flex flex-col md:flex-row h-[calc(100vh-16px)] md:h-[calc(100vh-20px)] overflow-hidden">
             <aside id="sidebar" class="w-full md:w-64 win98-inset m-1 flex flex-col overflow-y-auto">
                 <div class="win98-outset m-1 p-2 flex items-center space-x-2">
                     <img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="Logo" class="w-10 h-10 border border-black object-cover">
@@ -158,27 +177,31 @@
                     <div class="win98-outset m-1 mb-2"><a href="#" data-page="dashboard" class="menu-item active"><i class="fas fa-tachometer-alt w-4"></i> Dashboard</a></div>
                     <div class="px-2 py-1 font-bold text-[11px]">Sales & Distribution</div>
                     <div class="win98-outset m-1 mb-2">
-                        <a href="#" data-page="order-entry" class="menu-item order-entry-only"><i class="fas fa-cart-plus w-4"></i> Order Entry</a>
-                        <a href="#" data-page="invoices" class="menu-item"><i class="fas fa-file-invoice w-4"></i> Order History</a>
+                        <a href="#" data-page="order-entry" class="menu-item admin-se-only"><i class="fas fa-cart-plus w-4"></i> Order Entry</a>
+                        <a href="#" data-page="delivery-summary" class="menu-item can-view-delivery"><i class="fas fa-truck w-4"></i> Delivery Summary</a>
+                        <a href="#" data-page="invoices" class="menu-item can-view-orders"><i class="fas fa-file-invoice w-4"></i> Order History</a>
                     </div>
                     <div class="px-2 py-1 font-bold text-[11px]">Management</div>
                     <div class="win98-outset m-1 mb-2">
                         <a href="#" data-page="products" class="admin-only menu-item"><i class="fas fa-boxes w-4"></i> Product Mgmt</a>
                         <a href="#" data-page="users" class="admin-only menu-item"><i class="fas fa-user-shield w-4"></i> User Mgmt</a>
-                        <a href="#" data-page="customers" class="menu-item employee-only"><i class="fas fa-users w-4"></i> Customer Mgmt</a>
+                        <a href="#" data-page="customers" class="menu-item can-view-customers"><i class="fas fa-users w-4"></i> Customer Mgmt</a>
                     </div>
                     <div class="px-2 py-1 font-bold text-[11px]">Reports</div>
                     <div class="win98-outset m-1 mb-2">
-                        <a href="#" data-page="reports" class="menu-item employee-only"><i class="fas fa-chart-line w-4"></i> Sales & Due Reports</a>
-                        <a href="#" data-page="sm-report" class="menu-item admin-sales-only"><i class="fas fa-user-tie w-4"></i> Salesman Performance</a>
-                        <a href="#" data-page="achievement-report" class="menu-item admin-sales-only"><i class="fas fa-trophy w-4"></i> Achievement Report</a>
+                        <a href="#" data-page="reports" class="menu-item can-view-reports"><i class="fas fa-chart-line w-4"></i> Sales & Due Reports</a>
+                        <a href="#" data-page="sm-report" class="menu-item admin-rsm-asm-only"><i class="fas fa-user-tie w-4"></i> Salesman Performance</a>
+                        <a href="#" data-page="achievement-report" class="menu-item admin-rsm-asm-only"><i class="fas fa-trophy w-4"></i> Achievement Report</a>
                     </div>
                 </nav>
             </aside>
 
-            <div class="flex-1 flex flex-col p-1">
-                <header class="win98-titlebar mb-1">
-                    <h2 id="page-title" class="text-sm font-bold">Dashboard</h2>
+            <div class="flex-1 flex flex-col p-1 overflow-hidden">
+                <header class="win98-titlebar mb-1 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <button id="mobile-menu-btn" class="w98-btn" style="padding: 2px 8px; min-width: auto;"><i class="fas fa-bars"></i></button>
+                        <h2 id="page-title" class="text-sm font-bold">Dashboard</h2>
+                    </div>
                     <div class="flex items-center space-x-2">
                         <button id="theme-toggle" class="text-xs hover:underline">Toggle Theme</button>
                         <span class="hidden md:block">|</span>
@@ -200,13 +223,13 @@
         </div>
     </div>
 
-    <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.5);">
-        <div class="win98-window w-full max-w-lg">
+    <div id="modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4" style="background: rgba(0,0,0,0.5);">
+        <div class="win98-window w-full max-w-lg max-h-[90vh] flex flex-col">
             <div class="win98-titlebar">
                 <span id="modal-title">Modal Title</span>
                 <button onclick="closeModal()" class="w98-btn" style="padding: 0 5px; min-width: 20px;">X</button>
             </div>
-            <div id="modal-body" class="p-4 max-h-[80vh] overflow-y-auto"></div>
+            <div id="modal-body" class="p-4 overflow-y-auto"></div>
         </div>
     </div>
 
@@ -215,7 +238,7 @@
         function safeDate(dateStr) { try { if(!dateStr) return 'N/A'; const d = new Date(dateStr); if (isNaN(d.getTime())) return 'N/A'; return d.toLocaleDateString(); } catch (e) { return 'N/A'; } }
         function toArray(obj) { if (Array.isArray(obj)) return obj; if (typeof obj === 'object' && obj !== null) return Object.keys(obj).map(k => obj[k]); return []; }
 
-        const State = { currentUser: null, currentPage: null, currentView: null, products: [], users: [], orders: [], cart: [] };
+        const State = { currentUser: null, currentPage: null, currentView: null, products: [], users: [], customers: [], orders: [], cart: [] };
 
         document.getElementById('login-form').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -244,20 +267,31 @@
             document.getElementById('nav-avatar').src = avatarUrl;
             
             const role = State.currentUser.role;
-            const isEmployee = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
-            const isSalesRole = ['ADMIN', 'RSM', 'ASM', 'SE'].includes(role);
-            const canEnterOrder = ['ADMIN', 'SE', 'DA'].includes(role); // RSM/ASM can't enter orders
+            const canEnterOrder = ['ADMIN', 'SE'].includes(role); 
+            const canViewMgrReports = ['ADMIN', 'RSM', 'ASM'].includes(role);
+            const canViewCustomers = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE'].includes(role);
+            const canViewReports = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
+            const canViewDeliverySummary = ['ADMIN', 'OPERATOR', 'DA'].includes(role);
+            const canViewOrderHistory = ['ADMIN', 'OPERATOR', 'DA', 'SE'].includes(role);
             
             document.querySelectorAll('.admin-only').forEach(el => el.classList.toggle('hidden', role !== 'ADMIN'));
-            document.querySelectorAll('.admin-sales-only').forEach(el => el.classList.toggle('hidden', role !== 'ADMIN' && !['RSM', 'ASM', 'SE'].includes(role)));
-            document.querySelectorAll('.employee-only').forEach(el => el.classList.toggle('hidden', !isEmployee));
-            document.querySelectorAll('.order-entry-only').forEach(el => el.classList.toggle('hidden', !canEnterOrder));
+            document.querySelectorAll('.admin-rsm-asm-only').forEach(el => el.classList.toggle('hidden', !canViewMgrReports));
+            document.querySelectorAll('.can-view-customers').forEach(el => el.classList.toggle('hidden', !canViewCustomers));
+            document.querySelectorAll('.admin-se-only').forEach(el => el.classList.toggle('hidden', !canEnterOrder));
+            document.querySelectorAll('.can-view-delivery').forEach(el => el.classList.toggle('hidden', !canViewDeliverySummary));
+            document.querySelectorAll('.can-view-orders').forEach(el => el.classList.toggle('hidden', !canViewOrderHistory));
+            document.querySelectorAll('.can-view-reports').forEach(el => el.classList.toggle('hidden', !canViewReports));
             
             initFirebaseListeners();
             renderPage('dashboard');
         }
 
         function logout() { if (confirm('Are you sure you want to logout?')) location.reload(); }
+        
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+        
         document.getElementById('profile-container').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('profile-menu').classList.toggle('hidden'); });
         document.addEventListener('click', (e) => { 
             const c = document.getElementById('profile-container'); 
@@ -286,17 +320,27 @@
         function savePassword(e) { e.preventDefault(); const n = document.getElementById('new_pass').value; if (State.currentUser.id === 'superadmin') alert('Super Admin password cannot be changed here.'); else { db.ref('users/' + State.currentUser.id).update({ password: n }); alert('Password updated successfully!'); } closeModal(); }
 
         function initFirebaseListeners() {
-            db.ref('products').on('value', (s) => { State.products = []; s.forEach(c => { State.products.push({ id: c.key, ...c.val() }); }); if (State.currentPage === 'products') renderProducts(); if (State.currentPage === 'dashboard') renderDashboard(); if (State.currentPage === 'order-entry') renderOrderEntry(); });
+            db.ref('products').on('value', (s) => { State.products = []; s.forEach(c => { const val = c.val(); val.id = c.key; State.products.push(val); }); if (State.currentPage === 'products') renderProducts(); if (State.currentPage === 'dashboard') renderDashboard(); if (State.currentPage === 'order-entry') renderOrderEntry(); });
             db.ref('users').on('value', (s) => { 
                 State.users = []; 
-                s.forEach(c => { State.users.push({ id: c.key, ...c.val() }); }); 
+                s.forEach(c => { const val = c.val(); val.id = c.key; State.users.push(val); }); 
                 if (State.currentPage === 'users') renderUsers(); 
-                if (State.currentPage === 'customers') renderCustomers(); 
                 if (State.currentPage === 'dashboard') renderDashboard(); 
                 if (State.currentPage === 'order-entry') renderOrderEntry(); 
                 if (State.currentPage === 'reports') renderReports(); 
                 if (State.currentPage === 'sm-report') renderSalesmanReport();
                 if (State.currentPage === 'achievement-report') calcAchievementReport();
+                if (State.currentPage === 'delivery-summary') generateDeliverySummary();
+                if (State.currentPage === 'customers') renderCustomers();
+            });
+            db.ref('customers').on('value', (s) => { 
+                State.customers = []; 
+                s.forEach(c => { const val = c.val(); val.id = c.key; State.customers.push(val); }); 
+                if (State.currentPage === 'customers') renderCustomers(); 
+                if (State.currentPage === 'dashboard') renderDashboard(); 
+                if (State.currentPage === 'order-entry') renderOrderEntry(); 
+                if (State.currentPage === 'reports') renderReports(); 
+                if (State.currentPage === 'delivery-summary') generateDeliverySummary();
             });
             db.ref('orders').on('value', (s) => { 
                 State.orders = []; 
@@ -305,10 +349,11 @@
                 if (State.currentPage === 'reports') renderReports(); 
                 if (State.currentPage === 'sm-report') renderSalesmanReport();
                 if (State.currentPage === 'achievement-report') calcAchievementReport();
+                if (State.currentPage === 'delivery-summary') generateDeliverySummary();
             });
         }
 
-        document.querySelectorAll('.menu-item').forEach(l => l.addEventListener('click', e => { e.preventDefault(); if(l.dataset.page) renderPage(l.dataset.page); }));
+        document.querySelectorAll('.menu-item').forEach(l => l.addEventListener('click', e => { e.preventDefault(); if(l.dataset.page) { renderPage(l.dataset.page); document.getElementById('sidebar').classList.remove('open'); } }));
         document.getElementById('theme-toggle').addEventListener('click', () => alert('You are already in the classic VB6 theme!'));
 
         function renderPage(page) {
@@ -327,6 +372,7 @@
                     case 'reports': document.getElementById('page-title').textContent = 'Sales & Due Reports'; renderReports(); break;
                     case 'sm-report': document.getElementById('page-title').textContent = 'Salesman Performance'; renderSalesmanReport(); break;
                     case 'achievement-report': document.getElementById('page-title').textContent = 'Achievement Report'; renderAchievementReport(); break;
+                    case 'delivery-summary': document.getElementById('page-title').textContent = 'Delivery Summary'; renderDeliverySummary(); break;
                 }
             }, 200);
         }
@@ -335,9 +381,27 @@
 
         function renderDashboard() {
             const role = State.currentUser.role;
-            const isC = !['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
-            const tD = State.users.filter(u => !['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(u.role)).reduce((s, u) => s + (u.due || 0), 0);
-            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">${!isC ? `<div class="win98-outset p-2"><p class="text-xs">Total Products</p><p class="text-lg font-bold">${State.products.length}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Customers</p><p class="text-lg font-bold">${State.users.filter(u => !['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(u.role)).length}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Due</p><p class="text-lg font-bold">৳ ${tD}</p></div>` : `<div class="win98-outset p-2 col-span-2 md:col-span-4"><p class="text-xs">Welcome, ${esc(State.currentUser.name)}!</p><p class="text-lg font-bold mt-1">Your Current Due: ৳ ${State.currentUser.due || 0}</p></div>`}</div><div class="win98-window p-2"><div class="win98-titlebar text-xs mb-2">Sales Overview</div><canvas id="salesChart" height="80"></canvas></div>`;
+            const isC = !['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
+            const isAdmin = role === 'ADMIN';
+            
+            let statProducts = State.products.length;
+            let statCustomers = 0;
+            let statDue = 0;
+
+            if (isAdmin) {
+                statCustomers = State.customers.length;
+                statDue = State.customers.reduce((s, u) => s + (u.due || 0), 0);
+            } else if (role === 'SE') {
+                statCustomers = State.customers.filter(u => u.assignedSE === State.currentUser.id).length;
+                statDue = State.customers.filter(u => u.assignedSE === State.currentUser.id).reduce((s, u) => s + (u.due || 0), 0);
+            } else if (isC) {
+                statDue = State.currentUser.due || 0;
+            } else {
+                statCustomers = State.customers.length;
+                statDue = State.customers.reduce((s, u) => s + (u.due || 0), 0);
+            }
+
+            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">${!isC ? `<div class="win98-outset p-2"><p class="text-xs">Total Products</p><p class="text-lg font-bold">${statProducts}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Customers</p><p class="text-lg font-bold">${statCustomers}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Due</p><p class="text-lg font-bold">৳ ${statDue}</p></div>` : `<div class="win98-outset p-2 col-span-2 md:col-span-4"><p class="text-xs">Welcome, ${esc(State.currentUser.name)}!</p><p class="text-lg font-bold mt-1">Your Current Due: ৳ ${statDue}</p></div>`}</div><div class="win98-window p-2"><div class="win98-titlebar text-xs mb-2">Sales Overview</div><canvas id="salesChart" height="80"></canvas></div>`;
             const ctx = document.getElementById('salesChart').getContext('2d');
             if(window.myChart) window.myChart.destroy();
             window.myChart = new Chart(ctx, { type: 'bar', data: { labels: ['Mon', 'Tue', 'Wed', 'Thu'], datasets: [{ label: 'Sales', data: [12, 19, 15, 25], backgroundColor: '#000080' }] } });
@@ -352,29 +416,36 @@
         function addProduct() { openModal('Add Product', `<form onsubmit="saveProduct(event, '')"><div class="mb-3 flex flex-col items-center"><img id="img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="p_image" accept="image/*" onchange="previewImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2"><div><label>Code:</label><input type="text" id="p_code" class="w98-input" required></div><div><label>Name:</label><input type="text" id="p_name" class="w98-input" required></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Category:</label><input type="text" id="p_cat" class="w98-input" required></div><div><label>MRP:</label><input type="number" id="p_mrp" class="w98-input" required></div></div><div class="grid grid-cols-3 gap-2 mt-2"><div><label>R-Price:</label><input type="number" id="p_r" class="w98-input" required></div><div><label>D-Price:</label><input type="number" id="p_d" class="w98-input" required></div><div><label>H-Price:</label><input type="number" id="p_h" class="w98-input" required></div></div><div class="mt-2"><label>Stock:</label><input type="number" id="p_stock" class="w98-input" required></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save Product</button></div></form>`); }
         function editProduct(id) { const p = State.products.find(x => x.id === id); openModal('Edit Product', `<form onsubmit="saveProduct(event, '${p.id}')"><div class="mb-3 flex flex-col items-center"><img id="img_preview" src="${p.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="p_image" accept="image/*" onchange="previewImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2"><div><label>Code:</label><input type="text" id="p_code" value="${esc(p.code || '')}" class="w98-input" required></div><div><label>Name:</label><input type="text" id="p_name" value="${esc(p.name || '')}" class="w98-input" required></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Category:</label><input type="text" id="p_cat" value="${esc(p.category || '')}" class="w98-input" required></div><div><label>MRP:</label><input type="number" id="p_mrp" value="${p.mrp || 0}" class="w98-input" required></div></div><div class="grid grid-cols-3 gap-2 mt-2"><div><label>R-Price:</label><input type="number" id="p_r" value="${p.rPrice || 0}" class="w98-input" required></div><div><label>D-Price:</label><input type="number" id="p_d" value="${p.dPrice || 0}" class="w98-input" required></div><div><label>H-Price:</label><input type="number" id="p_h" value="${p.hPrice || 0}" class="w98-input" required></div></div><div class="mt-2"><label>Stock:</label><input type="number" id="p_stock" value="${p.stock || 0}" class="w98-input" required></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update Product</button></div></form>`); }
         function previewImage(i) { const r = new FileReader(); r.onload = (e) => document.getElementById('img_preview').src = e.target.result; r.readAsDataURL(i.files[0]); }
-        function saveProduct(e, id) { e.preventDefault(); const iF = document.getElementById('p_image').files[0]; const d = { code: document.getElementById('p_code').value, name: document.getElementById('p_name').value, category: document.getElementById('p_cat').value, mrp: parseFloat(document.getElementById('p_mrp').value), rPrice: parseFloat(document.getElementById('p_r').value), dPrice: parseFloat(document.getElementById('p_d').value), hPrice: parseFloat(document.getElementById('p_h').value), stock: parseInt(document.getElementById('p_stock').value) }; const s = (u) => { if(u) d.image = u; if(id) db.ref('products/' + id).update(d); else db.ref('products').push(d); closeModal(); }; if(iF) { const r = new FileReader(); r.onload = (e) => s(e.target.result); r.readAsDataURL(iF); } else s(); }
+        function saveProduct(e, id) { e.preventDefault(); const iF = document.getElementById('p_image').files[0]; const d = { code: document.getElementById('p_code').value, name: document.getElementById('p_name').value, category: document.getElementById('p_cat').value, mrp: parseFloat(document.getElementById('p_mrp').value), rPrice: parseFloat(document.getElementById('p_r').value), dPrice: parseFloat(document.getElementById('p_d').value), hPrice: parseFloat(document.getElementById('p_h').value), stock: parseInt(document.getElementById('p_stock').value) }; const s = (u) => { if(u) d.image = u; if(id) db.ref('products/' + id).update(d); else { const newRef = db.ref('products').push(); newRef.set(d); } closeModal(); }; if(iF) { const r = new FileReader(); r.onload = (e) => s(e.target.result); r.readAsDataURL(iF); } else s(); }
         function deleteProduct(id) { if (confirm('Are you sure?')) db.ref('products/' + id).remove(); }
 
-        // --- User Management (System Users / Employees Only) ---
         function renderUsers() {
             let rows = '';
-            const empUsers = State.users.filter(u => ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(u.role));
-            if (empUsers.length > 0) { rows = empUsers.map(u => `<tr><td><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(u.userCode || 'N/A')}</td><td>${esc(u.username || 'N/A')}</td><td>${esc(u.name || 'N/A')}</td><td>${esc(u.role || 'N/A')}</td><td>${esc(u.territory || 'N/A')}</td><td class="text-right"><button onclick="editUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button></td></tr>`).join(''); } else { rows = `<tr><td colspan="7" class="text-center p-4">No employees found.</td></tr>`; }
-            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">System Users (Employees)</h3><button onclick="addUser()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add Employee</button></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>User ID</th><th>Username</th><th>Name</th><th>Role</th><th>Territory</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+            const empUsers = State.users.filter(u => ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(u.role));
+            if (empUsers.length > 0) { rows = empUsers.map(u => `<tr><td><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(u.userCode || 'N/A')}</td><td>${esc(u.username || 'N/A')}</td><td>${esc(u.name || 'N/A')}</td><td>${esc(u.role || 'N/A')}</td><td>${esc(u.territory || 'N/A')}</td><td class="text-right"><button onclick="editEmployee('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteEmployee('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button></td></tr>`).join(''); } else { rows = `<tr><td colspan="7" class="text-center p-4">No employees found.</td></tr>`; }
+            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">System Users (Employees)</h3><button onclick="addEmployee()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add Employee</button></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>User ID</th><th>Username</th><th>Name</th><th>Role</th><th>Territory</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
         }
 
-        // --- Customer Management (Customers Only) ---
         function renderCustomers() {
-            const cE = ['ADMIN', 'RSM', 'ASM', 'SE'].includes(State.currentUser.role);
+            const cE = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE'].includes(State.currentUser.role);
             let rows = '';
-            const custUsers = State.users.filter(u => ['DEALER', 'RETAILER', 'HOCKER'].includes(u.role));
-            if (custUsers.length > 0) { rows = custUsers.map(u => `<tr><td><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(u.userCode || 'N/A')}</td><td>${esc(u.name || 'N/A')}<br><span class="text-[10px]">${esc(u.shopName || '')}</span></td><td>${esc(u.role || 'N/A')}</td><td>${esc(u.mobile || 'N/A')}</td><td>৳${u.due || 0}</td><td class="text-right">${cE ? `<button onclick="editUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>` : '-'}</td></tr>`).join(''); } else { rows = `<tr><td colspan="7" class="text-center p-4">No customers found.</td></tr>`; }
+            let custUsers = State.customers;
+            
+            if (State.currentUser.role === 'SE') {
+                custUsers = custUsers.filter(u => u.assignedSE === State.currentUser.id);
+            } else if (State.currentUser.role === 'RSM') {
+                custUsers = custUsers.filter(u => u.assignedRSM === State.currentUser.id);
+            } else if (State.currentUser.role === 'ASM') {
+                custUsers = custUsers.filter(u => u.assignedASM === State.currentUser.id);
+            }
+
+            if (custUsers.length > 0) { rows = custUsers.map(u => `<tr><td><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(u.userCode || 'N/A')}</td><td>${esc(u.name || 'N/A')}<br><span class="text-[10px]">${esc(u.shopName || '')}</span></td><td>${esc(u.role || 'N/A')}</td><td>${esc(u.mobile || 'N/A')}</td><td>৳${u.due || 0}</td><td class="text-right">${cE ? `<button onclick="editCustomer('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteCustomer('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>` : '-'}</td></tr>`).join(''); } else { rows = `<tr><td colspan="7" class="text-center p-4">No customers found.</td></tr>`; }
             document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">Customers List</h3>${cE ? `<button onclick="addCustomer()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add Customer</button>` : ''}</div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>Cust ID</th><th>Name / Shop</th><th>Type</th><th>Mobile</th><th>Due</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
         }
 
         function renderRoleFields(role, u = {}) {
             const c = document.getElementById('role-specific-fields'); let h = '';
-            const isEmployee = ['RSM', 'ASM', 'SE', 'DA'].includes(role);
+            const isEmployee = ['OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
 
             if (isEmployee) {
                 const rsmList = State.users.filter(x => x.role === 'RSM');
@@ -394,7 +465,7 @@
 
                 h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Designation:</label><input type="text" id="u_designation" value="${esc(u.designation || role)}" class="w98-input"></div><div><label>Joining Date:</label><input type="date" id="u_join_date" value="${esc(u.joinDate || '')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Status:</label><select id="u_emp_status" class="w98-select"><option value="Active" ${u.empStatus==='Active'?'selected':''}>Active</option><option value="Inactive" ${u.empStatus==='Inactive'?'selected':''}>Inactive</option></select></div><div><label>NID:</label><input type="text" id="u_nid" value="${esc(u.nid || '')}" class="w98-input"></div></div><div class="mt-2"><label>Address:</label><input type="text" id="u_address" value="${esc(u.address || '')}" class="w98-input"></div></fieldset><fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Region & Hierarchy Assignment</legend><div class="grid grid-cols-3 gap-2"><div><label>Region:</label><input type="text" id="u_region" value="${esc(u.region || '')}" class="w98-input"></div><div><label>Area:</label><input type="text" id="u_area" value="${esc(u.area || '')}" class="w98-input"></div><div><label>Territory:</label><input type="text" id="u_territory" value="${esc(u.territory || '')}" class="w98-input"></div></div>${hierarchyHtml ? `<div class="grid grid-cols-3 gap-2 mt-2">${hierarchyHtml}</div>` : ''}</fieldset>`;
                 
-                if (role !== 'DA') {
+                if (role !== 'DA' && role !== 'OPERATOR') {
                     h += `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Salary & Target</legend><div class="grid grid-cols-2 gap-2"><div><label>Monthly Target (৳):</label><input type="number" id="u_target" value="${u.target || 0}" class="w98-input"></div><div><label>Basic Salary (৳):</label><input type="number" id="u_salary" value="${u.basicSalary || 0}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>TA (Monthly ৳):</label><input type="number" id="u_ta" value="${u.ta || 0}" class="w98-input"></div><div><label>DA (Monthly ৳):</label><input type="number" id="u_da" value="${u.da || 0}" class="w98-input"></div></div></fieldset>`;
                 }
             } else if (role === 'DEALER' || role === 'RETAILER' || role === 'HOCKER') {
@@ -421,26 +492,103 @@
             c.innerHTML = h;
         }
 
-        function addUser() { openModal('Add System User', `<form onsubmit="saveUser(event, '')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value)" class="w98-select"><option value="ADMIN">Admin</option><option value="RSM">RSM</option><option value="ASM">ASM</option><option value="SE">SE</option><option value="DA">DA</option></select></div><div><label>Username (Login):</label><input type="text" id="u_username" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save User</button></div></form>`); renderRoleFields('ADMIN'); }
+        function addEmployee() { openModal('Add System User', `<form onsubmit="saveEmployee(event, '')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value)" class="w98-select"><option value="ADMIN">Admin</option><option value="OPERATOR">Operator</option><option value="RSM">RSM</option><option value="ASM">ASM</option><option value="SE">SE</option><option value="DA">DA</option></select></div><div><label>Username (Login):</label><input type="text" id="u_username" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save User</button></div></form>`); renderRoleFields('ADMIN'); }
         
+        function editEmployee(id) { 
+            const u = State.users.find(x => x.id === id); 
+            const isEmp = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(u.role);
+            const roleOptions = `
+                <option value="ADMIN" ${u.role==='ADMIN'?'selected':''}>Admin</option>
+                <option value="OPERATOR" ${u.role==='OPERATOR'?'selected':''}>Operator</option>
+                <option value="RSM" ${u.role==='RSM'?'selected':''}>RSM</option>
+                <option value="ASM" ${u.role==='ASM'?'selected':''}>ASM</option>
+                <option value="SE" ${u.role==='SE'?'selected':''}>SE</option>
+                <option value="DA" ${u.role==='DA'?'selected':''}>DA</option>
+            `;
+            openModal('Edit Employee', `<form onsubmit="saveEmployee(event, '${u.id}')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value, ${JSON.stringify(u).replace(/"/g, '&quot;')})" class="w98-select" disabled>${roleOptions}</select></div><div><label>Username:</label><input type="text" id="u_username" value="${esc(u.username || '')}" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" value="${esc(u.password || '')}" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update Employee</button></div></form>`); 
+            renderRoleFields(u.role, u); 
+        }
+        
+        function saveEmployee(e, id) { 
+            e.preventDefault(); 
+            const iF = document.getElementById('u_image').files[0]; 
+            const val = (id) => document.getElementById(id)?.value || ''; 
+            const role = val('u_role'); 
+            const data = { 
+                username: val('u_username'), password: val('u_password'), role: role, name: val('u_name'), mobile: val('u_mobile'), address: val('u_address'), nid: val('u_nid'), designation: val('u_designation'), joinDate: val('u_join_date'), empStatus: val('u_emp_status'), target: parseFloat(val('u_target') || 0), basicSalary: parseFloat(val('u_salary') || 0), ta: parseFloat(val('u_ta') || 0), da: parseFloat(val('u_da') || 0), region: val('u_region'), area: val('u_area'), territory: val('u_territory'), assignedRSM: val('u_assigned_rsm'), assignedASM: val('u_assigned_asm'), assignedSE: val('u_assigned_se'), status: 'Active' 
+            }; 
+            const s = (u) => { 
+                if(u) data.image = u; 
+                if (id) db.ref('users/' + id).update(data); 
+                else { 
+                    const rP = { 'ADMIN': 'RFPA', 'OPERATOR': 'RFPOP', 'RSM': 'RFPRSM', 'ASM': 'RFPASM', 'SE': 'RFPSE', 'DA': 'RFPDA' }; 
+                    const p = rP[role] || 'RFPX'; 
+                    const rU = State.users.filter(u => u.userCode && u.userCode.startsWith(p)); 
+                    let mS = 0; rU.forEach(u => { const s = parseInt(u.userCode.slice(p.length)); if (!isNaN(s) && s > mS) mS = s; }); 
+                    data.userCode = `${p}${String(mS + 1).padStart(2, '0')}`; 
+                    const newRef = db.ref('users').push(); 
+                    newRef.set(data); 
+                } 
+                closeModal(); 
+            }; 
+            if(iF) { const r = new FileReader(); r.onload = (e) => s(e.target.result); r.readAsDataURL(iF); } else s(); 
+        }
+
+        function deleteEmployee(id) { if (confirm('Are you sure?')) db.ref('users/' + id).remove(); }
+
         function addCustomer() {
-            const isSalesTeam = ['RSM', 'ASM', 'SE'].includes(State.currentUser.role);
-            
-            // Customer Type options with (R)/(H)/(D) labels
+            const isSalesTeam = ['OPERATOR', 'RSM', 'ASM', 'SE'].includes(State.currentUser.role);
             const roleOptions = isSalesTeam 
                 ? `<option value="RETAILER" selected>Retailer (R)</option>` 
                 : `<option value="RETAILER" selected>Retailer (R)</option>
                    <option value="HOCKER">Hocker (H)</option>
                    <option value="DEALER">Dealer (D)</option>`;
 
+            const role = State.currentUser.role;
+            const allSEs = State.users.filter(u => u.role === 'SE');
+            let assignSEHtml = '';
+            
+            if (role === 'SE') {
+                assignSEHtml = `
+                    <select id="u_assigned_se" class="w98-select" required>
+                        <option value="${State.currentUser.id}" selected>${esc(State.currentUser.name)} (Self)</option>
+                    </select>
+                    <p class="text-[10px] text-gray-600 mt-1"><i class="fas fa-info-circle mr-1"></i>You can only assign customers to yourself.</p>
+                `;
+            } else if (role === 'ADMIN' || role === 'OPERATOR') {
+                assignSEHtml = `
+                    <select id="u_assigned_se" class="w98-select">
+                        <option value="">None (Admin Direct)</option>
+                        ${allSEs.map(s => `<option value="${s.id}">${esc(s.name)} (${esc(s.userCode || 'SE')})</option>`).join('')}
+                    </select>
+                `;
+            } else if (role === 'RSM' || role === 'ASM') {
+                const teamSEs = allSEs.filter(s => role === 'RSM' ? s.assignedRSM === State.currentUser.id : s.assignedASM === State.currentUser.id);
+                assignSEHtml = `
+                    <select id="u_assigned_se" class="w98-select">
+                        <option value="">None</option>
+                        ${teamSEs.map(s => `<option value="${s.id}">${esc(s.name)} (${esc(s.userCode || 'SE')})</option>`).join('')}
+                    </select>
+                `;
+            }
+
+            const assignSESection = (role !== 'DA') ? `
+                <fieldset class="border border-black p-2 mt-2">
+                    <legend class="text-xs font-bold">Assignment</legend>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label>Assign SE:</label>
+                            ${assignSEHtml}
+                        </div>
+                    </div>
+                </fieldset>
+            ` : '';
+
             openModal('Add New Customer', `
                 <form onsubmit="saveCustomer(event, '')">
-                    <!-- Customer Information Header -->
                     <div class="win98-titlebar mb-3">
                         <span><i class="fas fa-store mr-2"></i>Customer Information</span>
                     </div>
-                    
-                    <!-- Shop Image & Auto ID Row -->
                     <div class="grid grid-cols-3 gap-3 mb-3">
                         <div class="col-span-1 flex flex-col items-center">
                             <label class="block mb-1 text-xs font-bold">Shop Image</label>
@@ -454,9 +602,6 @@
                                 <label class="block mb-1 text-xs">Shop ID / Code:</label>
                                 <input type="text" class="w98-input" value="Auto Generated" 
                                        disabled style="background:#f0f0f0;">
-                                <p class="text-[10px] text-gray-600 mt-1">
-                                    <i class="fas fa-magic mr-1"></i>Will be auto-generated as RFPR/RFPH/RFPD + serial
-                                </p>
                             </div>
                             <div>
                                 <label class="block mb-1 text-xs">Customer Type <span class="text-red-600">*</span>:</label>
@@ -468,44 +613,35 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Required Fields Row -->
                     <fieldset class="border border-black p-2">
                         <legend class="text-xs font-bold">Required Information</legend>
                         <div class="grid grid-cols-2 gap-2 mb-2">
                             <div>
                                 <label class="block mb-1 text-xs">Shop Name <span class="text-red-600">*</span>:</label>
-                                <input type="text" id="u_shop" class="w98-input" required 
-                                       placeholder="Enter shop name">
+                                <input type="text" id="u_shop" class="w98-input" required>
                             </div>
                             <div>
                                 <label class="block mb-1 text-xs">Owner / Proprietor Name <span class="text-red-600">*</span>:</label>
-                                <input type="text" id="u_name" class="w98-input" required 
-                                       placeholder="Enter owner name">
+                                <input type="text" id="u_name" class="w98-input" required>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2 mb-2">
                             <div>
                                 <label class="block mb-1 text-xs">Mobile Number <span class="text-red-600">*</span>:</label>
-                                <input type="text" id="u_mobile" class="w98-input" required 
-                                       placeholder="01XXXXXXXXX" pattern="[0-9+]{11,14}">
+                                <input type="text" id="u_mobile" class="w98-input" required pattern="[0-9+]{11,14}">
                             </div>
                             <div>
                                 <label class="block mb-1 text-xs">Trade License No.:</label>
-                                <input type="text" id="u_trade_lic" class="w98-input" 
-                                       placeholder="Trade license number">
+                                <input type="text" id="u_trade_lic" class="w98-input">
                             </div>
                         </div>
                         <div>
                             <label class="block mb-1 text-xs">Address <span class="text-red-600">*</span>:</label>
-                            <textarea id="u_address" class="w98-textarea" required 
-                                      placeholder="Enter full shop address"></textarea>
+                            <textarea id="u_address" class="w98-textarea" required></textarea>
                         </div>
                     </fieldset>
-
-                    <!-- Additional Fields Container (Only Financial Info will show here) -->
+                    ${assignSESection}
                     <div id="role-specific-fields"></div>
-                    
                     <div class="flex justify-end mt-4 gap-2">
                         <button type="button" onclick="closeModal()" class="w98-btn">Cancel</button>
                         <button type="submit" class="w98-btn">
@@ -517,66 +653,100 @@
             renderRoleFields('RETAILER');
         }
         
-        function editUser(id) { 
-            const u = State.users.find(x => x.id === id); 
-            const isEmp = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(u.role);
-            const roleOptions = isEmp ? `
-                <option value="ADMIN" ${u.role==='ADMIN'?'selected':''}>Admin</option>
-                <option value="RSM" ${u.role==='RSM'?'selected':''}>RSM</option>
-                <option value="ASM" ${u.role==='ASM'?'selected':''}>ASM</option>
-                <option value="SE" ${u.role==='SE'?'selected':''}>SE</option>
-                <option value="DA" ${u.role==='DA'?'selected':''}>DA</option>
-            ` : `
-                <option value="RETAILER" ${u.role==='RETAILER'?'selected':''}>Retailer</option>
-                <option value="DEALER" ${u.role==='DEALER'?'selected':''}>Dealer</option>
-                <option value="HOCKER" ${u.role==='HOCKER'?'selected':''}>Hocker</option>
+        function editCustomer(id) {
+            const c = State.customers.find(x => x.id === id);
+            const roleOptions = `
+                <option value="RETAILER" ${c.role==='RETAILER'?'selected':''}>Retailer</option>
+                <option value="DEALER" ${c.role==='DEALER'?'selected':''}>Dealer</option>
+                <option value="HOCKER" ${c.role==='HOCKER'?'selected':''}>Hocker</option>
             `;
-            openModal('Edit User / Customer', `<form onsubmit="saveUser(event, '${u.id}')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value, ${JSON.stringify(u).replace(/"/g, '&quot;')})" class="w98-select" disabled>${roleOptions}</select></div><div><label>Username:</label><input type="text" id="u_username" value="${esc(u.username || '')}" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" value="${esc(u.password || '')}" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update</button></div></form>`); 
-            renderRoleFields(u.role, u); 
-        }
-        
-        function saveUser(e, id) { 
-            e.preventDefault(); 
-            const iF = document.getElementById('u_image').files[0]; 
-            const val = (id) => document.getElementById(id)?.value || ''; 
-            const role = val('u_role'); 
-            const data = { 
-                username: val('u_username'), password: val('u_password'), role: role, name: val('u_name'), shopName: val('u_shop'), mobile: val('u_mobile'), altMobile: val('u_alt_mobile'), email: val('u_email'), address: val('u_address'), nid: val('u_nid'), businessType: val('u_b_type'), tradeLicense: val('u_trade_lic'), tin: val('u_tin'), designation: val('u_designation'), joinDate: val('u_join_date'), empStatus: val('u_emp_status'), due: parseFloat(val('u_due') || 0), isSpecial: val('u_special') || 'No', target: parseFloat(val('u_target') || 0), basicSalary: parseFloat(val('u_salary') || 0), ta: parseFloat(val('u_ta') || 0), da: parseFloat(val('u_da') || 0), region: val('u_region'), area: val('u_area'), territory: val('u_territory'), assignedRSM: val('u_assigned_rsm'), assignedASM: val('u_assigned_asm'), assignedSE: val('u_assigned_se'), status: 'Active' 
-            }; 
+            const allSEs = State.users.filter(u => u.role === 'SE');
+            const seOptions = `<option value="">None (Admin Direct)</option>${allSEs.map(s => `<option value="${s.id}" ${c.assignedSE===s.id?'selected':''}>${esc(s.name)} (${esc(s.userCode || 'SE')})</option>`).join('')}`;
             
-            // Auto-assign SE if a Salesman is creating a customer
-            if (State.currentUser.role === 'SE' && ['DEALER', 'RETAILER', 'HOCKER'].includes(role)) {
-                data.assignedSE = State.currentUser.id;
-                data.assignedASM = State.currentUser.assignedASM || '';
-                data.assignedRSM = State.currentUser.assignedRSM || '';
-            }
-            
-            const s = (u) => { 
-                if(u) data.image = u; 
-                if (id) db.ref('users/' + id).update(data); 
-                else { 
-                    const rP = { 'ADMIN': 'RFPA', 'RSM': 'RFPRSM', 'ASM': 'RFPASM', 'SE': 'RFPSE', 'DA': 'RFPDA', 'DEALER': 'RFPD', 'HOCKER': 'RFPH', 'RETAILER': 'RFPR' }; 
-                    const p = rP[role] || 'RFPX'; 
-                    const rU = State.users.filter(u => u.userCode && u.userCode.startsWith(p)); 
-                    let mS = 0; rU.forEach(u => { const s = parseInt(u.userCode.slice(p.length)); if (!isNaN(s) && s > mS) mS = s; }); 
-                    data.userCode = `${p}${String(mS + 1).padStart(2, '0')}`; 
-                    db.ref('users').push(data); 
-                } 
-                closeModal(); 
-            }; 
-            if(iF) { const r = new FileReader(); r.onload = (e) => s(e.target.result); r.readAsDataURL(iF); } else s(); 
+            openModal('Edit Customer', `
+                <form onsubmit="saveCustomer(event, '${c.id}')">
+                    <div class="win98-titlebar mb-3">
+                        <span><i class="fas fa-store mr-2"></i>Customer Information</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3 mb-3">
+                        <div class="col-span-1 flex flex-col items-center">
+                            <label class="block mb-1 text-xs font-bold">Shop Image</label>
+                            <img id="u_img_preview" src="${c.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black object-cover">
+                            <input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs">
+                        </div>
+                        <div class="col-span-2 grid grid-cols-1 gap-2">
+                            <div>
+                                <label class="block mb-1 text-xs">Shop ID / Code:</label>
+                                <input type="text" class="w98-input" value="${esc(c.userCode || 'N/A')}" disabled style="background:#f0f0f0;">
+                            </div>
+                            <div>
+                                <label class="block mb-1 text-xs">Customer Type:</label>
+                                <select id="u_role" class="w98-select" disabled>${roleOptions}</select>
+                            </div>
+                        </div>
+                    </div>
+                    <fieldset class="border border-black p-2">
+                        <legend class="text-xs font-bold">Required Information</legend>
+                        <div class="grid grid-cols-2 gap-2 mb-2">
+                            <div>
+                                <label class="block mb-1 text-xs">Shop Name <span class="text-red-600">*</span>:</label>
+                                <input type="text" id="u_shop" value="${esc(c.shopName || '')}" class="w98-input" required>
+                            </div>
+                            <div>
+                                <label class="block mb-1 text-xs">Owner Name <span class="text-red-600">*</span>:</label>
+                                <input type="text" id="u_name" value="${esc(c.name || '')}" class="w98-input" required>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mb-2">
+                            <div>
+                                <label class="block mb-1 text-xs">Mobile Number <span class="text-red-600">*</span>:</label>
+                                <input type="text" id="u_mobile" value="${esc(c.mobile || '')}" class="w98-input" required pattern="[0-9+]{11,14}">
+                            </div>
+                            <div>
+                                <label class="block mb-1 text-xs">Trade License No.:</label>
+                                <input type="text" id="u_trade_lic" value="${esc(c.tradeLicense || '')}" class="w98-input">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-xs">Address <span class="text-red-600">*</span>:</label>
+                            <textarea id="u_address" class="w98-textarea" required>${esc(c.address || '')}</textarea>
+                        </div>
+                    </fieldset>
+                    <fieldset class="border border-black p-2 mt-2">
+                        <legend class="text-xs font-bold">Assignment</legend>
+                        <label>Assign SE:</label>
+                        <select id="u_assigned_se" class="w98-select">${seOptions}</select>
+                    </fieldset>
+                    <fieldset class="border border-black p-2 mt-2">
+                        <legend class="text-xs font-bold">Financial Information</legend>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label>Opening Due (৳):</label>
+                                <input type="number" id="u_due" value="${c.due || 0}" class="w98-input">
+                            </div>
+                            <div>
+                                <label>Special Customer:</label>
+                                <select id="u_special" class="w98-select">
+                                    <option value="No" ${c.isSpecial === 'No' || !c.isSpecial ? 'selected' : ''}>No</option>
+                                    <option value="Yes" ${c.isSpecial === 'Yes' ? 'selected' : ''}>Yes</option>
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="flex justify-end mt-4 gap-2">
+                        <button type="button" onclick="closeModal()" class="w98-btn">Cancel</button>
+                        <button type="submit" class="w98-btn"><i class="fas fa-save mr-1"></i> Update Customer</button>
+                    </div>
+                </form>
+            `);
         }
 
         function saveCustomer(e, id) {
             e.preventDefault();
-            
-            // Get role (handle disabled dropdown for sales team)
             let role = document.getElementById('u_role').value;
             if (!role && document.getElementById('u_role_hidden')) {
                 role = document.getElementById('u_role_hidden').value;
             }
-            
-            // Validate required fields
             const shopName = document.getElementById('u_shop').value.trim();
             const ownerName = document.getElementById('u_name').value.trim();
             const mobile = document.getElementById('u_mobile').value.trim();
@@ -603,37 +773,32 @@
                 createdDate: new Date().toISOString()
             };
             
-            // Auto-assign SE hierarchy if salesman is creating
-            if (State.currentUser.role === 'SE' && ['DEALER', 'RETAILER', 'HOCKER'].includes(role)) {
-                data.assignedSE = State.currentUser.id;
-                data.assignedASM = State.currentUser.assignedASM || '';
-                data.assignedRSM = State.currentUser.assignedRSM || '';
+            const selectedSE = val('u_assigned_se');
+            if (selectedSE) {
+                const seUser = State.users.find(u => u.id === selectedSE);
+                if (seUser) {
+                    data.assignedSE = seUser.id;
+                    data.assignedASM = seUser.assignedASM || '';
+                    data.assignedRSM = seUser.assignedRSM || '';
+                }
             }
             
             const saveToDB = (imgUrl) => {
                 if (imgUrl) data.image = imgUrl;
-                
                 if (id) {
-                    db.ref('users/' + id).update(data);
-                    alert('Customer updated successfully!');
+                    db.ref('customers/' + id).update(data);
                 } else {
-                    // Auto-generate Shop ID / Code
-                    const prefixMap = {
-                        'DEALER': 'RFPD',
-                        'HOCKER': 'RFPH',
-                        'RETAILER': 'RFPR'
-                    };
+                    const prefixMap = { 'DEALER': 'RFPD', 'HOCKER': 'RFPH', 'RETAILER': 'RFPR' };
                     const prefix = prefixMap[role] || 'RFPX';
-                    const existingUsers = State.users.filter(u => u.userCode && u.userCode.startsWith(prefix));
+                    const existingUsers = State.customers.filter(u => u.userCode && u.userCode.startsWith(prefix));
                     let maxSerial = 0;
                     existingUsers.forEach(u => {
                         const serial = parseInt(u.userCode.slice(prefix.length));
                         if (!isNaN(serial) && serial > maxSerial) maxSerial = serial;
                     });
                     data.userCode = `${prefix}${String(maxSerial + 1).padStart(3, '0')}`;
-                    
-                    db.ref('users').push(data);
-                    alert(`Customer saved successfully!\nShop ID: ${data.userCode}`);
+                    const newRef = db.ref('customers').push();
+                    newRef.set(data);
                 }
                 closeModal();
             };
@@ -647,17 +812,16 @@
             }
         }
 
-        function deleteUser(id) { if (confirm('Are you sure?')) db.ref('users/' + id).remove(); }
+        function deleteCustomer(id) { if (confirm('Are you sure?')) db.ref('customers/' + id).remove(); }
 
         function renderOrderEntry() { 
-            // Block RSM and ASM from Order Entry directly
-            if (['RSM', 'ASM'].includes(State.currentUser.role)) {
-                document.getElementById('main-content').innerHTML = '<div class="p-4 text-red-600 font-bold">Access Denied: You cannot enter orders.</div>';
+            if (!['ADMIN', 'SE'].includes(State.currentUser.role)) {
+                document.getElementById('main-content').innerHTML = '<div class="p-4 text-red-600 font-bold">Access Denied: Only Admin or Sales Executive (SE) can enter orders.</div>';
                 return;
             }
 
             State.cart = []; 
-            const isC = !['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role); 
+            const isC = !['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role); 
             const isSM = ['RSM', 'ASM', 'SE'].includes(State.currentUser.role);
             
             let custTypeOptions = '';
@@ -673,14 +837,17 @@
                                   <option value="HOCKER">Hocker</option>`;
             }
             
-            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-1 lg:grid-cols-3 gap-2"><div class="lg:col-span-2 win98-window p-2"><h3 class="font-bold mb-2">Select Products (Click to add)</h3><div class="win98-inset p-2 grid grid-cols-2 md:grid-cols-3 gap-2 max-h-[60vh] overflow-y-auto">${State.products.map(p => `<div onclick="showQtyPrompt('${p.id}', '${esc(p.name).replace(/'/g, "\\'")}')" class="win98-outset p-2 cursor-pointer text-center"><img src="${p.image || 'https://via.placeholder.com/80'}" class="w-full h-20 mb-1"><p class="font-bold text-xs truncate">${esc(p.name || 'N/A')}</p><p class="text-[10px]">Stock: ${p.stock || 0}</p><p class="font-bold text-sm">৳ <span id="price_${p.id}">0</span></p></div>`).join('')}</div></div><div class="win98-window p-2 flex flex-col"><h3 class="font-bold mb-2 border-b border-black">Order Summary</h3><div class="mb-2"><label class="text-xs">Customer Type:</label><select id="cust_type" onchange="handleCustomerTypeChange()" class="w98-select" ${(isC || isSM) ? 'disabled' : ''}>${custTypeOptions}</select></div><div class="mb-2 relative" id="cust_search_container"><label class="text-xs">Customer (Search Shop/Mobile):</label><input type="text" id="cust_search" class="w98-input" placeholder="Type to search..." oninput="searchCustomer()" autocomplete="off" ${isC ? 'disabled' : ''}><input type="hidden" id="cust_id"><input type="hidden" id="special_percent" value="0"><div id="cust_dropdown" class="search-dropdown hidden"></div></div><div class="flex-1 win98-inset p-1 max-h-[30vh] overflow-y-auto mb-2"><table class="w-full text-xs text-left"><thead><tr class="border-b border-gray-500"><th class="py-1">Product</th><th class="py-1 text-center">Qty</th><th class="py-1 text-right">Total</th><th class="py-1 text-center">Action</th></tr></thead><tbody id="cart-table"><tr><td colspan="4" class="text-center p-4">Cart is empty</td></tr></tbody></table></div><div class="text-xs border-t border-black pt-2 space-y-1"><div class="flex justify-between"><span>Gross Total:</span> <span id="gross_total" class="font-bold">৳ 0.00</span></div><div class="flex justify-between items-center"><span>Special Discount:</span> <input type="number" id="special_discount" value="0" oninput="calcDue()" class="w98-input" style="width: 100px; text-align: right;" readonly></div><div class="flex justify-between items-center"><span>Paid Amount:</span> <input type="number" id="paid_amt" value="0" oninput="calcDue()" class="w98-input" style="width: 100px; text-align: right;"></div><div class="flex justify-between font-bold text-sm"><span>Current Due:</span> <span id="final_due">৳ 0.00</span></div></div><button onclick="submitOrder()" class="w98-btn mt-4 w-full">Submit Order</button></div></div>`; 
+            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-1 lg:grid-cols-3 gap-2"><div class="lg:col-span-2 win98-window p-2"><h3 class="font-bold mb-2">Select Products (Click to add)</h3><div class="win98-inset p-2 grid grid-cols-2 md:grid-cols-3 gap-2 max-h-[60vh] overflow-y-auto">${State.products.map(p => `<div onclick="showQtyPrompt('${p.id}', '${esc(p.name).replace(/'/g, "\\'")}')" class="win98-outset p-2 cursor-pointer text-center"><img src="${p.image || 'https://via.placeholder.com/80'}" class="w-full h-20 mb-1 object-cover"><p class="font-bold text-xs truncate">${esc(p.name || 'N/A')}</p><p class="text-[10px]">Stock: ${p.stock || 0}</p><p class="font-bold text-sm">৳ <span id="price_${p.id}">0</span></p></div>`).join('')}</div></div><div class="win98-window p-2 flex flex-col"><h3 class="font-bold mb-2 border-b border-black">Order Summary</h3><div class="mb-2"><label class="text-xs">Customer Type:</label><select id="cust_type" onchange="handleCustomerTypeChange()" class="w98-select" ${(isC || isSM) ? 'disabled' : ''}>${custTypeOptions}</select></div><div class="mb-2 relative" id="cust_search_container"><label class="text-xs">Customer (Search Shop/Mobile):</label><input type="text" id="cust_search" class="w98-input" placeholder="Type to search..." oninput="searchCustomer()" autocomplete="off" ${isC ? 'disabled' : ''}><input type="hidden" id="cust_id"><input type="hidden" id="special_percent" value="0"><div id="cust_dropdown" class="search-dropdown hidden"></div></div><div class="flex-1 win98-inset p-1 max-h-[30vh] overflow-y-auto mb-2"><table class="w-full text-xs text-left"><thead><tr class="border-b border-gray-500"><th class="py-1">Product</th><th class="py-1 text-center">Qty</th><th class="py-1 text-right">Total</th><th class="py-1 text-center">Action</th></tr></thead><tbody id="cart-table"><tr><td colspan="4" class="text-center p-4">Cart is empty</td></tr></tbody></table></div><div class="text-xs border-t border-black pt-2 space-y-1"><div class="flex justify-between"><span>Gross Total:</span> <span id="gross_total" class="font-bold">৳ 0.00</span></div><div class="flex justify-between items-center"><span>Special Discount:</span> <input type="number" id="special_discount" value="0" oninput="calcDue()" class="w98-input" style="width: 100px; text-align: right;" readonly></div><div class="flex justify-between items-center"><span>Paid Amount:</span> <input type="number" id="paid_amt" value="0" oninput="calcDue()" class="w98-input" style="width: 100px; text-align: right;"></div><div class="flex justify-between font-bold text-sm"><span>Current Due:</span> <span id="final_due">৳ 0.00</span></div></div><button onclick="submitOrder()" class="w98-btn mt-4 w-full">Submit Order</button></div></div>`; 
             handleCustomerTypeChange(); 
         }
         
         function searchCustomer() {
             const term = document.getElementById('cust_search').value.toLowerCase();
             const type = document.getElementById('cust_type').value;
-            const fC = State.users.filter(u => u.role === type);
+            let fC = State.customers.filter(u => u.role === type);
+            if (State.currentUser.role === 'SE') {
+                fC = fC.filter(u => u.assignedSE === State.currentUser.id);
+            }
             const matches = fC.filter(c => (c.shopName || '').toLowerCase().includes(term) || (c.mobile || '').toLowerCase().includes(term) || (c.name || '').toLowerCase().includes(term));
             const dropdown = document.getElementById('cust_dropdown');
             if (matches.length === 0) { dropdown.innerHTML = '<div class="search-item">No match found</div>'; dropdown.classList.remove('hidden'); return; }
@@ -693,7 +860,7 @@
         
         function handleCustomerTypeChange() { 
             const t = document.getElementById('cust_type').value; 
-            const isC = !['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role); 
+            const isC = !['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role); 
             if (isC) { 
                 document.getElementById('cust_search').value = State.currentUser.name; 
                 document.getElementById('cust_id').value = State.currentUser.id;
@@ -754,11 +921,10 @@
         function calculateSpecialDiscount() {
             const custType = document.getElementById('cust_type').value;
             const custId = document.getElementById('cust_id').value;
-            const customer = State.users.find(u => u.id === custId);
+            const customer = State.customers.find(u => u.id === custId);
             let gross = State.cart.reduce((s, i) => s + ((i.qty || 0) * (i.price || 0)), 0);
             let discount = 0;
             let percent = 0;
-
             if (custType === 'RETAILER' && customer && customer.isSpecial === 'Yes') {
                 if (gross >= 1000 && gross <= 5000) {
                     percent = 1;
@@ -787,7 +953,7 @@
         function submitOrder() { 
             if(State.cart.length === 0) return alert('Cart is empty!'); 
             const cId = document.getElementById('cust_id').value; if(!cId) return alert('Please select a customer from the search list!'); 
-            const c = State.users.find(u => u.id === cId); if(!c) return alert('Invalid customer selected!'); 
+            const c = State.customers.find(u => u.id === cId); if(!c) return alert('Invalid customer selected!'); 
             const gross = State.cart.reduce((s, i) => s + ((i.qty || 0) * (i.price || 0)), 0); 
             const sd = parseFloat(document.getElementById('special_discount').value) || 0; 
             const sdPercent = parseFloat(document.getElementById('special_percent').value) || 0;
@@ -816,17 +982,18 @@
                 entryByName: State.currentUser.name || 'N/A',
                 salesRole: State.currentUser.role || 'UNKNOWN'
             }; 
-            db.ref('orders').push(oD).then(() => { const nD = (c.due || 0) + d; db.ref('users/' + cId).update({ due: nD }); alert('Order Saved! Invoice No: ' + oD.invoiceNo); renderPage('invoices'); }); 
+            db.ref('orders').push(oD).then(() => { const nD = (c.due || 0) + d; db.ref('customers/' + cId).update({ due: nD }); alert('Order Saved! Invoice No: ' + oD.invoiceNo); renderPage('invoices'); }); 
         }
 
         function renderInvoices() {
             const role = State.currentUser.role;
-            const iA = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
-            const canChangeStatus = ['ADMIN', 'DA'].includes(role);
-            const canAddCollection = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
+            const iA = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
+            const canAccept = ['ADMIN', 'OPERATOR'].includes(role);
+            const canDeliver = ['ADMIN', 'DA'].includes(role);
+            const canAddCollection = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
             
             let oS = [];
-            if (role === 'ADMIN' || role === 'DA') {
+            if (role === 'ADMIN' || role === 'OPERATOR' || role === 'DA') {
                 oS = State.orders;
             } else if (role === 'RSM') {
                 const seIds = State.users.filter(u => u.role === 'SE' && u.assignedRSM === State.currentUser.id).map(u => u.id);
@@ -837,7 +1004,6 @@
             } else if (role === 'SE') {
                 oS = State.orders.filter(o => o.entryBy === State.currentUser.id || o.entryBy === State.currentUser.userCode);
             } else {
-                // Customer
                 oS = State.orders.filter(o => o.customerId === State.currentUser.id);
             }
 
@@ -846,10 +1012,11 @@
             if (oS.length > 0) {
                 rows = oS.map(o => {
                     let actionBtns = `<button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button>`;
-                    if (canChangeStatus && (o.status === 'Pending' || o.status === 'Shipped')) { actionBtns += ` <button onclick="processReturn('${o.id}')" class="w98-btn" style="padding: 2px 6px;">Delivery</button>`; }
+                    if (canAccept && o.status === 'Pending') { actionBtns += ` <button onclick="updateStatus('${o.id}', 'Accepted')" class="w98-btn" style="padding: 2px 6px; color: blue;">Accept</button>`; }
+                    if (canDeliver && o.status === 'Accepted') { actionBtns += ` <button onclick="processReturn('${o.id}')" class="w98-btn" style="padding: 2px 6px;">Delivery</button>`; }
                     if (canAddCollection && o.due > 0) { actionBtns += ` <button onclick="addCollection('${o.id}')" class="w98-btn" style="padding: 2px 6px; color: green;">Collect</button>`; }
                     if (State.currentUser.role === 'ADMIN' && o.status !== 'Delivered') { actionBtns += ` <button onclick="deleteOrder('${o.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>`; }
-                    return `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${safeDate(o.orderDate)}</td>${iA ? `<td>${esc(o.customerShopName || 'N/A')}</td>` : ''}<td>৳${o.netTotal || o.grossTotal || 0}</td><td>৳${o.paid || 0}</td><td>৳${o.due || 0}</td><td class="text-center">${canChangeStatus ? `<select onchange="updateStatus('${o.id}', this.value)" class="w98-select text-xs" ${o.status === 'Delivered' ? 'disabled' : ''}><option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option><option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option><option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option><option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option></select>` : `<span class="status-badge ${sC(o.status)}">${esc(o.status || 'Pending')}</span>`}</td><td class="text-center whitespace-nowrap">${actionBtns}</td></tr>`;
+                    return `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${safeDate(o.orderDate)}</td>${iA ? `<td>${esc(o.customerShopName || 'N/A')}</td>` : ''}<td>৳${o.netTotal || o.grossTotal || 0}</td><td>৳${o.paid || 0}</td><td>৳${o.due || 0}</td><td class="text-center">${canAccept ? `<select onchange="updateStatus('${o.id}', this.value)" class="w98-select text-xs" ${o.status === 'Delivered' || o.status === 'Accepted' ? 'disabled' : ''}><option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option><option value="Accepted" ${o.status==='Accepted'?'selected':''}>Accepted</option><option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option><option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option></select>` : `<span class="status-badge ${sC(o.status)}">${esc(o.status || 'Pending')}</span>`}</td><td class="text-center whitespace-nowrap">${actionBtns}</td></tr>`;
                 }).join('');
             } else { rows = `<tr><td colspan="${iA ? 8 : 7}" class="text-center p-4">No orders found.</td></tr>`; }
             document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><h3 class="font-bold mb-2">Order History</h3><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Invoice No</th><th>Date</th>${iA ? '<th>Shop Name</th>' : ''}<th>Total</th><th>Paid</th><th>Due</th><th class="text-center">Status</th><th class="text-center">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
@@ -890,10 +1057,10 @@
 
             db.ref('orders/' + id).update({ paid: newPaid, due: newDue }).then(() => {
                 if (o.customerId) {
-                    const c = State.users.find(u => u.id === o.customerId);
+                    const c = State.customers.find(u => u.id === o.customerId);
                     if (c) {
                         const nCD = (c.due || 0) - amount;
-                        db.ref('users/' + o.customerId).update({ due: nCD }).then(() => {
+                        db.ref('customers/' + o.customerId).update({ due: nCD }).then(() => {
                             alert('Collection saved successfully!');
                             closeModal();
                         });
@@ -912,7 +1079,7 @@
             const o = State.orders.find(x => x.id === id); if(!o) return alert('Order not found!');
             const items = toArray(o.items);
             const iH = items.map((i, idx) => `<tr><td>${esc(i.name || 'N/A')}</td><td class="text-center">${i.qty || 0}</td><td class="text-center"><input type="number" id="ret_qty_${idx}" min="0" max="${i.qty || 0}" value="0" class="w98-input" style="width: 60px; text-align: center;"></td></tr>`).join('');
-            openModal('Delivery & Return Adjustment', `<form onsubmit="submitReturn(event, '${id}')"><p class="text-xs mb-2">Enter returned quantity (if any). The remaining quantity will be marked as Delivered.</p><div class="win98-inset p-1 mb-2"><table class="w98-table text-xs"><thead><tr><th>Product</th><th class="text-center">Ordered Qty</th><th class="text-center">Return Qty</th></tr></thead><tbody>${iH}</tbody></table></div><div class="flex justify-end"><button type="submit" class="w98-btn">Confirm Delivery</button></div></form>`);
+            openModal('Delivery & Return Adjustment', `<form onsubmit="submitReturn(event, '${id}')"><p class="text-xs mb-2">Enter returned quantity (if any). The remaining quantity will be marked as Delivered.</p><div class="win98-inset p-1 mb-2 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Product</th><th class="text-center">Ordered Qty</th><th class="text-center">Return Qty</th></tr></thead><tbody>${iH}</tbody></table></div><div class="flex justify-end"><button type="submit" class="w98-btn">Confirm Delivery</button></div></form>`);
         }
         function submitReturn(e, id) {
             e.preventDefault(); const o = State.orders.find(x => x.id === id); if(!o) return;
@@ -924,21 +1091,21 @@
             const nNet = nG - nSD; 
             const nD = (o.due || 0) - (nNet - (o.netTotal || o.grossTotal || 0)); 
 
-            if (o.customerId) { const c = State.users.find(u => u.id === o.customerId); if (c) { const nCD = (c.due || 0) - ((o.netTotal || o.grossTotal || 0) - nNet); db.ref('users/' + c.id).update({ due: nCD }); } }
+            if (o.customerId) { const c = State.customers.find(u => u.id === o.customerId); if (c) { const nCD = (c.due || 0) - ((o.netTotal || o.grossTotal || 0) - nNet); db.ref('customers/' + c.id).update({ due: nCD }); } }
 
             db.ref('orders/' + id).update({ items: uI, grossTotal: nG, specialDiscount: nSD, netTotal: nNet, due: nD, status: 'Delivered' }).then(() => { 
                 alert('Delivery completed successfully! Order marked as Delivered.'); 
                 closeModal(); renderPage('invoices'); 
             });
         }
-        function deleteOrder(id) { const o = State.orders.find(x => x.id === id); if (!o) return alert('Order not found!'); if (confirm(`Delete Invoice ${o.invoiceNo || ''}?`)) { if (o.customerId && o.due) { const c = State.users.find(u => u.id === o.customerId); if (c) { const nD = (c.due || 0) - o.due; db.ref('users/' + c.id).update({ due: nD }); } } db.ref('orders/' + id).remove().then(() => { alert('Order deleted!'); if (State.currentView === 'invoice_view') renderPage('invoices'); }); } }
+        function deleteOrder(id) { const o = State.orders.find(x => x.id === id); if (!o) return alert('Order not found!'); if (confirm(`Delete Invoice ${o.invoiceNo || ''}?`)) { if (o.customerId && o.due) { const c = State.customers.find(u => u.id === o.customerId); if (c) { const nD = (c.due || 0) - o.due; db.ref('customers/' + c.id).update({ due: nD }); } } db.ref('orders/' + id).remove().then(() => { alert('Order deleted!'); if (State.currentView === 'invoice_view') renderPage('invoices'); }); } }
         function toBn(n) { const b = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']; return String(n).replace(/[0-9]/g, d => b[d]); }
         function formatBnDate(dateStr) { try { const d = new Date(dateStr); if (isNaN(d.getTime())) return 'N/A'; const months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর']; return `${toBn(d.getDate())} ${months[d.getMonth()]}, ${toBn(d.getFullYear())}`; } catch(e) { return 'N/A'; } }
-        function translateStatus(s) { const m = { 'Pending': 'পেন্ডিং', 'Shipped': 'প্রেরিত', 'Delivered': 'ডেলিভার্ড', 'Cancelled': 'বাতিল', 'Returned': 'রিটার্ন/এডজাস্টেড' }; return m[s] || 'পেন্ডিং'; }
+        function translateStatus(s) { const m = { 'Pending': 'পেন্ডিং', 'Accepted': 'অনুমোদিত', 'Delivered': 'ডেলিভার্ড', 'Cancelled': 'বাতিল', 'Returned': 'রিটার্ন/এডজাস্টেড' }; return m[s] || 'পেন্ডিং'; }
         
         function viewInvoice(id) {
             State.currentView = 'invoice_view'; const o = State.orders.find(x => x.id === id); if(!o) return alert('Invoice not found!');
-            const iA = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role);
+            const iA = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role);
             if (!iA && o.customerId !== State.currentUser.id) { return alert('Access Denied: You can only view your own invoices.'); }
 
             const gC = (t) => { 
@@ -958,14 +1125,228 @@
 
                 return `<div class="invoice-box"><div class="copy-type">${t}</div><div class="inv-header"><div class="logo-section"><img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="Logo"></div><div class="company-info"><h1>Rafi Food Product</h1><p>প্রিমিয়াম কোয়ালিটি বেকারি ও ফুড আইটেম</p><p>ঠিকানা: Mosjid para Chuadanga, Chuadanga sadar-7200</p><p>ফোন: +৮৮০ 1756144900</p><p>ইমেইল: rafifoodproducts@gmail.com</p></div></div><table class="meta-table"><tr><td><strong>গ্রাহকের বিবরণ:</strong><br>গ্রাহকের আইডি: ${esc(o.customerCode || 'N/A')}<br>দোকানের নাম: ${esc(o.customerShopName || 'N/A')}<br>নাম: ${esc(o.customerName || 'N/A')}<br>ঠিকানা: ${esc(o.customerAddress || 'N/A')}<br>মোবাইল: ${toBn(o.customerMobile || 'N/A')}</td><td style="text-align: right;"><strong>ইনভয়েস নম্বর:</strong> ${esc(o.invoiceNo || 'N/A')}<br><strong>তারিখ:</strong> ${formatBnDate(o.orderDate)}<br><strong>স্ট্যাটাস:</strong> ${translateStatus(o.status)}<br><strong>অর্ডার গ্রহণকারী:</strong> ${esc(o.salesRole === 'ADMIN' ? 'Admin Sales' : (o.entryByName || o.entryBy || 'N/A'))}</td></tr></table><table class="details-table"><thead><tr><th>SL</th><th>পণ্যের বিবরণ</th><th>MRP (টাকা)</th><th>পরিমাণ</th><th>বিক্রয় মূল্য (টাকা)</th><th>মোট (টাকা)</th></tr></thead><tbody>${iH}</tbody></table><div class="totals-section"><table class="totals-table"><tr><td>সাব-টোটাল (Gross):</td><td>${toBn((o.grossTotal || 0).toFixed(2))} ৳</td></tr>${o.specialDiscount > 0 ? `<tr><td>স্পেশাল ডিসকাউন্ট${sdPercentText}:</td><td>- ${toBn((o.specialDiscount || 0).toFixed(2))} ৳</td></tr>` : ''}<tr><td>নেট টোটাল:</td><td>${toBn((o.netTotal || o.grossTotal || 0).toFixed(2))} ৳</td></tr><tr><td>পরিশোধিত:</td><td>${toBn((o.paid || 0).toFixed(2))} ৳</td></tr><tr><td>বকেয়া:</td><td>${toBn((o.due || 0).toFixed(2))} ৳</td></tr></table></div><div class="signatures"><div class="signature-box">গ্রাহকের স্বাক্ষর</div><div class="signature-box">অনুমোদিত স্বাক্ষর</div></div><div class="inv-footer"><p>আমাদের সাথে থাকার জন্য ধন্যবাদ! পণ্য ক্রয়ের জন্য আবার আমন্ত্রণ জানাচ্ছি।</p><p><strong>RafiFood Product</strong></p></div></div>`; 
             };
-            document.getElementById('main-content').innerHTML = `<div id="print-area"><span class="back-btn no-print" onclick="renderPage('invoices')"><< Back to Orders</span>${gC("Customer Copy")}<div class="page-break"></div>${gC("Office Copy")}<button class="print-btn no-print" onclick="window.print()">ইনভয়েস প্রিন্ট করুন / PDF সেভ করুন</button></div>`;
+            document.getElementById('main-content').innerHTML = `<div id="print-area"><div class="no-print" style="text-align:center;"><button class="back-btn" onclick="renderPage('delivery-summary')">Delivery Summary</button></div>${gC("Customer Copy")}<div class="page-break"></div>${gC("Office Copy")}<button class="print-btn no-print" onclick="window.print()">ইনভয়েস প্রিন্ট করুন / PDF সেভ করুন</button></div>`;
             window.scrollTo(0, 0);
         }
 
-        // --- Sales & Due Reports Module (Customer Category Grouping) ---
+        // --- Delivery Summary Module (Product-wise for DA) ---
+        function renderDeliverySummary() {
+            const role = State.currentUser.role;
+            const isAdmin = role === 'ADMIN' || role === 'OPERATOR';
+            const today = new Date().toISOString().slice(0, 10);
+            const seOptions = State.users.filter(u => u.role === 'SE').map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('');
+
+            document.getElementById('main-content').innerHTML = `
+                <div class="win98-window p-2">
+                    <div class="win98-titlebar mb-2">Delivery Summary (Product-wise)</div>
+                    <div class="p-2 flex flex-col md:flex-row gap-2 items-end mb-4">
+                        <div class="w-full md:w-auto">
+                            <label>Date:</label>
+                            <input type="date" id="delv_date" class="w98-input" value="${today}" onchange="generateDeliverySummary()">
+                        </div>
+                        ${isAdmin ? `
+                        <div class="w-full md:w-auto">
+                            <label>SE:</label>
+                            <select id="delv_se" class="w98-select" onchange="generateDeliverySummary()">
+                                <option value="">All SE</option>
+                                ${seOptions}
+                            </select>
+                        </div>` : `<input type="hidden" id="delv_se" value="">`}
+                        <button onclick="generateDeliverySummary()" class="w98-btn">Generate Summary</button>
+                        <button onclick="printDeliverySummary()" class="w98-btn"><i class="fas fa-print mr-1"></i> Print Summary</button>
+                    </div>
+                    <div id="delv_summary_area" class="text-center p-4 text-gray-500">Select date and SE, then click Generate Summary.</div>
+                </div>
+            `;
+            generateDeliverySummary();
+        }
+
+        function generateDeliverySummary() {
+            const dateVal = document.getElementById('delv_date')?.value;
+            const seId = document.getElementById('delv_se')?.value || '';
+            if (!dateVal) return;
+
+            let fOrders = State.orders.filter(o => {
+                const d = new Date(o.orderDate);
+                const dStr = d.toISOString().slice(0, 10);
+                return dStr === dateVal && o.status === 'Accepted';
+            });
+
+            if (seId) {
+                const seUser = State.users.find(u => u.id === seId);
+                const seCode = seUser?.userCode;
+                fOrders = fOrders.filter(o => o.entryBy === seId || o.entryBy === seCode);
+            }
+
+            const totalOrders = fOrders.length;
+            const totalSales = fOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0);
+            const totalDue = fOrders.reduce((s, o) => s + (o.due || 0), 0);
+
+            let productSummary = {};
+            fOrders.forEach(o => {
+                toArray(o.items).forEach(item => {
+                    if (!productSummary[item.id]) {
+                        productSummary[item.id] = { name: item.name, qty: 0, price: item.price || 0 };
+                    }
+                    productSummary[item.id].qty += item.qty;
+                });
+            });
+
+            const prodRows = Object.values(productSummary).map(p => `
+                <tr>
+                    <td>${esc(p.name || 'N/A')}</td>
+                    <td class="text-center font-bold text-base">${p.qty}</td>
+                    <td class="text-right">৳ ${(p.price || 0).toFixed(2)}</td>
+                </tr>
+            `).join('') || `<tr><td colspan="3" class="text-center p-4">No products to deliver.</td></tr>`;
+
+            const orderRows = fOrders.map(o => `
+                <tr>
+                    <td>${esc(o.invoiceNo || 'N/A')}</td>
+                    <td>${esc(o.customerShopName || 'N/A')}</td>
+                    <td>${esc(o.customerAddress || 'N/A')}</td>
+                    <td>৳${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td>
+                    <td class="text-center"><button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button></td>
+                </tr>
+            `).join('') || `<tr><td colspan="5" class="text-center p-4">No accepted orders found for this date.</td></tr>`;
+
+            document.getElementById('delv_summary_area').innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+                    <div class="win98-outset p-2 text-center">
+                        <p class="text-xs">Total Orders to Deliver</p>
+                        <p class="text-lg font-bold">${totalOrders}</p>
+                    </div>
+                    <div class="win98-outset p-2 text-center">
+                        <p class="text-xs">Total Sales Amount</p>
+                        <p class="text-lg font-bold">৳ ${totalSales.toFixed(2)}</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div class="win98-window p-2">
+                        <h4 class="font-bold mb-2 border-b pb-1">Product Pickup Summary</h4>
+                        <div class="win98-inset p-1 overflow-x-auto max-h-[50vh]">
+                            <table class="w98-table text-xs">
+                                <thead><tr><th>Product Name</th><th class="text-center">Total Qty</th><th class="text-right">Rate</th></tr></thead>
+                                <tbody>${prodRows}</tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="win98-window p-2">
+                        <h4 class="font-bold mb-2 border-b pb-1">Customer Delivery List</h4>
+                        <div class="win98-inset p-1 overflow-x-auto max-h-[50vh]">
+                            <table class="w98-table text-xs">
+                                <thead><tr><th>Invoice</th><th>Shop Name</th><th>Address</th><th>Total</th><th class="text-center">View</th></tr></thead>
+                                <tbody>${orderRows}</tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function printDeliverySummary() {
+            const dateVal = document.getElementById('delv_date')?.value;
+            const seId = document.getElementById('delv_se')?.value || '';
+            const seName = seId ? State.users.find(u => u.id === seId)?.name : 'All SE';
+            
+            let fOrders = State.orders.filter(o => {
+                const d = new Date(o.orderDate);
+                return d.toISOString().slice(0, 10) === dateVal && o.status === 'Accepted';
+            });
+
+            if (seId) {
+                const seUser = State.users.find(u => u.id === seId);
+                const seCode = seUser?.userCode;
+                fOrders = fOrders.filter(o => o.entryBy === seId || o.entryBy === seCode);
+            }
+
+            const totalOrders = fOrders.length;
+            const totalSales = fOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0);
+            const totalDue = fOrders.reduce((s, o) => s + (o.due || 0), 0);
+
+            let productSummary = {};
+            fOrders.forEach(o => {
+                toArray(o.items).forEach(item => {
+                    if (!productSummary[item.id]) {
+                        productSummary[item.id] = { name: item.name, qty: 0, price: item.price || 0 };
+                    }
+                    productSummary[item.id].qty += item.qty;
+                });
+            });
+
+            const prodRows = Object.values(productSummary).map(p => `
+                <tr>
+                    <td>${esc(p.name || 'N/A')}</td>
+                    <td style="text-align:center; font-weight:bold; font-size:14px;">${p.qty}</td>
+                    <td style="text-align:right;">${(p.price || 0).toFixed(2)}</td>
+                </tr>
+            `).join('') || `<tr><td colspan="3" style="text-align:center;">No products to deliver.</td></tr>`;
+
+            const orderRows = fOrders.map(o => `
+                <tr>
+                    <td>${esc(o.invoiceNo || 'N/A')}</td>
+                    <td>${esc(o.customerShopName || 'N/A')}</td>
+                    <td>${esc(o.customerAddress || 'N/A')}</td>
+                    <td style="text-align:right;">${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td>
+                </tr>
+            `).join('') || `<tr><td colspan="4" style="text-align:center;">No accepted orders found.</td></tr>`;
+
+            const html = `
+                <html><head><title>Delivery Summary</title>
+                <style>
+                    body { font-family: Tahoma, sans-serif; margin: 20px; }
+                    h2 { text-align: center; margin-bottom: 5px; }
+                    p { text-align: center; margin-top: 0; }
+                    .summary-box { display: flex; justify-content: space-around; margin-bottom: 20px; border: 1px solid #000; padding: 10px; }
+                    .summary-box div { text-align: center; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                    th, td { border: 1px solid #000; padding: 5px; font-size: 12px; text-align: left; }
+                    th { background: #e0e0e0; }
+                </style></head><body>
+                    <h2>RAFI FOOD - Delivery Summary</h2>
+                    <p>Date: ${dateVal} | SE: ${seName}</p>
+                    <div class="summary-box">
+                        <div><b>Total Orders:</b><br>${totalOrders}</div>
+                        <div><b>Total Sales:</b><br>৳ ${totalSales.toFixed(2)}</div>
+                        <div><b>Total Due:</b><br>৳ ${totalDue.toFixed(2)}</div>
+                    </div>
+                    
+                    <h3>Product Pickup List</h3>
+                    <table>
+                        <thead><tr><th>Product Name</th><th style="text-align:center;">Total Qty</th><th style="text-align:right;">Rate</th></tr></thead>
+                        <tbody>${prodRows}</tbody>
+                    </table>
+
+                    <h3>Customer Delivery List</h3>
+                    <table>
+                        <thead><tr><th>Invoice</th><th>Shop Name</th><th>Address</th><th style="text-align:right;">Total</th></tr></thead>
+                        <tbody>${orderRows}</tbody>
+                    </table>
+                </body></html>
+            `;
+            
+            const iframe = document.createElement('iframe');
+            iframe.style.position = "absolute"; iframe.style.width = "0px"; iframe.style.height = "0px"; iframe.style.border = "none";
+            document.body.appendChild(iframe);
+            iframe.contentWindow.document.open();
+            iframe.contentWindow.document.write(html);
+            iframe.contentWindow.document.close();
+            setTimeout(() => { iframe.contentWindow.focus(); iframe.contentWindow.print(); setTimeout(() => { if (iframe.parentNode) document.body.removeChild(iframe); }, 1000); }, 500);
+        }
+
+        // --- Sales & Due Reports Module ---
         function renderReports() {
-            const iA = ['ADMIN', 'RSM', 'ASM', 'SE'].includes(State.currentUser.role);
-            const shops = iA ? [...new Set(State.orders.filter(o => o.status === 'Delivered').map(o => o.customerShopName).filter(Boolean))] : [];
+            const iA = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role);
+            let shops = [];
+            if (iA) {
+                let custUsers = State.customers;
+                if (State.currentUser.role === 'SE') {
+                    custUsers = custUsers.filter(u => u.assignedSE === State.currentUser.id);
+                }
+                const validCustIds = custUsers.map(u => u.id);
+                shops = [...new Set(State.orders.filter(o => o.status === 'Delivered' && validCustIds.includes(o.customerId)).map(o => o.customerShopName).filter(Boolean))];
+            }
+
             document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex flex-col md:flex-row justify-between md:items-center mb-2 gap-2"><h3 class="font-bold">Customer Wise Sales & Due Report</h3><div class="flex flex-wrap gap-2 items-center">${iA ? `<select id="report-shop-filter" onchange="filterReports()" class="w98-select" style="max-width: 150px;"><option value="">All Shops</option>${shops.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('')}</select>` : ''}<input type="text" id="report-search" placeholder="Search..." oninput="filterReports()" class="w98-input" style="max-width: 150px;"><button onclick="printReport()" class="w98-btn" style="padding: 2px 6px;">Print</button><button onclick="exportToExcel()" class="w98-btn" style="padding: 2px 6px;">Excel</button></div></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Date</th><th>Invoice</th><th>Shop Name</th><th>Type</th><th>Sales</th><th>Collected</th><th>Due</th><th class="text-center">View</th></tr></thead><tbody id="report-tbody"></tbody><tfoot id="report-tfoot" class="font-bold"></tfoot></table></div></div>`;
             filterReports();
         }
@@ -976,14 +1357,21 @@
             const isRSM = role === 'RSM';
             const isASM = role === 'ASM';
             const isSE = role === 'SE';
+            const isDA = role === 'DA';
+            const isOP = role === 'OPERATOR';
             
             let baseOrders = State.orders.filter(o => o.status === 'Delivered');
 
-            if (!isAdmin && !isRSM && !isASM && !isSE) {
+            if (isSE) {
+                const seCustIds = State.customers.filter(u => u.assignedSE === State.currentUser.id).map(u => u.id);
+                baseOrders = baseOrders.filter(o => seCustIds.includes(o.customerId) || o.entryBy === State.currentUser.id);
+            } else if (isDA || isOP) {
+                // DA/Operator sees all delivered orders for reporting
+            } else if (!isAdmin && !isRSM && !isASM) {
                 baseOrders = baseOrders.filter(o => o.customerId === State.currentUser.id);
             }
 
-            const shopFilter = (isAdmin || isRSM || isASM || isSE) ? (document.getElementById('report-shop-filter')?.value || '') : '';
+            const shopFilter = (isAdmin || isRSM || isASM || isSE || isDA || isOP) ? (document.getElementById('report-shop-filter')?.value || '') : '';
             const searchTerm = (document.getElementById('report-search')?.value || '').toLowerCase();
 
             const filteredOrders = baseOrders.filter(o => {
@@ -1136,26 +1524,31 @@
 
         // --- Salesman Performance & Salary Module ---
         function renderSalesmanReport() {
-            const iA = State.currentUser.role === 'ADMIN';
-            const isSM = ['RSM', 'ASM', 'SE'].includes(State.currentUser.role);
-            
-            if (!iA && !isSM) {
+            if (!['ADMIN', 'RSM', 'ASM'].includes(State.currentUser.role)) {
                 document.getElementById('main-content').innerHTML = '<div>Access Denied</div>';
                 return;
             }
 
-            const salesmen = State.users.filter(u => ['RSM', 'ASM', 'SE'].includes(u.role));
-            let smOptions = salesmen.map(s => `<option value="${s.id}" ${isSM && s.id === State.currentUser.id ? 'selected' : ''}>${esc(s.name)} (${s.role})</option>`).join('');
+            const role = State.currentUser.role;
+            let salesmen = State.users.filter(u => ['RSM', 'ASM', 'SE'].includes(u.role));
+            
+            if (role === 'RSM') {
+                salesmen = salesmen.filter(u => u.id === State.currentUser.id || u.assignedRSM === State.currentUser.id || (u.role === 'ASM' && u.assignedRSM === State.currentUser.id));
+            } else if (role === 'ASM') {
+                salesmen = salesmen.filter(u => u.id === State.currentUser.id || u.assignedASM === State.currentUser.id);
+            }
+
+            let smOptions = salesmen.map(s => `<option value="${s.id}">${esc(s.name)} (${s.role})</option>`).join('');
 
             document.getElementById('main-content').innerHTML = `
                 <div class="win98-window p-2">
                     <div class="win98-titlebar mb-2">Salesman Performance & Salary</div>
                     <div class="p-2 flex flex-col md:flex-row gap-2 items-end mb-4">
-                        <div class="flex-1">
+                        <div class="flex-1 w-full">
                             <label>Salesman:</label>
-                            <select id="sm_filter" class="w98-select" ${isSM ? 'disabled' : ''}>${smOptions}</select>
+                            <select id="sm_filter" class="w98-select">${smOptions}</select>
                         </div>
-                        <div>
+                        <div class="w-full md:w-auto">
                             <label>Month:</label>
                             <input type="month" id="sm_month" class="w98-input" value="${new Date().toISOString().slice(0,7)}">
                         </div>
@@ -1168,18 +1561,31 @@
         }
 
         function calcSalesmanReport() {
-            const smId = document.getElementById('sm_filter')?.value || State.currentUser.id;
+            const smId = document.getElementById('sm_filter')?.value;
             const smUser = State.users.find(u => u.id === smId);
             const monthVal = document.getElementById('sm_month').value;
             
             if (!smUser || !monthVal) return alert('Please select Salesman and Month');
 
             const [year, month] = monthVal.split('-').map(Number);
+            const role = smUser.role;
             
-            const fOrders = State.orders.filter(o => {
-                if (o.status !== 'Delivered') return false;
-                const isEntryBy = o.entryBy === smId || o.entryBy === smUser.userCode;
-                if (!isEntryBy) return false;
+            let fOrders = [];
+            if (role === 'SE') {
+                fOrders = State.orders.filter(o => o.status === 'Delivered' && (o.entryBy === smId || o.entryBy === smUser.userCode));
+            } else if (role === 'ASM') {
+                const teamSeIds = State.users.filter(u => u.role === 'SE' && u.assignedASM === smId).map(u => u.id);
+                const teamSeCodes = State.users.filter(u => u.role === 'SE' && u.assignedASM === smId).map(u => u.userCode);
+                fOrders = State.orders.filter(o => o.status === 'Delivered' && (teamSeIds.includes(o.entryBy) || teamSeCodes.includes(o.entryBy)));
+            } else if (role === 'RSM') {
+                const teamSeIds = State.users.filter(u => u.role === 'SE' && u.assignedRSM === smId).map(u => u.id);
+                const teamSeCodes = State.users.filter(u => u.role === 'SE' && u.assignedRSM === smId).map(u => u.userCode);
+                fOrders = State.orders.filter(o => o.status === 'Delivered' && (teamSeIds.includes(o.entryBy) || teamSeCodes.includes(o.entryBy)));
+            } else { 
+                fOrders = State.orders.filter(o => o.status === 'Delivered' && o.salesRole === 'ADMIN');
+            }
+
+            fOrders = fOrders.filter(o => {
                 const d = new Date(o.orderDate);
                 return d.getFullYear() === year && (d.getMonth() + 1) === month;
             });
@@ -1199,16 +1605,28 @@
             
             const totalPayable = basicSalary + taMonthly + daMonthly + incentive;
 
-            const orderRows = fOrders.map(o => `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${safeDate(o.orderDate)}</td><td>${esc(o.customerShopName || 'N/A')}</td><td>৳${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td><td>৳${(o.paid || 0).toFixed(2)}</td></tr>`).join('') || `<tr><td colspan="5" class="text-center p-2">No orders found for this month.</td></tr>`;
+            let orderTableHtml = '';
+            if (role === 'SE' || role === 'ADMIN') {
+                const orderRows = fOrders.map(o => `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${safeDate(o.orderDate)}</td><td>${esc(o.customerShopName || 'N/A')}</td><td>৳${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td><td>৳${(o.paid || 0).toFixed(2)}</td></tr>`).join('') || `<tr><td colspan="5" class="text-center p-2">No orders found for this month.</td></tr>`;
+                orderTableHtml = `
+                    <div class="win98-inset p-2 overflow-x-auto">
+                        <h4 class="font-bold mb-2 border-b pb-1">Orders in ${monthVal}</h4>
+                        <table class="w98-table text-xs">
+                            <thead><tr><th>Invoice</th><th>Date</th><th>Shop Name</th><th>Sales</th><th>Collected</th></tr></thead>
+                            <tbody>${orderRows}</tbody>
+                        </table>
+                    </div>`;
+            }
 
+            const gridClass = orderTableHtml ? 'md:grid-cols-2' : '';
             document.getElementById('sm_report_area').innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 ${gridClass} gap-4">
                     <div class="win98-inset p-2">
                         <h4 class="font-bold mb-2 border-b pb-1">Summary: ${esc(smUser.name)} (${smUser.role})</h4>
                         <table class="w98-table text-xs">
                             <tr><td>Target:</td><td class="font-bold">৳ ${target.toFixed(2)}</td></tr>
-                            <tr><td>Achieved Sales:</td><td class="font-bold text-primary">৳ ${totalSales.toFixed(2)}</td></tr>
-                            <tr><td>Collection:</td><td class="font-bold">৳ ${totalCollection.toFixed(2)}</td></tr>
+                            <tr><td>Achieved Sales ${role !== 'SE' && role !== 'ADMIN' ? '(Team)' : ''}:</td><td class="font-bold text-primary">৳ ${totalSales.toFixed(2)}</td></tr>
+                            <tr><td>Collection ${role !== 'SE' && role !== 'ADMIN' ? '(Team)' : ''}:</td><td class="font-bold">৳ ${totalCollection.toFixed(2)}</td></tr>
                             <tr><td>Incentive (5%):</td><td class="font-bold text-green-600">৳ ${incentive.toFixed(2)}</td></tr>
                             <tr><td>Basic Salary:</td><td>৳ ${basicSalary.toFixed(2)}</td></tr>
                             <tr><td>TA (Monthly):</td><td>৳ ${taMonthly.toFixed(2)}</td></tr>
@@ -1216,29 +1634,37 @@
                             <tr class="border-t-2 border-black"><td class="font-bold text-base">Total Payable:</td><td class="font-bold text-base text-primary">৳ ${totalPayable.toFixed(2)}</td></tr>
                         </table>
                     </div>
-                    <div class="win98-inset p-2 overflow-x-auto">
-                        <h4 class="font-bold mb-2 border-b pb-1">Orders in ${monthVal}</h4>
-                        <table class="w98-table text-xs">
-                            <thead><tr><th>Invoice</th><th>Date</th><th>Shop Name</th><th>Sales</th><th>Collected</th></tr></thead>
-                            <tbody>${orderRows}</tbody>
-                        </table>
-                    </div>
+                    ${orderTableHtml}
                 </div>
             `;
         }
         
         function printSalesmanReport() {
-            const smId = document.getElementById('sm_filter')?.value || State.currentUser.id;
+            const smId = document.getElementById('sm_filter')?.value;
             const smUser = State.users.find(u => u.id === smId);
             const monthVal = document.getElementById('sm_month').value;
             
             if (!smUser || !monthVal) return alert('Please select Salesman and Month first.');
 
             const [year, month] = monthVal.split('-').map(Number);
-            const fOrders = State.orders.filter(o => {
-                if (o.status !== 'Delivered') return false;
-                const isEntryBy = o.entryBy === smId || o.entryBy === smUser.userCode;
-                if (!isEntryBy) return false;
+            const role = smUser.role;
+            
+            let fOrders = [];
+            if (role === 'SE') {
+                fOrders = State.orders.filter(o => o.status === 'Delivered' && (o.entryBy === smId || o.entryBy === smUser.userCode));
+            } else if (role === 'ASM') {
+                const teamSeIds = State.users.filter(u => u.role === 'SE' && u.assignedASM === smId).map(u => u.id);
+                const teamSeCodes = State.users.filter(u => u.role === 'SE' && u.assignedASM === smId).map(u => u.userCode);
+                fOrders = State.orders.filter(o => o.status === 'Delivered' && (teamSeIds.includes(o.entryBy) || teamSeCodes.includes(o.entryBy)));
+            } else if (role === 'RSM') {
+                const teamSeIds = State.users.filter(u => u.role === 'SE' && u.assignedRSM === smId).map(u => u.id);
+                const teamSeCodes = State.users.filter(u => u.role === 'SE' && u.assignedRSM === smId).map(u => u.userCode);
+                fOrders = State.orders.filter(o => o.status === 'Delivered' && (teamSeIds.includes(o.entryBy) || teamSeCodes.includes(o.entryBy)));
+            } else {
+                fOrders = State.orders.filter(o => o.status === 'Delivered' && o.salesRole === 'ADMIN');
+            }
+
+            fOrders = fOrders.filter(o => {
                 const d = new Date(o.orderDate);
                 return d.getFullYear() === year && (d.getMonth() + 1) === month;
             });
@@ -1257,7 +1683,18 @@
             }
             const totalPayable = basicSalary + taMonthly + daMonthly + incentive;
 
-            const orderRows = fOrders.map(o => `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${safeDate(o.orderDate)}</td><td>${esc(o.customerShopName || 'N/A')}</td><td style="text-align:right;">${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td><td style="text-align:right;">${(o.paid || 0).toFixed(2)}</td></tr>`).join('') || `<tr><td colspan="5" style="text-align:center;">No orders found for this month.</td></tr>`;
+            let ordersTableHtml = '';
+            if (role === 'SE' || role === 'ADMIN') {
+                const orderRows = fOrders.map(o => `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${safeDate(o.orderDate)}</td><td>${esc(o.customerShopName || 'N/A')}</td><td style="text-align:right;">${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td><td style="text-align:right;">${(o.paid || 0).toFixed(2)}</td></tr>`).join('') || `<tr><td colspan="5" style="text-align:center;">No orders found for this month.</td></tr>`;
+                ordersTableHtml = `
+                    <table class="orders-table">
+                        <thead><tr><th>Invoice</th><th>Date</th><th>Shop Name</th><th class="right">Sales</th><th class="right">Collected</th></tr></thead>
+                        <tbody>${orderRows}</tbody>
+                    </table>
+                    <div style="clear:both;"></div>`;
+            }
+
+            const summaryWidth = ordersTableHtml ? 'width: 50%; float: right;' : 'width: 100%; margin: auto;';
 
             const html = `
                 <html><head><title>Salesman Performance Report</title>
@@ -1268,8 +1705,6 @@
                     table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
                     th, td { border: 1px solid #000; padding: 5px; font-size: 12px; text-align: left; }
                     th { background: #e0e0e0; }
-                    .summary-table { width: 50%; float: right; }
-                    .orders-table { width: 100%; }
                     .right { text-align: right; }
                     .center { text-align: center; }
                 </style>
@@ -1277,11 +1712,11 @@
                     <h2>RAFI FOOD - Salesman Performance Report</h2>
                     <h3>Name: ${esc(smUser.name)} | Role: ${smUser.role} | Month: ${monthVal}</h3>
                     
-                    <table class="summary-table">
+                    <table style="${summaryWidth}">
                         <tr><th colspan="2" style="text-align:center;">Summary</th></tr>
                         <tr><td>Target:</td><td class="right">৳ ${target.toFixed(2)}</td></tr>
-                        <tr><td>Achieved Sales:</td><td class="right">৳ ${totalSales.toFixed(2)}</td></tr>
-                        <tr><td>Collection:</td><td class="right">৳ ${totalCollection.toFixed(2)}</td></tr>
+                        <tr><td>Achieved Sales ${role !== 'SE' && role !== 'ADMIN' ? '(Team)' : ''}:</td><td class="right">৳ ${totalSales.toFixed(2)}</td></tr>
+                        <tr><td>Collection ${role !== 'SE' && role !== 'ADMIN' ? '(Team)' : ''}:</td><td class="right">৳ ${totalCollection.toFixed(2)}</td></tr>
                         <tr><td>Incentive (5%):</td><td class="right">৳ ${incentive.toFixed(2)}</td></tr>
                         <tr><td>Basic Salary:</td><td class="right">৳ ${basicSalary.toFixed(2)}</td></tr>
                         <tr><td>TA (Monthly):</td><td class="right">৳ ${taMonthly.toFixed(2)}</td></tr>
@@ -1289,10 +1724,7 @@
                         <tr style="border-top: 2px solid #000;"><td><b>Total Payable:</b></td><td class="right"><b>৳ ${totalPayable.toFixed(2)}</b></td></tr>
                     </table>
 
-                    <table class="orders-table">
-                        <thead><tr><th>Invoice</th><th>Date</th><th>Shop Name</th><th class="right">Sales</th><th class="right">Collected</th></tr></thead>
-                        <tbody>${orderRows}</tbody>
-                    </table>
+                    ${ordersTableHtml}
                 </body></html>
             `;
             
@@ -1310,398 +1742,388 @@
         }
 
         // ============================================================
-        // ACHIEVEMENT REPORT MODULE (SE -> ASM -> RSM Hierarchy)
-        // ============================================================
+        // ACHIEVEMENTREPORT MODULE
+// ============================================================
 
-        function renderAchievementReport() {
-            const role = State.currentUser.role;
-            const isAdmin = role === 'ADMIN';
-            const isRSM = role === 'RSM';
-            const isASM = role === 'ASM';
-            const isSE  = role === 'SE';
+function renderAchievementReport() {
+const role = State.currentUser.role;
+if (!['ADMIN', 'RSM', 'ASM'].includes(role)) {
+document.getElementById('main-content').innerHTML = '<div class="p-4">Access Denied</div>';
+return;
+}
 
-            if (!isAdmin && !isRSM && !isASM && !isSE) {
-                document.getElementById('main-content').innerHTML = '<div class="p-4">Access Denied</div>';
-                return;
-            }
+const isAdmin = role === 'ADMIN';
+const currentMonth = new Date().toISOString().slice(0, 7);
+const rsmOptions = isAdmin
+? State.users.filter(u => u.role === 'RSM').map(r => `<option value="${r.id}">${esc(r.name)}</option>`).join('')
+: '';
 
-            const currentMonth = new Date().toISOString().slice(0, 7);
-            const rsmOptions = isAdmin
-                ? State.users.filter(u => u.role === 'RSM').map(r => `<option value="${r.id}">${esc(r.name)}</option>`).join('')
-                : '';
+document.getElementById('main-content').innerHTML = `
+<div class="win98-window p-2">
+<div class="win98-titlebar mb-2">Achievement Report</div>
+<div class="p-2 flex flex-col md:flex-row gap-2 items-end mb-4">
+<div class="w-full md:w-auto">
+<label class="block mb-1">Month:</label>
+<input type="month" id="ach_month" class="w98-input" value="${currentMonth}" onchange="calcAchievementReport()">
+</div>
+${isAdmin ? `
+<div class="w-full md:w-auto">
+<label class="block mb-1">Filter RSM:</label>
+<select id="ach_rsm_filter" class="w98-select" onchange="calcAchievementReport()">
+<option value="">All RSM</option>
+${rsmOptions}
+</select>
+</div>` : ''}
+<button onclick="printAchievementReport()" class="w98-btn"><i class="fas fa-print mr-1"></i> Print</button>
+</div>
+<div id="ach_report_area" class="text-center p-4 text-gray-500">
+<i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+<p>Loading report...</p>
+</div>
+</div>
+`;
+calcAchievementReport();
+}
 
-            document.getElementById('main-content').innerHTML = `
-                <div class="win98-window p-2">
-                    <div class="win98-titlebar mb-2">Achievement Report</div>
-                    <div class="p-2 flex flex-col md:flex-row gap-2 items-end mb-4">
-                        <div>
-                            <label class="block mb-1">Month:</label>
-                            <input type="month" id="ach_month" class="w98-input" value="${currentMonth}" onchange="calcAchievementReport()">
-                        </div>
-                        ${isAdmin ? `
-                        <div>
-                            <label class="block mb-1">Filter RSM:</label>
-                            <select id="ach_rsm_filter" class="w98-select" onchange="calcAchievementReport()">
-                                <option value="">All RSM</option>
-                                ${rsmOptions}
-                            </select>
-                        </div>` : ''}
-                        <button onclick="printAchievementReport()" class="w98-btn"><i class="fas fa-print mr-1"></i> Print</button>
-                    </div>
-                    <div id="ach_report_area" class="text-center p-4 text-gray-500">
-                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                        <p>Loading report...</p>
-                    </div>
-                </div>
-            `;
-            calcAchievementReport(); // Auto-load on tab open
-        }
+function getAchievementData() {
+const role = State.currentUser.role;
+const monthVal = document.getElementById('ach_month')?.value;
+if (!monthVal) return null;
 
-        function getAchievementData() {
-            const role = State.currentUser.role;
-            const monthVal = document.getElementById('ach_month')?.value;
-            if (!monthVal) return null;
+const [year, month] = monthVal.split('-').map(Number);
+const rsmFilter = document.getElementById('ach_rsm_filter')?.value || '';
 
-            const [year, month] = monthVal.split('-').map(Number);
-            const rsmFilter = document.getElementById('ach_rsm_filter')?.value || '';
+const fOrdersAll = State.orders.filter(o => {
+if (o.status !== 'Delivered') return false;
+const d = new Date(o.orderDate);
+return d.getFullYear() === year && (d.getMonth() + 1) === month;
+});
 
-            const fOrdersAll = State.orders.filter(o => {
-                if (o.status !== 'Delivered') return false;
-                const d = new Date(o.orderDate);
-                return d.getFullYear() === year && (d.getMonth() + 1) === month;
-            });
+const adminOrders = fOrdersAll.filter(o => o.salesRole === 'ADMIN');
+const normalOrders = fOrdersAll.filter(o => o.salesRole !== 'ADMIN');
 
-            // Separate Admin Sales from normal SE sales
-            const adminOrders = fOrdersAll.filter(o => o.salesRole === 'ADMIN');
-            const normalOrders = fOrdersAll.filter(o => o.salesRole !== 'ADMIN');
+let allSEs = State.users.filter(u => u.role === 'SE');
 
-            let allSEs = State.users.filter(u => u.role === 'SE');
+if (role === 'ASM') {
+allSEs = allSEs.filter(u => u.assignedASM === State.currentUser.id);
+} else if (role === 'RSM') {
+allSEs = allSEs.filter(u => u.assignedRSM === State.currentUser.id);
+} else if (role === 'ADMIN' && rsmFilter) {
+allSEs = allSEs.filter(u => u.assignedRSM === rsmFilter);
+}
 
-            if (role === 'SE') {
-                allSEs = allSEs.filter(u => u.id === State.currentUser.id);
-            } else if (role === 'ASM') {
-                allSEs = allSEs.filter(u => u.assignedASM === State.currentUser.id);
-            } else if (role === 'RSM') {
-                allSEs = allSEs.filter(u => u.assignedRSM === State.currentUser.id);
-            } else if (role === 'ADMIN' && rsmFilter) {
-                allSEs = allSEs.filter(u => u.assignedRSM === rsmFilter);
-            }
+let asmGroups = {};
+allSEs.forEach(se => {
+const asmId = se.assignedASM || 'unassigned';
+if (!asmGroups[asmId]) {
+const asm = State.users.find(u => u.id === asmId);
+asmGroups[asmId] = {
+asm: asm || { id: 'unassigned', name: 'Unassigned ASM', userCode: 'N/A' },
+rsmId: asm?.assignedRSM || se.assignedRSM || 'unassigned',
+ses: []
+};
+}
+asmGroups[asmId].ses.push(se);
+});
 
-            let asmGroups = {};
-            allSEs.forEach(se => {
-                const asmId = se.assignedASM || 'unassigned';
-                if (!asmGroups[asmId]) {
-                    const asm = State.users.find(u => u.id === asmId);
-                    asmGroups[asmId] = {
-                        asm: asm || { id: 'unassigned', name: 'Unassigned ASM', userCode: 'N/A' },
-                        rsmId: asm?.assignedRSM || se.assignedRSM || 'unassigned',
-                        ses: []
-                    };
-                }
-                asmGroups[asmId].ses.push(se);
-            });
+let rsmGroups = {};
+Object.values(asmGroups).forEach(g => {
+const rsmId = g.rsmId;
+if (!rsmGroups[rsmId]) {
+const rsm = State.users.find(u => u.id === rsmId);
+rsmGroups[rsmId] = {
+rsm: rsm || { id: 'unassigned', name: 'Unassigned RSM', userCode: 'N/A' },
+asms: []
+};
+}
+rsmGroups[rsmId].asms.push(g);
+});
 
-            let rsmGroups = {};
-            Object.values(asmGroups).forEach(g => {
-                const rsmId = g.rsmId;
-                if (!rsmGroups[rsmId]) {
-                    const rsm = State.users.find(u => u.id === rsmId);
-                    rsmGroups[rsmId] = {
-                        rsm: rsm || { id: 'unassigned', name: 'Unassigned RSM', userCode: 'N/A' },
-                        asms: []
-                    };
-                }
-                rsmGroups[rsmId].asms.push(g);
-            });
+let slNo = 0;
+let result = { rsmGroups: [], adminGroup: null, grandTotal: { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 } };
 
-            let slNo = 0;
-            let result = { rsmGroups: [], adminGroup: null, grandTotal: { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 } };
+Object.values(rsmGroups).forEach(rg => {
+let rsmTotal = { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 };
 
-            Object.values(rsmGroups).forEach(rg => {
-                let rsmTotal = { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 };
+rg.asms.forEach(ag => {
+let asmTotal = { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 };
 
-                rg.asms.forEach(ag => {
-                    let asmTotal = { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 };
+ag.ses.forEach(se => {
+slNo++;
+const seOrders = normalOrders.filter(o => o.entryBy === se.id || o.entryBy === se.userCode);
+const tp = seOrders.reduce((s, o) => s + (o.grossTotal || 0), 0);
+const net = seOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0);
+const collected = seOrders.reduce((s, o) => s + (o.paid || 0), 0);
+const outstanding = seOrders.reduce((s, o) => s + (o.due || 0), 0);
+const target = parseFloat(se.target) || 0;
+const achPct = target > 0 ? (net / target * 100) : 0;
 
-                    ag.ses.forEach(se => {
-                        slNo++;
-                        const seOrders = normalOrders.filter(o => o.entryBy === se.id || o.entryBy === se.userCode);
-                        const tp          = seOrders.reduce((s, o) => s + (o.grossTotal || 0), 0);
-                        const net         = seOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0);
-                        const collected   = seOrders.reduce((s, o) => s + (o.paid || 0), 0);
-                        const outstanding = seOrders.reduce((s, o) => s + (o.due || 0), 0);
-                        const target      = parseFloat(se.target) || 0;
-                        const achPct      = target > 0 ? (net / target * 100) : 0;
+se.stats = { slNo, tp, net, collected, outstanding, target, achPct };
 
-                        se.stats = { slNo, tp, net, collected, outstanding, target, achPct };
+asmTotal.target += target;
+asmTotal.tp += tp;
+asmTotal.net += net;
+asmTotal.total += collected;
+asmTotal.outstanding += outstanding;
+});
 
-                        asmTotal.target      += target;
-                        asmTotal.tp          += tp;
-                        asmTotal.net         += net;
-                        asmTotal.total       += collected;
-                        asmTotal.outstanding += outstanding;
-                    });
+ag.asmTotal = asmTotal;
 
-                    ag.asmTotal = asmTotal;
+rsmTotal.target += asmTotal.target;
+rsmTotal.tp += asmTotal.tp;
+rsmTotal.net += asmTotal.net;
+rsmTotal.total += asmTotal.total;
+rsmTotal.outstanding += asmTotal.outstanding;
+});
 
-                    rsmTotal.target      += asmTotal.target;
-                    rsmTotal.tp          += asmTotal.tp;
-                    rsmTotal.net         += asmTotal.net;
-                    rsmTotal.total       += asmTotal.total;
-                    rsmTotal.outstanding += asmTotal.outstanding;
-                });
+rg.rsmTotal = rsmTotal;
+result.rsmGroups.push(rg);
 
-                rg.rsmTotal = rsmTotal;
-                result.rsmGroups.push(rg);
+result.grandTotal.target += rsmTotal.target;
+result.grandTotal.tp += rsmTotal.tp;
+result.grandTotal.net += rsmTotal.net;
+result.grandTotal.total += rsmTotal.total;
+result.grandTotal.outstanding += rsmTotal.outstanding;
+});
 
-                result.grandTotal.target      += rsmTotal.target;
-                result.grandTotal.tp          += rsmTotal.tp;
-                result.grandTotal.net         += rsmTotal.net;
-                result.grandTotal.total       += rsmTotal.total;
-                result.grandTotal.outstanding += rsmTotal.outstanding;
-            });
+if (adminOrders.length > 0) {
+const adminTotals = {
+tp: adminOrders.reduce((s, o) => s + (o.grossTotal || 0), 0),
+net: adminOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0),
+total: adminOrders.reduce((s, o) => s + (o.paid || 0), 0),
+outstanding: adminOrders.reduce((s, o) => s + (o.due || 0), 0),
+target: 0
+};
 
-            // Add Admin Sales as a completely separate group
-            if (adminOrders.length > 0) {
-                const adminTotals = {
-                    tp: adminOrders.reduce((s, o) => s + (o.grossTotal || 0), 0),
-                    net: adminOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0),
-                    total: adminOrders.reduce((s, o) => s + (o.paid || 0), 0),
-                    outstanding: adminOrders.reduce((s, o) => s + (o.due || 0), 0),
-                    target: 0
-                };
-                
-                result.adminGroup = { name: 'Admin Sales', userCode: 'ADMIN', totals: adminTotals };
+result.adminGroup = { name: 'Admin Sales', userCode: 'ADMIN', totals: adminTotals };
 
-                result.grandTotal.tp += adminTotals.tp;
-                result.grandTotal.net += adminTotals.net;
-                result.grandTotal.total += adminTotals.total;
-                result.grandTotal.outstanding += adminTotals.outstanding;
-            }
+result.grandTotal.tp += adminTotals.tp;
+result.grandTotal.net += adminTotals.net;
+result.grandTotal.total += adminTotals.total;
+result.grandTotal.outstanding += adminTotals.outstanding;
+}
 
-            return result;
-        }
+return result;
+}
 
-        function calcAchievementReport() {
-            const data = getAchievementData();
-            const reportArea = document.getElementById('ach_report_area');
-            if (!reportArea) return; 
-            if (!data) {
-                reportArea.innerHTML = `<div class="text-center p-4 text-gray-500">Please select a month.</div>`;
-                return;
-            }
+function calcAchievementReport() {
+const data = getAchievementData();
+const reportArea = document.getElementById('ach_report_area');
+if (!reportArea) return;
+if (!data) {
+reportArea.innerHTML = `<div class="text-center p-4 text-gray-500">Please select a month.</div>`;
+return;
+}
 
-            const monthVal = document.getElementById('ach_month').value;
-            let html = `
-                <div class="win98-inset p-2 overflow-x-auto">
-                    <div class="text-center mb-2">
-                        <h2 class="font-bold text-base">🏆 Achievement Report</h2>
-                        <p class="text-xs">Month: ${monthVal}</p>
-                    </div>
-                    <table class="w98-table text-xs">
-                        <thead>
-                            <tr>
-                                <th>SL NO</th>
-                                <th>EMP Code</th>
-                                <th>Name of MPO</th>
-                                <th>Territory</th>
-                                <th>Target</th>
-                                <th>Total TP</th>
-                                <th>Net Sales</th>
-                                <th>Ach%</th>
-                                <th>Total</th>
-                                <th>Outstanding</th>
-                            </tr>
-                        </thead>
-                        <tbody>`;
+const monthVal = document.getElementById('ach_month').value;
+let html = `
+<div class="win98-inset p-2 overflow-x-auto">
+<div class="text-center mb-2">
+<h2 class="font-bold text-base">🏆 Achievement Report</h2>
+<p class="text-xs">Month: ${monthVal}</p>
+</div>
+<table class="w98-table text-xs">
+<thead>
+<tr>
+<th>SL NO</th>
+<th>EMP Code</th>
+<th>Name of MPO</th>
+<th>Territory</th>
+<th>Target</th>
+<th>Total TP</th>
+<th>Net Sales</th>
+<th>Ach%</th>
+<th>Total</th>
+<th>Outstanding</th>
+</tr>
+</thead>
+<tbody>`;
 
-            let hasData = false;
+let hasData = false;
 
-            data.rsmGroups.forEach(rg => {
-                rg.asms.forEach(ag => {
-                    ag.ses.forEach(se => {
-                        hasData = true;
-                        const s = se.stats;
-                        const achClass = s.achPct >= 100 ? 'text-green-700 font-bold'
-                                       : s.achPct >= 75  ? 'font-bold'
-                                       : 'text-red-700';
-                        const outClass = s.outstanding > 0 ? 'text-red-700 font-bold' : 'text-green-700 font-bold';
+data.rsmGroups.forEach(rg => {
+rg.asms.forEach(ag => {
+ag.ses.forEach(se => {
+hasData = true;
+const s = se.stats;
+const achClass = s.achPct >= 100 ? 'text-green-700 font-bold'
+: s.achPct >= 75 ? 'font-bold'
+: 'text-red-700';
+const outClass = s.outstanding > 0 ? 'text-red-700 font-bold' : 'text-green-700 font-bold';
 
-                        html += `<tr>
-                            <td>${s.slNo}</td>
-                            <td>${esc(se.userCode || 'N/A')}</td>
-                            <td>${esc(se.name || 'N/A')}</td>
-                            <td>${esc(se.territory || 'N/A')}</td>
-                            <td style="text-align:right;">${s.target.toLocaleString()}</td>
-                            <td style="text-align:right;">${s.tp.toLocaleString()}</td>
-                            <td style="text-align:right;">${s.net.toLocaleString()}</td>
-                            <td class="${achClass}" style="text-align:center;">${s.achPct.toFixed(0)}%</td>
-                            <td style="text-align:right;">${s.collected.toLocaleString()}</td>
-                            <td class="${outClass}" style="text-align:right;">${s.outstanding.toLocaleString()}</td>
-                        </tr>`;
-                    });
+html += `<tr>
+<td>${s.slNo}</td>
+<td>${esc(se.userCode || 'N/A')}</td>
+<td>${esc(se.name || 'N/A')}</td>
+<td>${esc(se.territory || 'N/A')}</td>
+<td style="text-align:right;">${s.target.toLocaleString()}</td>
+<td style="text-align:right;">${s.tp.toLocaleString()}</td>
+<td style="text-align:right;">${s.net.toLocaleString()}</td>
+<td class="${achClass}" style="text-align:center;">${s.achPct.toFixed(0)}%</td>
+<td style="text-align:right;">${s.collected.toLocaleString()}</td>
+<td class="${outClass}" style="text-align:right;">${s.outstanding.toLocaleString()}</td>
+</tr>`;
+});
 
-                    const aT = ag.asmTotal;
-                    const aAchPct = aT.target > 0 ? (aT.net / aT.target * 100) : 0;
+const aT = ag.asmTotal;
+const aAchPct = aT.target > 0 ? (aT.net / aT.target * 100) : 0;
 
-                    html += `<tr style="background:#000080; color:#fff; font-weight:bold; border-top:2px solid #000;">
-                        <td colspan="4">ASM — ${esc(ag.asm.name || 'N/A')} (${esc(ag.asm.userCode || 'N/A')})</td>
-                        <td style="text-align:right;">${aT.target.toLocaleString()}</td>
-                        <td style="text-align:right;">${aT.tp.toLocaleString()}</td>
-                        <td style="text-align:right;">${aT.net.toLocaleString()}</td>
-                        <td style="text-align:center;">${aAchPct.toFixed(0)}%</td>
-                        <td style="text-align:right;">${aT.total.toLocaleString()}</td>
-                        <td style="text-align:right;">${aT.outstanding.toLocaleString()}</td>
-                    </tr>`;
-                });
+html += `<tr style="background:#000080; color:#fff; font-weight:bold; border-top:2px solid #000;">
+<td colspan="4">ASM — ${esc(ag.asm.name || 'N/A')} (${esc(ag.asm.userCode || 'N/A')})</td>
+<td style="text-align:right;">${aT.target.toLocaleString()}</td>
+<td style="text-align:right;">${aT.tp.toLocaleString()}</td>
+<td style="text-align:right;">${aT.net.toLocaleString()}</td>
+<td style="text-align:center;">${aAchPct.toFixed(0)}%</td>
+<td style="text-align:right;">${aT.total.toLocaleString()}</td>
+<td style="text-align:right;">${aT.outstanding.toLocaleString()}</td>
+</tr>`;
+});
 
-                const rT = rg.rsmTotal;
-                const rAchPct = rT.target > 0 ? (rT.net / rT.target * 100) : 0;
+const rT = rg.rsmTotal;
+const rAchPct = rT.target > 0 ? (rT.net / rT.target * 100) : 0;
 
-                html += `<tr style="background:#222; color:#fff; font-weight:bold; border-top:3px solid #000;">
-                    <td colspan="4">RSM — ${esc(rg.rsm.name || 'N/A')} (${esc(rg.rsm.userCode || 'N/A')})</td>
-                    <td style="text-align:right;">${rT.target.toLocaleString()}</td>
-                    <td style="text-align:right;">${rT.tp.toLocaleString()}</td>
-                    <td style="text-align:right;">${rT.net.toLocaleString()}</td>
-                    <td style="text-align:center;">${rAchPct.toFixed(0)}%</td>
-                    <td style="text-align:right;">${rT.total.toLocaleString()}</td>
-                    <td style="text-align:right;">${rT.outstanding.toLocaleString()}</td>
-                </tr>`;
-            });
+html += `<tr style="background:#222; color:#fff; font-weight:bold; border-top:3px solid #000;">
+<td colspan="4">RSM — ${esc(rg.rsm.name || 'N/A')} (${esc(rg.rsm.userCode || 'N/A')})</td>
+<td style="text-align:right;">${rT.target.toLocaleString()}</td>
+<td style="text-align:right;">${rT.tp.toLocaleString()}</td>
+<td style="text-align:right;">${rT.net.toLocaleString()}</td>
+<td style="text-align:center;">${rAchPct.toFixed(0)}%</td>
+<td style="text-align:right;">${rT.total.toLocaleString()}</td>
+<td style="text-align:right;">${rT.outstanding.toLocaleString()}</td>
+</tr>`;
+});
 
-            // Add Admin Sales as a separate row block at the bottom
-            if (data.adminGroup) {
-                hasData = true;
-                const aT = data.adminGroup.totals;
-                html += `<tr style="background:#5C1D24; color:#D4AF37; font-weight:bold; border-top:3px solid #000;">
-                    <td colspan="4">${esc(data.adminGroup.name)} (Direct Entry)</td>
-                    <td style="text-align:right;">${aT.target.toLocaleString()}</td>
-                    <td style="text-align:right;">${aT.tp.toLocaleString()}</td>
-                    <td style="text-align:right;">${aT.net.toLocaleString()}</td>
-                    <td style="text-align:center;">-</td>
-                    <td style="text-align:right;">${aT.total.toLocaleString()}</td>
-                    <td style="text-align:right;">${aT.outstanding.toLocaleString()}</td>
-                </tr>`;
-            }
+if (data.adminGroup) {
+hasData = true;
+const aT = data.adminGroup.totals;
+html += `<tr style="background:#5C1D24; color:#D4AF37; font-weight:bold; border-top:3px solid #000;">
+<td colspan="4">${esc(data.adminGroup.name)} (Direct Entry)</td>
+<td style="text-align:right;">${aT.target.toLocaleString()}</td>
+<td style="text-align:right;">${aT.tp.toLocaleString()}</td>
+<td style="text-align:right;">${aT.net.toLocaleString()}</td>
+<td style="text-align:center;">-</td>
+<td style="text-align:right;">${aT.total.toLocaleString()}</td>
+<td style="text-align:right;">${aT.outstanding.toLocaleString()}</td>
+</tr>`;
+}
 
-            if (!hasData && data.rsmGroups.length === 0 && !data.adminGroup) {
-                html += `<tr><td colspan="10" class="text-center p-4">No data found for the selected period.</td></tr>`;
-            }
+if (!hasData && data.rsmGroups.length === 0 && !data.adminGroup) {
+html += `<tr><td colspan="10" class="text-center p-4">No data found for the selected period.</td></tr>`;
+}
 
-            // Grand Total
-            if (hasData) {
-                const g = data.grandTotal;
-                const gAchPct = g.target > 0 ? (g.net / g.target * 100) : 0;
-                html += `<tr style="background:#000; color:#FFF; font-weight:bold; border-top:3px solid #000;">
-                    <td colspan="4">GRAND TOTAL</td>
-                    <td style="text-align:right;">${g.target.toLocaleString()}</td>
-                    <td style="text-align:right;">${g.tp.toLocaleString()}</td>
-                    <td style="text-align:right;">${g.net.toLocaleString()}</td>
-                    <td style="text-align:center;">${gAchPct.toFixed(0)}%</td>
-                    <td style="text-align:right;">${g.total.toLocaleString()}</td>
-                    <td style="text-align:right;">${g.outstanding.toLocaleString()}</td>
-                </tr>`;
-            }
+if (hasData) {
+const g = data.grandTotal;
+const gAchPct = g.target > 0 ? (g.net / g.target * 100) : 0;
+html += `<tr style="background:#000; color:#FFF; font-weight:bold; border-top:3px solid #000;">
+<td colspan="4">GRAND TOTAL</td>
+<td style="text-align:right;">${g.target.toLocaleString()}</td>
+<td style="text-align:right;">${g.tp.toLocaleString()}</td>
+<td style="text-align:right;">${g.net.toLocaleString()}</td>
+<td style="text-align:center;">${gAchPct.toFixed(0)}%</td>
+<td style="text-align:right;">${g.total.toLocaleString()}</td>
+<td style="text-align:right;">${g.outstanding.toLocaleString()}</td>
+</tr>`;
+}
 
-            html += `</tbody></table></div>`;
-            reportArea.innerHTML = html;
-        }
+html += `</tbody></table></div>`;
+reportArea.innerHTML = html;
+}
 
-        function printAchievementReport() {
-            const data = getAchievementData();
-            if (!data) return alert('Please select a month.');
+function printAchievementReport() {
+const data = getAchievementData();
+if (!data) return alert('Please select a month.');
 
-            const monthVal = document.getElementById('ach_month').value;
-            let monthName = monthVal;
-            try {
-                monthName = new Date(monthVal + '-01').toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-            } catch(e) {}
+const monthVal = document.getElementById('ach_month').value;
+let monthName = monthVal;
+try {
+monthName = new Date(monthVal + '-01').toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+} catch(e) {}
 
-            let rows = '';
+let rows = '';
 
-            data.rsmGroups.forEach(rg => {
-                rg.asms.forEach(ag => {
-                    ag.ses.forEach(se => {
-                        const s = se.stats;
-                        const outClass = s.outstanding > 0 ? 'class="due"' : 'class="zero"';
-                        const achClass = s.achPct >= 100 ? 'class="ach-good"' : '';
+data.rsmGroups.forEach(rg => {
+rg.asms.forEach(ag => {
+ag.ses.forEach(se => {
+const s = se.stats;
+const outClass = s.outstanding > 0 ? 'class="due"' : 'class="zero"';
+const achClass = s.achPct >= 100 ? 'class="ach-good"' : '';
 
-                        rows += `<tr class="se-row">
-                            <td>${s.slNo}</td>
-                            <td>${esc(se.userCode || 'N/A')}</td>
-                            <td>${esc(se.name || 'N/A')}</td>
-                            <td>${esc(se.territory || 'N/A')}</td>
-                            <td>${s.target.toLocaleString()}</td>
-                            <td>${s.tp.toLocaleString()}</td>
-                            <td>${s.net.toLocaleString()}</td>
-                            <td ${achClass} style="text-align:center;">${s.achPct.toFixed(0)}%</td>
-                            <td>${s.collected.toLocaleString()}</td>
-                            <td ${outClass}>${s.outstanding.toLocaleString()}</td>
-                        </tr>`;
-                    });
+rows += `<tr class="se-row">
+<td>${s.slNo}</td>
+<td>${esc(se.userCode || 'N/A')}</td>
+<td>${esc(se.name || 'N/A')}</td>
+<td>${esc(se.territory || 'N/A')}</td>
+<td>${s.target.toLocaleString()}</td>
+<td>${s.tp.toLocaleString()}</td>
+<td>${s.net.toLocaleString()}</td>
+<td ${achClass} style="text-align:center;">${s.achPct.toFixed(0)}%</td>
+<td>${s.collected.toLocaleString()}</td>
+<td ${outClass}>${s.outstanding.toLocaleString()}</td>
+</tr>`;
+});
 
-                    const aT = ag.asmTotal;
-                    const aAchPct = aT.target > 0 ? (aT.net / aT.target * 100) : 0;
+const aT = ag.asmTotal;
+const aAchPct = aT.target > 0 ? (aT.net / aT.target * 100) : 0;
 
-                    rows += `<tr class="asm-row">
-                        <td colspan="4">ASM — ${esc(ag.asm.name || 'N/A')}</td>
-                        <td>${aT.target.toLocaleString()}</td>
-                        <td>${aT.tp.toLocaleString()}</td>
-                        <td>${aT.net.toLocaleString()}</td>
-                        <td style="text-align:center;">${aAchPct.toFixed(0)}%</td>
-                        <td>${aT.total.toLocaleString()}</td>
-                        <td>${aT.outstanding.toLocaleString()}</td>
-                    </tr>`;
-                });
+rows += `<tr class="asm-row">
+<td colspan="4">ASM — ${esc(ag.asm.name || 'N/A')}</td>
+<td>${aT.target.toLocaleString()}</td>
+<td>${aT.tp.toLocaleString()}</td>
+<td>${aT.net.toLocaleString()}</td>
+<td style="text-align:center;">${aAchPct.toFixed(0)}%</td>
+<td>${aT.total.toLocaleString()}</td>
+<td>${aT.outstanding.toLocaleString()}</td>
+</tr>`;
+});
 
-                const rT = rg.rsmTotal;
-                const rAchPct = rT.target > 0 ? (rT.net / rT.target * 100) : 0;
+const rT = rg.rsmTotal;
+const rAchPct = rT.target > 0 ? (rT.net / rT.target * 100) : 0;
 
-                rows += `<tr class="rsm-row">
-                    <td colspan="4">RSM — ${esc(rg.rsm.name || 'N/A')}</td>
-                    <td>${rT.target.toLocaleString()}</td>
-                    <td>${rT.tp.toLocaleString()}</td>
-                    <td>${rT.net.toLocaleString()}</td>
-                    <td style="text-align:center;">${rAchPct.toFixed(0)}%</td>
-                    <td>${rT.total.toLocaleString()}</td>
-                    <td>${rT.outstanding.toLocaleString()}</td>
-                </tr>`;
-            });
+rows += `<tr class="rsm-row">
+<td colspan="4">RSM — ${esc(rg.rsm.name || 'N/A')}</td>
+<td>${rT.target.toLocaleString()}</td>
+<td>${rT.tp.toLocaleString()}</td>
+<td>${rT.net.toLocaleString()}</td>
+<td style="text-align:center;">${rAchPct.toFixed(0)}%</td>
+<td>${rT.total.toLocaleString()}</td>
+<td>${rT.outstanding.toLocaleString()}</td>
+</tr>`;
+});
 
-            if (data.adminGroup) {
-                const aT = data.adminGroup.totals;
-                rows += `<tr class="rsm-row" style="background:#5C1D24; color:#D4AF37;">
-                    <td colspan="4">${esc(data.adminGroup.name)} (Direct Entry)</td>
-                    <td>${aT.target.toLocaleString()}</td>
-                    <td>${aT.tp.toLocaleString()}</td>
-                    <td>${aT.net.toLocaleString()}</td>
-                    <td style="text-align:center;">-</td>
-                    <td>${aT.total.toLocaleString()}</td>
-                    <td>${aT.outstanding.toLocaleString()}</td>
-                </tr>`;
-            }
+if (data.adminGroup) {
+const aT = data.adminGroup.totals;
+rows += `<tr class="rsm-row" style="background:#5C1D24; color:#D4AF37;">
+<td colspan="4">${esc(data.adminGroup.name)} (Direct Entry)</td>
+<td>${aT.target.toLocaleString()}</td>
+<td>${aT.tp.toLocaleString()}</td>
+<td>${aT.net.toLocaleString()}</td>
+<td style="text-align:center;">-</td>
+<td>${aT.total.toLocaleString()}</td>
+<td>${aT.outstanding.toLocaleString()}</td>
+</tr>`;
+}
 
-            if (rows === '') {
-                rows = `<tr><td colspan="10" style="text-align:center; padding:20px;">No data found for the selected period.</td></tr>`;
-            }
+if (rows === '') {
+rows = `<tr><td colspan="10" style="text-align:center; padding:20px;">No data found for the selected period.</td></tr>`;
+}
 
-            let grandTotalRow = '';
-            const g = data.grandTotal;
-            const gAchPct = g.target > 0 ? (g.net / g.target * 100) : 0;
-            grandTotalRow = `<tr class="rsm-row" style="background:#000; color:#FFF;">
-                <td colspan="4">GRAND TOTAL</td>
-                <td>${g.target.toLocaleString()}</td>
-                <td>${g.tp.toLocaleString()}</td>
-                <td>${g.net.toLocaleString()}</td>
-                <td style="text-align:center;">${gAchPct.toFixed(0)}%</td>
-                <td>${g.total.toLocaleString()}</td>
-                <td>${g.outstanding.toLocaleString()}</td>
-            </tr>`;
+let grandTotalRow = '';
+const g = data.grandTotal;
+const gAchPct = g.target > 0 ? (g.net / g.target * 100) : 0;
+grandTotalRow = `<tr class="rsm-row" style="background:#000; color:#FFF;">
+<td colspan="4">GRAND TOTAL</td>
+<td>${g.target.toLocaleString()}</td>
+<td>${g.tp.toLocaleString()}</td>
+<td>${g.net.toLocaleString()}</td>
+<td style="text-align:center;">${gAchPct.toFixed(0)}%</td>
+<td>${g.total.toLocaleString()}</td>
+<td>${g.outstanding.toLocaleString()}</td>
+</tr>`;
 
-            const html = `<!DOCTYPE html>
-<html lang="en">
+const html = `<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Achievement Report</title>
 <style>
 *{box-sizing:border-box;}
@@ -1725,59 +2147,58 @@ td:nth-child(1),td:nth-child(2),td:nth-child(3),td:nth-child(4){text-align:left;
 .due{color:#c62828;font-weight:bold;}
 .zero{color:#198754;font-weight:bold;}
 @media print{
-    body{background:#fff;padding:0;}
-    .report{max-width:100%;padding:0;box-shadow:none;}
-    .header{margin-bottom:10px;}
-    table{min-width:100%;}
+body{background:#fff;padding:0;}
+.report{max-width:100%;padding:0;box-shadow:none;}
+.header{margin-bottom:10px;}
+table{min-width:100%;}
 }
 </style>
 </head>
 <body>
 <div class="report">
-    <div class="header">
-        <h2>Achievement Report</h2>
-        <p>Month: ${monthName}</p>
-    </div>
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>SL NO</th>
-                    <th>EMP Code</th>
-                    <th>Name of MPO</th>
-                    <th>Territory</th>
-                    <th>Target</th>
-                    <th>Total TP</th>
-                    <th>Net Sales</th>
-                    <th>Ach%</th>
-                    <th>Total</th>
-                    <th>Outstanding</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${rows}
-                ${grandTotalRow}
-            </tbody>
-        </table>
-    </div>
+<div class="header">
+<h2>Achievement Report</h2>
+<p>Month: ${monthName}</p>
+</div>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th>SL NO</th>
+<th>EMP Code</th>
+<th>Name of MPO</th>
+<th>Territory</th>
+<th>Target</th>
+<th>Total TP</th>
+<th>Net Sales</th>
+<th>Ach%</th>
+<th>Total</th>
+<th>Outstanding</th>
+</tr>
+</thead>
+<tbody>
+${rows}
+${grandTotalRow}
+</tbody>
+</table>
+</div>
 </div>
 <script>window.onload=function(){setTimeout(function(){window.print();},300);};<\/script>
 </body>
 </html>`;
 
-            const iframe = document.createElement('iframe');
-            iframe.style.position = "absolute";
-            iframe.style.width = "0px";
-            iframe.style.height = "0px";
-            iframe.style.border = "none";
-            document.body.appendChild(iframe);
-            iframe.contentWindow.document.open();
-            iframe.contentWindow.document.write(html);
-            iframe.contentWindow.document.close();
-            setTimeout(() => {
-                if (iframe.parentNode) document.body.removeChild(iframe);
-            }, 1500);
-        }
-    </script>
-</body>
+const iframe = document.createElement('iframe');
+iframe.style.position = "absolute";
+iframe.style.width = "0px";
+iframe.style.height = "0px";
+iframe.style.border = "none";
+document.body.appendChild(iframe);
+iframe.contentWindow.document.open();
+iframe.contentWindow.document.write(html);
+iframe.contentWindow.document.close();
+setTimeout(() => {
+if (iframe.parentNode) document.body.removeChild(iframe);
+}, 1500);
+}
+</script></body>
 </html>
