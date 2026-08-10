@@ -158,7 +158,7 @@
                     <div class="win98-outset m-1 mb-2"><a href="#" data-page="dashboard" class="menu-item active"><i class="fas fa-tachometer-alt w-4"></i> Dashboard</a></div>
                     <div class="px-2 py-1 font-bold text-[11px]">Sales & Distribution</div>
                     <div class="win98-outset m-1 mb-2">
-                        <a href="#" data-page="order-entry" class="menu-item employee-only"><i class="fas fa-cart-plus w-4"></i> Order Entry</a>
+                        <a href="#" data-page="order-entry" class="menu-item order-entry-only"><i class="fas fa-cart-plus w-4"></i> Order Entry</a>
                         <a href="#" data-page="invoices" class="menu-item"><i class="fas fa-file-invoice w-4"></i> Order History</a>
                     </div>
                     <div class="px-2 py-1 font-bold text-[11px]">Management</div>
@@ -246,10 +246,12 @@
             const role = State.currentUser.role;
             const isEmployee = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
             const isSalesRole = ['ADMIN', 'RSM', 'ASM', 'SE'].includes(role);
+            const canEnterOrder = ['ADMIN', 'SE', 'DA'].includes(role); // RSM/ASM can't enter orders
             
             document.querySelectorAll('.admin-only').forEach(el => el.classList.toggle('hidden', role !== 'ADMIN'));
             document.querySelectorAll('.admin-sales-only').forEach(el => el.classList.toggle('hidden', role !== 'ADMIN' && !['RSM', 'ASM', 'SE'].includes(role)));
             document.querySelectorAll('.employee-only').forEach(el => el.classList.toggle('hidden', !isEmployee));
+            document.querySelectorAll('.order-entry-only').forEach(el => el.classList.toggle('hidden', !canEnterOrder));
             
             initFirebaseListeners();
             renderPage('dashboard');
@@ -396,7 +398,23 @@
                     h += `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Salary & Target</legend><div class="grid grid-cols-2 gap-2"><div><label>Monthly Target (৳):</label><input type="number" id="u_target" value="${u.target || 0}" class="w98-input"></div><div><label>Basic Salary (৳):</label><input type="number" id="u_salary" value="${u.basicSalary || 0}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>TA (Monthly ৳):</label><input type="number" id="u_ta" value="${u.ta || 0}" class="w98-input"></div><div><label>DA (Monthly ৳):</label><input type="number" id="u_da" value="${u.da || 0}" class="w98-input"></div></div></fieldset>`;
                 }
             } else if (role === 'DEALER' || role === 'RETAILER' || role === 'HOCKER') {
-                h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Business Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Business/Shop Name:</label><input type="text" id="u_shop" value="${esc(u.shopName || '')}" class="w98-input"></div><div><label>Proprietor Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Business Type:</label><input type="text" id="u_b_type" value="${esc(u.businessType || '')}" class="w98-input"></div><div><label>Trade License No.:</label><input type="text" id="u_trade_lic" value="${esc(u.tradeLicense || '')}" class="w98-input"></div></div></fieldset><fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Contact Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div><div><label>Alt Mobile:</label><input type="text" id="u_alt_mobile" value="${esc(u.altMobile || '')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Email:</label><input type="email" id="u_email" value="${esc(u.email || '')}" class="w98-input"></div><div><label>NID Number:</label><input type="text" id="u_nid" value="${esc(u.nid || '')}" class="w98-input"></div></div>${role === 'DEALER' ? `<div class="mt-2"><label>TIN Number:</label><input type="text" id="u_tin" value="${esc(u.tin || '')}" class="w98-input"></div>` : ''}</fieldset><fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Address & Financials</legend><div class="mb-2"><label>Address:</label><textarea id="u_address" class="w98-textarea">${esc(u.address || '')}</textarea></div><div class="grid grid-cols-2 gap-2"><div><label>Opening Due:</label><input type="number" id="u_due" value="${u.due || 0}" class="w98-input"></div>${role === 'RETAILER' ? `<div><label>Special Customer:</label><select id="u_special" class="w98-select"><option value="No" ${u.isSpecial === 'No' || !u.isSpecial ? 'selected' : ''}>No</option><option value="Yes" ${u.isSpecial === 'Yes' ? 'selected' : ''}>Yes</option></select></div>` : ''}</div></fieldset>`;
+                h = `<fieldset class="border border-black p-2 mt-2">
+                        <legend class="text-xs font-bold">Financial Information</legend>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label>Opening Due (৳):</label>
+                                <input type="number" id="u_due" value="${u.due || 0}" class="w98-input">
+                            </div>
+                            ${role === 'RETAILER' ? `
+                            <div>
+                                <label>Special Customer:</label>
+                                <select id="u_special" class="w98-select">
+                                    <option value="No" ${u.isSpecial === 'No' || !u.isSpecial ? 'selected' : ''}>No</option>
+                                    <option value="Yes" ${u.isSpecial === 'Yes' ? 'selected' : ''}>Yes</option>
+                                </select>
+                            </div>` : ''}
+                        </div>
+                    </fieldset>`;
             } else { 
                 h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Full Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div></div><div class="mt-2"><label>Address:</label><textarea id="u_address" class="w98-textarea">${esc(u.address || '')}</textarea></div></fieldset>`; 
             }
@@ -406,7 +424,96 @@
         function addUser() { openModal('Add System User', `<form onsubmit="saveUser(event, '')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value)" class="w98-select"><option value="ADMIN">Admin</option><option value="RSM">RSM</option><option value="ASM">ASM</option><option value="SE">SE</option><option value="DA">DA</option></select></div><div><label>Username (Login):</label><input type="text" id="u_username" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save User</button></div></form>`); renderRoleFields('ADMIN'); }
         
         function addCustomer() {
-            openModal('Add New Customer', `<form onsubmit="saveUser(event, '')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Customer Type:</label><select id="u_role" onchange="renderRoleFields(this.value)" class="w98-select"><option value="RETAILER">Retailer</option><option value="DEALER">Dealer</option><option value="HOCKER">Hocker</option></select></div><div><label>Username (Login):</label><input type="text" id="u_username" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save Customer</button></div></form>`); 
+            const isSalesTeam = ['RSM', 'ASM', 'SE'].includes(State.currentUser.role);
+            
+            // Customer Type options with (R)/(H)/(D) labels
+            const roleOptions = isSalesTeam 
+                ? `<option value="RETAILER" selected>Retailer (R)</option>` 
+                : `<option value="RETAILER" selected>Retailer (R)</option>
+                   <option value="HOCKER">Hocker (H)</option>
+                   <option value="DEALER">Dealer (D)</option>`;
+
+            openModal('Add New Customer', `
+                <form onsubmit="saveCustomer(event, '')">
+                    <!-- Customer Information Header -->
+                    <div class="win98-titlebar mb-3">
+                        <span><i class="fas fa-store mr-2"></i>Customer Information</span>
+                    </div>
+                    
+                    <!-- Shop Image & Auto ID Row -->
+                    <div class="grid grid-cols-3 gap-3 mb-3">
+                        <div class="col-span-1 flex flex-col items-center">
+                            <label class="block mb-1 text-xs font-bold">Shop Image</label>
+                            <img id="u_img_preview" src="https://via.placeholder.com/100" 
+                                 class="w-24 h-24 mb-2 border-2 border-black object-cover">
+                            <input type="file" id="u_image" accept="image/*" 
+                                   onchange="previewUserImage(this)" class="text-xs">
+                        </div>
+                        <div class="col-span-2 grid grid-cols-1 gap-2">
+                            <div>
+                                <label class="block mb-1 text-xs">Shop ID / Code:</label>
+                                <input type="text" class="w98-input" value="Auto Generated" 
+                                       disabled style="background:#f0f0f0;">
+                                <p class="text-[10px] text-gray-600 mt-1">
+                                    <i class="fas fa-magic mr-1"></i>Will be auto-generated as RFPR/RFPH/RFPD + serial
+                                </p>
+                            </div>
+                            <div>
+                                <label class="block mb-1 text-xs">Customer Type <span class="text-red-600">*</span>:</label>
+                                <select id="u_role" onchange="renderRoleFields(this.value)" 
+                                        class="w98-select" ${isSalesTeam ? 'disabled' : ''} required>
+                                    ${roleOptions}
+                                </select>
+                                ${isSalesTeam ? '<input type="hidden" id="u_role_hidden" value="RETAILER">' : ''}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Required Fields Row -->
+                    <fieldset class="border border-black p-2">
+                        <legend class="text-xs font-bold">Required Information</legend>
+                        <div class="grid grid-cols-2 gap-2 mb-2">
+                            <div>
+                                <label class="block mb-1 text-xs">Shop Name <span class="text-red-600">*</span>:</label>
+                                <input type="text" id="u_shop" class="w98-input" required 
+                                       placeholder="Enter shop name">
+                            </div>
+                            <div>
+                                <label class="block mb-1 text-xs">Owner / Proprietor Name <span class="text-red-600">*</span>:</label>
+                                <input type="text" id="u_name" class="w98-input" required 
+                                       placeholder="Enter owner name">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mb-2">
+                            <div>
+                                <label class="block mb-1 text-xs">Mobile Number <span class="text-red-600">*</span>:</label>
+                                <input type="text" id="u_mobile" class="w98-input" required 
+                                       placeholder="01XXXXXXXXX" pattern="[0-9+]{11,14}">
+                            </div>
+                            <div>
+                                <label class="block mb-1 text-xs">Trade License No.:</label>
+                                <input type="text" id="u_trade_lic" class="w98-input" 
+                                       placeholder="Trade license number">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-xs">Address <span class="text-red-600">*</span>:</label>
+                            <textarea id="u_address" class="w98-textarea" required 
+                                      placeholder="Enter full shop address"></textarea>
+                        </div>
+                    </fieldset>
+
+                    <!-- Additional Fields Container (Only Financial Info will show here) -->
+                    <div id="role-specific-fields"></div>
+                    
+                    <div class="flex justify-end mt-4 gap-2">
+                        <button type="button" onclick="closeModal()" class="w98-btn">Cancel</button>
+                        <button type="submit" class="w98-btn">
+                            <i class="fas fa-save mr-1"></i> Save Customer
+                        </button>
+                    </div>
+                </form>
+            `); 
             renderRoleFields('RETAILER');
         }
         
@@ -459,9 +566,96 @@
             }; 
             if(iF) { const r = new FileReader(); r.onload = (e) => s(e.target.result); r.readAsDataURL(iF); } else s(); 
         }
+
+        function saveCustomer(e, id) {
+            e.preventDefault();
+            
+            // Get role (handle disabled dropdown for sales team)
+            let role = document.getElementById('u_role').value;
+            if (!role && document.getElementById('u_role_hidden')) {
+                role = document.getElementById('u_role_hidden').value;
+            }
+            
+            // Validate required fields
+            const shopName = document.getElementById('u_shop').value.trim();
+            const ownerName = document.getElementById('u_name').value.trim();
+            const mobile = document.getElementById('u_mobile').value.trim();
+            const address = document.getElementById('u_address').value.trim();
+            
+            if (!shopName) return alert('Shop Name is required!');
+            if (!ownerName) return alert('Owner Name is required!');
+            if (!mobile) return alert('Mobile Number is required!');
+            if (!address) return alert('Address is required!');
+            
+            const iF = document.getElementById('u_image').files[0];
+            const val = (id) => document.getElementById(id)?.value || '';
+            
+            const data = {
+                role: role,
+                name: ownerName,
+                shopName: shopName,
+                mobile: mobile,
+                address: address,
+                tradeLicense: val('u_trade_lic'),
+                due: parseFloat(val('u_due') || 0),
+                isSpecial: val('u_special') || 'No',
+                status: 'Active',
+                createdDate: new Date().toISOString()
+            };
+            
+            // Auto-assign SE hierarchy if salesman is creating
+            if (State.currentUser.role === 'SE' && ['DEALER', 'RETAILER', 'HOCKER'].includes(role)) {
+                data.assignedSE = State.currentUser.id;
+                data.assignedASM = State.currentUser.assignedASM || '';
+                data.assignedRSM = State.currentUser.assignedRSM || '';
+            }
+            
+            const saveToDB = (imgUrl) => {
+                if (imgUrl) data.image = imgUrl;
+                
+                if (id) {
+                    db.ref('users/' + id).update(data);
+                    alert('Customer updated successfully!');
+                } else {
+                    // Auto-generate Shop ID / Code
+                    const prefixMap = {
+                        'DEALER': 'RFPD',
+                        'HOCKER': 'RFPH',
+                        'RETAILER': 'RFPR'
+                    };
+                    const prefix = prefixMap[role] || 'RFPX';
+                    const existingUsers = State.users.filter(u => u.userCode && u.userCode.startsWith(prefix));
+                    let maxSerial = 0;
+                    existingUsers.forEach(u => {
+                        const serial = parseInt(u.userCode.slice(prefix.length));
+                        if (!isNaN(serial) && serial > maxSerial) maxSerial = serial;
+                    });
+                    data.userCode = `${prefix}${String(maxSerial + 1).padStart(3, '0')}`;
+                    
+                    db.ref('users').push(data);
+                    alert(`Customer saved successfully!\nShop ID: ${data.userCode}`);
+                }
+                closeModal();
+            };
+            
+            if (iF) {
+                const reader = new FileReader();
+                reader.onload = (e) => saveToDB(e.target.result);
+                reader.readAsDataURL(iF);
+            } else {
+                saveToDB();
+            }
+        }
+
         function deleteUser(id) { if (confirm('Are you sure?')) db.ref('users/' + id).remove(); }
 
         function renderOrderEntry() { 
+            // Block RSM and ASM from Order Entry directly
+            if (['RSM', 'ASM'].includes(State.currentUser.role)) {
+                document.getElementById('main-content').innerHTML = '<div class="p-4 text-red-600 font-bold">Access Denied: You cannot enter orders.</div>';
+                return;
+            }
+
             State.cart = []; 
             const isC = !['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role); 
             const isSM = ['RSM', 'ASM', 'SE'].includes(State.currentUser.role);
@@ -601,16 +795,52 @@
             const p = parseFloat(document.getElementById('paid_amt').value) || 0; 
             const d = net - p; 
             const oD = { 
-                invoiceNo: generateInvoiceNo(), customerId: cId, customerName: c.name || 'N/A', customerShopName: c.shopName || 'N/A', customerMobile: c.mobile || 'N/A', customerAddress: c.address || 'N/A', customerType: document.getElementById('cust_type').value, items: State.cart, grossTotal: gross, specialDiscount: sd, specialDiscountPercent: sdPercent, netTotal: net, paid: p, due: d, orderDate: new Date().toISOString(), status: 'Pending', entryBy: State.currentUser.id || State.currentUser.userCode || 'N/A' 
+                invoiceNo: generateInvoiceNo(), 
+                customerId: cId, 
+                customerCode: c.userCode || 'N/A', 
+                customerName: c.name || 'N/A', 
+                customerShopName: c.shopName || 'N/A', 
+                customerMobile: c.mobile || 'N/A', 
+                customerAddress: c.address || 'N/A', 
+                customerType: document.getElementById('cust_type').value, 
+                items: State.cart, 
+                grossTotal: gross, 
+                specialDiscount: sd, 
+                specialDiscountPercent: sdPercent, 
+                netTotal: net, 
+                paid: p, 
+                due: d, 
+                orderDate: new Date().toISOString(), 
+                status: 'Pending', 
+                entryBy: State.currentUser.id || State.currentUser.userCode || 'N/A',
+                entryByName: State.currentUser.name || 'N/A',
+                salesRole: State.currentUser.role || 'UNKNOWN'
             }; 
             db.ref('orders').push(oD).then(() => { const nD = (c.due || 0) + d; db.ref('users/' + cId).update({ due: nD }); alert('Order Saved! Invoice No: ' + oD.invoiceNo); renderPage('invoices'); }); 
         }
 
         function renderInvoices() {
-            const iA = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role);
-            const canChangeStatus = ['ADMIN', 'DA'].includes(State.currentUser.role);
-            const canAddCollection = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role);
-            let oS = State.orders; if (!iA) oS = State.orders.filter(o => o.customerId === State.currentUser.id);
+            const role = State.currentUser.role;
+            const iA = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
+            const canChangeStatus = ['ADMIN', 'DA'].includes(role);
+            const canAddCollection = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
+            
+            let oS = [];
+            if (role === 'ADMIN' || role === 'DA') {
+                oS = State.orders;
+            } else if (role === 'RSM') {
+                const seIds = State.users.filter(u => u.role === 'SE' && u.assignedRSM === State.currentUser.id).map(u => u.id);
+                oS = State.orders.filter(o => seIds.includes(o.entryBy));
+            } else if (role === 'ASM') {
+                const seIds = State.users.filter(u => u.role === 'SE' && u.assignedASM === State.currentUser.id).map(u => u.id);
+                oS = State.orders.filter(o => seIds.includes(o.entryBy));
+            } else if (role === 'SE') {
+                oS = State.orders.filter(o => o.entryBy === State.currentUser.id || o.entryBy === State.currentUser.userCode);
+            } else {
+                // Customer
+                oS = State.orders.filter(o => o.customerId === State.currentUser.id);
+            }
+
             const sC = (s) => `status-${s ? s.toLowerCase() : 'pending'}`;
             let rows = '';
             if (oS.length > 0) {
@@ -726,7 +956,7 @@
                     sdPercentText = p ? ` (${p}%)` : '';
                 }
 
-                return `<div class="invoice-box"><div class="copy-type">${t}</div><div class="inv-header"><div class="logo-section"><img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="Logo"></div><div class="company-info"><h1>Rafi Food Product</h1><p>প্রিমিয়াম কোয়ালিটি বেকারি ও ফুড আইটেম</p><p>ঠিকানা: Mosjid para Chuadanga, Chuadanga sadar-7200</p><p>ফোন: +৮৮০ 1756144900</p><p>ইমেইল: rafifoodproducts@gmail.com</p></div></div><table class="meta-table"><tr><td><strong>গ্রাহকের বিবরণ:</strong><br>দোকানের নাম: ${esc(o.customerShopName || 'N/A')}<br>নাম: ${esc(o.customerName || 'N/A')}<br>ঠিকানা: ${esc(o.customerAddress || 'N/A')}<br>মোবাইল: ${toBn(o.customerMobile || 'N/A')}</td><td style="text-align: right;"><strong>ইনভয়েস নম্বর:</strong> ${esc(o.invoiceNo || 'N/A')}<br><strong>তারিখ:</strong> ${formatBnDate(o.orderDate)}<br><strong>স্ট্যাটাস:</strong> ${translateStatus(o.status)}<br><strong>অর্ডার গ্রহণকারী:</strong> ${esc(o.entryBy || 'N/A')}</td></tr></table><table class="details-table"><thead><tr><th>SL</th><th>পণ্যের বিবরণ</th><th>MRP (টাকা)</th><th>পরিমাণ</th><th>বিক্রয় মূল্য (টাকা)</th><th>মোট (টাকা)</th></tr></thead><tbody>${iH}</tbody></table><div class="totals-section"><table class="totals-table"><tr><td>সাব-টোটাল (Gross):</td><td>${toBn((o.grossTotal || 0).toFixed(2))} ৳</td></tr>${o.specialDiscount > 0 ? `<tr><td>স্পেশাল ডিসকাউন্ট${sdPercentText}:</td><td>- ${toBn((o.specialDiscount || 0).toFixed(2))} ৳</td></tr>` : ''}<tr><td>নেট টোটাল:</td><td>${toBn((o.netTotal || o.grossTotal || 0).toFixed(2))} ৳</td></tr><tr><td>পরিশোধিত:</td><td>${toBn((o.paid || 0).toFixed(2))} ৳</td></tr><tr><td>বকেয়া:</td><td>${toBn((o.due || 0).toFixed(2))} ৳</td></tr></table></div><div class="signatures"><div class="signature-box">গ্রাহকের স্বাক্ষর</div><div class="signature-box">অনুমোদিত স্বাক্ষর</div></div><div class="inv-footer"><p>আমাদের সাথে থাকার জন্য ধন্যবাদ! পণ্য ক্রয়ের জন্য আবার আমন্ত্রণ জানাচ্ছি।</p><p><strong>RafiFood Product</strong></p></div></div>`; 
+                return `<div class="invoice-box"><div class="copy-type">${t}</div><div class="inv-header"><div class="logo-section"><img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="Logo"></div><div class="company-info"><h1>Rafi Food Product</h1><p>প্রিমিয়াম কোয়ালিটি বেকারি ও ফুড আইটেম</p><p>ঠিকানা: Mosjid para Chuadanga, Chuadanga sadar-7200</p><p>ফোন: +৮৮০ 1756144900</p><p>ইমেইল: rafifoodproducts@gmail.com</p></div></div><table class="meta-table"><tr><td><strong>গ্রাহকের বিবরণ:</strong><br>গ্রাহকের আইডি: ${esc(o.customerCode || 'N/A')}<br>দোকানের নাম: ${esc(o.customerShopName || 'N/A')}<br>নাম: ${esc(o.customerName || 'N/A')}<br>ঠিকানা: ${esc(o.customerAddress || 'N/A')}<br>মোবাইল: ${toBn(o.customerMobile || 'N/A')}</td><td style="text-align: right;"><strong>ইনভয়েস নম্বর:</strong> ${esc(o.invoiceNo || 'N/A')}<br><strong>তারিখ:</strong> ${formatBnDate(o.orderDate)}<br><strong>স্ট্যাটাস:</strong> ${translateStatus(o.status)}<br><strong>অর্ডার গ্রহণকারী:</strong> ${esc(o.salesRole === 'ADMIN' ? 'Admin Sales' : (o.entryByName || o.entryBy || 'N/A'))}</td></tr></table><table class="details-table"><thead><tr><th>SL</th><th>পণ্যের বিবরণ</th><th>MRP (টাকা)</th><th>পরিমাণ</th><th>বিক্রয় মূল্য (টাকা)</th><th>মোট (টাকা)</th></tr></thead><tbody>${iH}</tbody></table><div class="totals-section"><table class="totals-table"><tr><td>সাব-টোটাল (Gross):</td><td>${toBn((o.grossTotal || 0).toFixed(2))} ৳</td></tr>${o.specialDiscount > 0 ? `<tr><td>স্পেশাল ডিসকাউন্ট${sdPercentText}:</td><td>- ${toBn((o.specialDiscount || 0).toFixed(2))} ৳</td></tr>` : ''}<tr><td>নেট টোটাল:</td><td>${toBn((o.netTotal || o.grossTotal || 0).toFixed(2))} ৳</td></tr><tr><td>পরিশোধিত:</td><td>${toBn((o.paid || 0).toFixed(2))} ৳</td></tr><tr><td>বকেয়া:</td><td>${toBn((o.due || 0).toFixed(2))} ৳</td></tr></table></div><div class="signatures"><div class="signature-box">গ্রাহকের স্বাক্ষর</div><div class="signature-box">অনুমোদিত স্বাক্ষর</div></div><div class="inv-footer"><p>আমাদের সাথে থাকার জন্য ধন্যবাদ! পণ্য ক্রয়ের জন্য আবার আমন্ত্রণ জানাচ্ছি।</p><p><strong>RafiFood Product</strong></p></div></div>`; 
             };
             document.getElementById('main-content').innerHTML = `<div id="print-area"><span class="back-btn no-print" onclick="renderPage('invoices')"><< Back to Orders</span>${gC("Customer Copy")}<div class="page-break"></div>${gC("Office Copy")}<button class="print-btn no-print" onclick="window.print()">ইনভয়েস প্রিন্ট করুন / PDF সেভ করুন</button></div>`;
             window.scrollTo(0, 0);
@@ -1135,11 +1365,15 @@
             const [year, month] = monthVal.split('-').map(Number);
             const rsmFilter = document.getElementById('ach_rsm_filter')?.value || '';
 
-            const fOrders = State.orders.filter(o => {
+            const fOrdersAll = State.orders.filter(o => {
                 if (o.status !== 'Delivered') return false;
                 const d = new Date(o.orderDate);
                 return d.getFullYear() === year && (d.getMonth() + 1) === month;
             });
+
+            // Separate Admin Sales from normal SE sales
+            const adminOrders = fOrdersAll.filter(o => o.salesRole === 'ADMIN');
+            const normalOrders = fOrdersAll.filter(o => o.salesRole !== 'ADMIN');
 
             let allSEs = State.users.filter(u => u.role === 'SE');
 
@@ -1181,7 +1415,7 @@
             });
 
             let slNo = 0;
-            let result = { rsmGroups: [], grandTotal: { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 } };
+            let result = { rsmGroups: [], adminGroup: null, grandTotal: { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 } };
 
             Object.values(rsmGroups).forEach(rg => {
                 let rsmTotal = { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 };
@@ -1191,7 +1425,7 @@
 
                     ag.ses.forEach(se => {
                         slNo++;
-                        const seOrders = fOrders.filter(o => o.entryBy === se.id || o.entryBy === se.userCode);
+                        const seOrders = normalOrders.filter(o => o.entryBy === se.id || o.entryBy === se.userCode);
                         const tp          = seOrders.reduce((s, o) => s + (o.grossTotal || 0), 0);
                         const net         = seOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0);
                         const collected   = seOrders.reduce((s, o) => s + (o.paid || 0), 0);
@@ -1226,6 +1460,24 @@
                 result.grandTotal.total       += rsmTotal.total;
                 result.grandTotal.outstanding += rsmTotal.outstanding;
             });
+
+            // Add Admin Sales as a completely separate group
+            if (adminOrders.length > 0) {
+                const adminTotals = {
+                    tp: adminOrders.reduce((s, o) => s + (o.grossTotal || 0), 0),
+                    net: adminOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0),
+                    total: adminOrders.reduce((s, o) => s + (o.paid || 0), 0),
+                    outstanding: adminOrders.reduce((s, o) => s + (o.due || 0), 0),
+                    target: 0
+                };
+                
+                result.adminGroup = { name: 'Admin Sales', userCode: 'ADMIN', totals: adminTotals };
+
+                result.grandTotal.tp += adminTotals.tp;
+                result.grandTotal.net += adminTotals.net;
+                result.grandTotal.total += adminTotals.total;
+                result.grandTotal.outstanding += adminTotals.outstanding;
+            }
 
             return result;
         }
@@ -1317,14 +1569,30 @@
                 </tr>`;
             });
 
-            if (!hasData && data.rsmGroups.length === 0) {
+            // Add Admin Sales as a separate row block at the bottom
+            if (data.adminGroup) {
+                hasData = true;
+                const aT = data.adminGroup.totals;
+                html += `<tr style="background:#5C1D24; color:#D4AF37; font-weight:bold; border-top:3px solid #000;">
+                    <td colspan="4">${esc(data.adminGroup.name)} (Direct Entry)</td>
+                    <td style="text-align:right;">${aT.target.toLocaleString()}</td>
+                    <td style="text-align:right;">${aT.tp.toLocaleString()}</td>
+                    <td style="text-align:right;">${aT.net.toLocaleString()}</td>
+                    <td style="text-align:center;">-</td>
+                    <td style="text-align:right;">${aT.total.toLocaleString()}</td>
+                    <td style="text-align:right;">${aT.outstanding.toLocaleString()}</td>
+                </tr>`;
+            }
+
+            if (!hasData && data.rsmGroups.length === 0 && !data.adminGroup) {
                 html += `<tr><td colspan="10" class="text-center p-4">No data found for the selected period.</td></tr>`;
             }
 
-            if (data.rsmGroups.length > 1) {
+            // Grand Total
+            if (hasData) {
                 const g = data.grandTotal;
                 const gAchPct = g.target > 0 ? (g.net / g.target * 100) : 0;
-                html += `<tr style="background:#5C1D24; color:#D4AF37; font-weight:bold; border-top:3px solid #000;">
+                html += `<tr style="background:#000; color:#FFF; font-weight:bold; border-top:3px solid #000;">
                     <td colspan="4">GRAND TOTAL</td>
                     <td style="text-align:right;">${g.target.toLocaleString()}</td>
                     <td style="text-align:right;">${g.tp.toLocaleString()}</td>
@@ -1400,24 +1668,35 @@
                 </tr>`;
             });
 
+            if (data.adminGroup) {
+                const aT = data.adminGroup.totals;
+                rows += `<tr class="rsm-row" style="background:#5C1D24; color:#D4AF37;">
+                    <td colspan="4">${esc(data.adminGroup.name)} (Direct Entry)</td>
+                    <td>${aT.target.toLocaleString()}</td>
+                    <td>${aT.tp.toLocaleString()}</td>
+                    <td>${aT.net.toLocaleString()}</td>
+                    <td style="text-align:center;">-</td>
+                    <td>${aT.total.toLocaleString()}</td>
+                    <td>${aT.outstanding.toLocaleString()}</td>
+                </tr>`;
+            }
+
             if (rows === '') {
                 rows = `<tr><td colspan="10" style="text-align:center; padding:20px;">No data found for the selected period.</td></tr>`;
             }
 
             let grandTotalRow = '';
-            if (data.rsmGroups.length > 1) {
-                const g = data.grandTotal;
-                const gAchPct = g.target > 0 ? (g.net / g.target * 100) : 0;
-                grandTotalRow = `<tr class="rsm-row" style="background:#5C1D24;">
-                    <td colspan="4">GRAND TOTAL</td>
-                    <td>${g.target.toLocaleString()}</td>
-                    <td>${g.tp.toLocaleString()}</td>
-                    <td>${g.net.toLocaleString()}</td>
-                    <td style="text-align:center;">${gAchPct.toFixed(0)}%</td>
-                    <td>${g.total.toLocaleString()}</td>
-                    <td>${g.outstanding.toLocaleString()}</td>
-                </tr>`;
-            }
+            const g = data.grandTotal;
+            const gAchPct = g.target > 0 ? (g.net / g.target * 100) : 0;
+            grandTotalRow = `<tr class="rsm-row" style="background:#000; color:#FFF;">
+                <td colspan="4">GRAND TOTAL</td>
+                <td>${g.target.toLocaleString()}</td>
+                <td>${g.tp.toLocaleString()}</td>
+                <td>${g.net.toLocaleString()}</td>
+                <td style="text-align:center;">${gAchPct.toFixed(0)}%</td>
+                <td>${g.total.toLocaleString()}</td>
+                <td>${g.outstanding.toLocaleString()}</td>
+            </tr>`;
 
             const html = `<!DOCTYPE html>
 <html lang="en">
