@@ -56,6 +56,15 @@
         .menu-item:hover { background: var(--w98-title-active); color: #FFF; }
         .menu-item.active { background: var(--w98-title-active); color: #FFF; }
 
+        /* Search Dropdown */
+        .search-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #FFF; border: 1px solid #000; z-index: 50; max-height: 150px; overflow-y: auto; box-shadow: 2px 2px 0 #000; }
+        .search-item { padding: 4px 6px; cursor: pointer; font-size: 12px; border-bottom: 1px solid #C0C0C0; }
+        .search-item:hover { background: #000080; color: #FFF; }
+        
+        /* Category Row for Sales Due Report */
+        .cat-row { background: #000080; color: #fff; font-weight: bold; }
+        .cat-subtotal { background: #dbeafe; font-weight: bold; }
+
         /* Invoice CSS */
         .invoice-box { max-width: 800px; margin: auto; background: white; padding: 30px; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0,0,0,0.15); color: #000; font-family: 'SolaimanLipi', 'Tahoma', sans-serif; margin-bottom: 40px; position: relative; display: flex; flex-direction: column; min-height: 90vh; }
         .copy-type { text-align: right; font-weight: bold; color: #000; font-size: 12px; text-transform: uppercase; border: 1px solid #000; padding: 2px 6px; background: #fff; display: inline-block; margin-bottom: 10px; align-self: flex-end; }
@@ -149,16 +158,21 @@
                     <div class="win98-outset m-1 mb-2"><a href="#" data-page="dashboard" class="menu-item active"><i class="fas fa-tachometer-alt w-4"></i> Dashboard</a></div>
                     <div class="px-2 py-1 font-bold text-[11px]">Sales & Distribution</div>
                     <div class="win98-outset m-1 mb-2">
-                        <a href="#" data-page="order-entry" class="menu-item"><i class="fas fa-cart-plus w-4"></i> Order Entry</a>
+                        <a href="#" data-page="order-entry" class="menu-item employee-only"><i class="fas fa-cart-plus w-4"></i> Order Entry</a>
                         <a href="#" data-page="invoices" class="menu-item"><i class="fas fa-file-invoice w-4"></i> Order History</a>
                     </div>
                     <div class="px-2 py-1 font-bold text-[11px]">Management</div>
                     <div class="win98-outset m-1 mb-2">
                         <a href="#" data-page="products" class="admin-only menu-item"><i class="fas fa-boxes w-4"></i> Product Mgmt</a>
                         <a href="#" data-page="users" class="admin-only menu-item"><i class="fas fa-user-shield w-4"></i> User Mgmt</a>
+                        <a href="#" data-page="customers" class="menu-item employee-only"><i class="fas fa-users w-4"></i> Customer Mgmt</a>
                     </div>
                     <div class="px-2 py-1 font-bold text-[11px]">Reports</div>
-                    <div class="win98-outset m-1 mb-2"><a href="#" data-page="reports" class="menu-item"><i class="fas fa-chart-line w-4"></i> Sales & Due Reports</a></div>
+                    <div class="win98-outset m-1 mb-2">
+                        <a href="#" data-page="reports" class="menu-item employee-only"><i class="fas fa-chart-line w-4"></i> Sales & Due Reports</a>
+                        <a href="#" data-page="sm-report" class="menu-item admin-sales-only"><i class="fas fa-user-tie w-4"></i> Salesman Performance</a>
+                        <a href="#" data-page="achievement-report" class="menu-item admin-sales-only"><i class="fas fa-trophy w-4"></i> Achievement Report</a>
+                    </div>
                 </nav>
             </aside>
 
@@ -228,15 +242,27 @@
             document.getElementById('user-name').textContent = State.currentUser.name;
             const avatarUrl = State.currentUser.image || `https://ui-avatars.com/api/?name=${State.currentUser.name}&background=5C1D24&color=D4AF37`;
             document.getElementById('nav-avatar').src = avatarUrl;
-            if (State.currentUser.role !== 'ADMIN') document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
-            else document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+            
+            const role = State.currentUser.role;
+            const isEmployee = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
+            const isSalesRole = ['ADMIN', 'RSM', 'ASM', 'SE'].includes(role);
+            
+            document.querySelectorAll('.admin-only').forEach(el => el.classList.toggle('hidden', role !== 'ADMIN'));
+            document.querySelectorAll('.admin-sales-only').forEach(el => el.classList.toggle('hidden', role !== 'ADMIN' && !['RSM', 'ASM', 'SE'].includes(role)));
+            document.querySelectorAll('.employee-only').forEach(el => el.classList.toggle('hidden', !isEmployee));
+            
             initFirebaseListeners();
             renderPage('dashboard');
         }
 
         function logout() { if (confirm('Are you sure you want to logout?')) location.reload(); }
         document.getElementById('profile-container').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('profile-menu').classList.toggle('hidden'); });
-        document.addEventListener('click', (e) => { const c = document.getElementById('profile-container'); if (!c.contains(e.target)) document.getElementById('profile-menu').classList.add('hidden'); });
+        document.addEventListener('click', (e) => { 
+            const c = document.getElementById('profile-container'); 
+            if (c && !c.contains(e.target)) document.getElementById('profile-menu').classList.add('hidden');
+            const sC = document.getElementById('cust_search_container'); 
+            if (sC && !sC.contains(e.target)) document.getElementById('cust_dropdown').classList.add('hidden');
+        });
 
         function openProfileSettings() {
             const u = State.currentUser;
@@ -259,8 +285,25 @@
 
         function initFirebaseListeners() {
             db.ref('products').on('value', (s) => { State.products = []; s.forEach(c => { State.products.push({ id: c.key, ...c.val() }); }); if (State.currentPage === 'products') renderProducts(); if (State.currentPage === 'dashboard') renderDashboard(); if (State.currentPage === 'order-entry') renderOrderEntry(); });
-            db.ref('users').on('value', (s) => { State.users = []; s.forEach(c => { State.users.push({ id: c.key, ...c.val() }); }); if (State.currentPage === 'users') renderUsers(); if (State.currentPage === 'dashboard') renderDashboard(); if (State.currentPage === 'order-entry') renderOrderEntry(); if (State.currentPage === 'reports') renderReports(); });
-            db.ref('orders').on('value', (s) => { State.orders = []; s.forEach(c => { let order = c.val(); order.id = c.key; order.items = toArray(order.items); State.orders.push(order); }); if (State.currentPage === 'invoices' && State.currentView !== 'invoice_view') renderInvoices(); if (State.currentPage === 'reports') renderReports(); });
+            db.ref('users').on('value', (s) => { 
+                State.users = []; 
+                s.forEach(c => { State.users.push({ id: c.key, ...c.val() }); }); 
+                if (State.currentPage === 'users') renderUsers(); 
+                if (State.currentPage === 'customers') renderCustomers(); 
+                if (State.currentPage === 'dashboard') renderDashboard(); 
+                if (State.currentPage === 'order-entry') renderOrderEntry(); 
+                if (State.currentPage === 'reports') renderReports(); 
+                if (State.currentPage === 'sm-report') renderSalesmanReport();
+                if (State.currentPage === 'achievement-report') calcAchievementReport();
+            });
+            db.ref('orders').on('value', (s) => { 
+                State.orders = []; 
+                s.forEach(c => { let order = c.val(); order.id = c.key; order.items = toArray(order.items); State.orders.push(order); }); 
+                if (State.currentPage === 'invoices' && State.currentView !== 'invoice_view') renderInvoices(); 
+                if (State.currentPage === 'reports') renderReports(); 
+                if (State.currentPage === 'sm-report') renderSalesmanReport();
+                if (State.currentPage === 'achievement-report') calcAchievementReport();
+            });
         }
 
         document.querySelectorAll('.menu-item').forEach(l => l.addEventListener('click', e => { e.preventDefault(); if(l.dataset.page) renderPage(l.dataset.page); }));
@@ -275,10 +318,13 @@
                 switch(page) {
                     case 'dashboard': document.getElementById('page-title').textContent = 'Dashboard'; renderDashboard(); break;
                     case 'products': document.getElementById('page-title').textContent = 'Product Management'; renderProducts(); break;
-                    case 'users': document.getElementById('page-title').textContent = 'User Management'; renderUsers(); break;
+                    case 'users': document.getElementById('page-title').textContent = 'System Users'; renderUsers(); break;
+                    case 'customers': document.getElementById('page-title').textContent = 'Customer Management'; renderCustomers(); break;
                     case 'order-entry': document.getElementById('page-title').textContent = 'Order Entry'; renderOrderEntry(); break;
                     case 'invoices': document.getElementById('page-title').textContent = 'Order History'; renderInvoices(); break;
                     case 'reports': document.getElementById('page-title').textContent = 'Sales & Due Reports'; renderReports(); break;
+                    case 'sm-report': document.getElementById('page-title').textContent = 'Salesman Performance'; renderSalesmanReport(); break;
+                    case 'achievement-report': document.getElementById('page-title').textContent = 'Achievement Report'; renderAchievementReport(); break;
                 }
             }, 200);
         }
@@ -286,9 +332,10 @@
         function closeModal() { document.getElementById('modal').classList.add('hidden'); }
 
         function renderDashboard() {
-            const isC = State.currentUser.role !== 'ADMIN' && State.currentUser.role !== 'SALES MAN';
-            const tD = State.users.filter(u => u.role !== 'ADMIN' && u.role !== 'SALES MAN').reduce((s, u) => s + (u.due || 0), 0);
-            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">${!isC ? `<div class="win98-outset p-2"><p class="text-xs">Total Products</p><p class="text-lg font-bold">${State.products.length}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Customers</p><p class="text-lg font-bold">${State.users.filter(u => u.role !== 'ADMIN' && u.role !== 'SALES MAN').length}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Due</p><p class="text-lg font-bold">৳ ${tD}</p></div>` : `<div class="win98-outset p-2 col-span-2 md:col-span-4"><p class="text-xs">Welcome, ${esc(State.currentUser.name)}!</p><p class="text-lg font-bold mt-1">Your Current Due: ৳ ${State.currentUser.due || 0}</p></div>`}</div><div class="win98-window p-2"><div class="win98-titlebar text-xs mb-2">Sales Overview</div><canvas id="salesChart" height="80"></canvas></div>`;
+            const role = State.currentUser.role;
+            const isC = !['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
+            const tD = State.users.filter(u => !['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(u.role)).reduce((s, u) => s + (u.due || 0), 0);
+            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">${!isC ? `<div class="win98-outset p-2"><p class="text-xs">Total Products</p><p class="text-lg font-bold">${State.products.length}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Customers</p><p class="text-lg font-bold">${State.users.filter(u => !['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(u.role)).length}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Due</p><p class="text-lg font-bold">৳ ${tD}</p></div>` : `<div class="win98-outset p-2 col-span-2 md:col-span-4"><p class="text-xs">Welcome, ${esc(State.currentUser.name)}!</p><p class="text-lg font-bold mt-1">Your Current Due: ৳ ${State.currentUser.due || 0}</p></div>`}</div><div class="win98-window p-2"><div class="win98-titlebar text-xs mb-2">Sales Overview</div><canvas id="salesChart" height="80"></canvas></div>`;
             const ctx = document.getElementById('salesChart').getContext('2d');
             if(window.myChart) window.myChart.destroy();
             window.myChart = new Chart(ctx, { type: 'bar', data: { labels: ['Mon', 'Tue', 'Wed', 'Thu'], datasets: [{ label: 'Sales', data: [12, 19, 15, 25], backgroundColor: '#000080' }] } });
@@ -306,96 +353,354 @@
         function saveProduct(e, id) { e.preventDefault(); const iF = document.getElementById('p_image').files[0]; const d = { code: document.getElementById('p_code').value, name: document.getElementById('p_name').value, category: document.getElementById('p_cat').value, mrp: parseFloat(document.getElementById('p_mrp').value), rPrice: parseFloat(document.getElementById('p_r').value), dPrice: parseFloat(document.getElementById('p_d').value), hPrice: parseFloat(document.getElementById('p_h').value), stock: parseInt(document.getElementById('p_stock').value) }; const s = (u) => { if(u) d.image = u; if(id) db.ref('products/' + id).update(d); else db.ref('products').push(d); closeModal(); }; if(iF) { const r = new FileReader(); r.onload = (e) => s(e.target.result); r.readAsDataURL(iF); } else s(); }
         function deleteProduct(id) { if (confirm('Are you sure?')) db.ref('products/' + id).remove(); }
 
+        // --- User Management (System Users / Employees Only) ---
         function renderUsers() {
-            const cE = State.currentUser.role === 'ADMIN';
             let rows = '';
-            if (State.users.length > 0) { rows = State.users.map(u => `<tr><td><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(u.userCode || 'N/A')}</td><td>${esc(u.username || 'N/A')}</td><td>${esc(u.name || 'N/A')}<br><span class="text-[10px]">${esc(u.shopName || '')}</span></td><td>${esc(u.role || 'N/A')}</td><td>৳${u.due || 0}</td><td class="text-right">${cE ? `<button onclick="editUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>` : '-'}</td></tr>`).join(''); } else { rows = `<tr><td colspan="7" class="text-center p-4">No users found.</td></tr>`; }
-            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">System Users / Customers</h3>${cE ? `<button onclick="addUser()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add User</button>` : ''}</div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>User ID</th><th>Username</th><th>Name / Shop</th><th>Role</th><th>Due</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+            const empUsers = State.users.filter(u => ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(u.role));
+            if (empUsers.length > 0) { rows = empUsers.map(u => `<tr><td><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(u.userCode || 'N/A')}</td><td>${esc(u.username || 'N/A')}</td><td>${esc(u.name || 'N/A')}</td><td>${esc(u.role || 'N/A')}</td><td>${esc(u.territory || 'N/A')}</td><td class="text-right"><button onclick="editUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button></td></tr>`).join(''); } else { rows = `<tr><td colspan="7" class="text-center p-4">No employees found.</td></tr>`; }
+            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">System Users (Employees)</h3><button onclick="addUser()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add Employee</button></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>User ID</th><th>Username</th><th>Name</th><th>Role</th><th>Territory</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+        }
+
+        // --- Customer Management (Customers Only) ---
+        function renderCustomers() {
+            const cE = ['ADMIN', 'RSM', 'ASM', 'SE'].includes(State.currentUser.role);
+            let rows = '';
+            const custUsers = State.users.filter(u => ['DEALER', 'RETAILER', 'HOCKER'].includes(u.role));
+            if (custUsers.length > 0) { rows = custUsers.map(u => `<tr><td><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(u.userCode || 'N/A')}</td><td>${esc(u.name || 'N/A')}<br><span class="text-[10px]">${esc(u.shopName || '')}</span></td><td>${esc(u.role || 'N/A')}</td><td>${esc(u.mobile || 'N/A')}</td><td>৳${u.due || 0}</td><td class="text-right">${cE ? `<button onclick="editUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteUser('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>` : '-'}</td></tr>`).join(''); } else { rows = `<tr><td colspan="7" class="text-center p-4">No customers found.</td></tr>`; }
+            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">Customers List</h3>${cE ? `<button onclick="addCustomer()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add Customer</button>` : ''}</div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>Cust ID</th><th>Name / Shop</th><th>Type</th><th>Mobile</th><th>Due</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
         }
 
         function renderRoleFields(role, u = {}) {
             const c = document.getElementById('role-specific-fields'); let h = '';
-            if (role === 'DEALER' || role === 'RETAILER' || role === 'HOCKER') {
-                h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Business Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Business/Shop Name:</label><input type="text" id="u_shop" value="${esc(u.shopName || '')}" class="w98-input"></div><div><label>Proprietor Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Business Type:</label><input type="text" id="u_b_type" value="${esc(u.businessType || '')}" class="w98-input"></div><div><label>Trade License No.:</label><input type="text" id="u_trade_lic" value="${esc(u.tradeLicense || '')}" class="w98-input"></div></div></fieldset><fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Contact Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div><div><label>Alt Mobile:</label><input type="text" id="u_alt_mobile" value="${esc(u.altMobile || '')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Email:</label><input type="email" id="u_email" value="${esc(u.email || '')}" class="w98-input"></div><div><label>NID Number:</label><input type="text" id="u_nid" value="${esc(u.nid || '')}" class="w98-input"></div></div>${role === 'DEALER' ? `<div class="mt-2"><label>TIN Number:</label><input type="text" id="u_tin" value="${esc(u.tin || '')}" class="w98-input"></div>` : ''}</fieldset><fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Address & Financials</legend><div class="mb-2"><label>Address:</label><textarea id="u_address" class="w98-textarea">${esc(u.address || '')}</textarea></div><div><label>Opening Due:</label><input type="number" id="u_due" value="${u.due || 0}" class="w98-input"></div></fieldset>`;
-            } else if (role === 'SALES MAN') {
-                h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div><div><label>Designation:</label><input type="text" id="u_designation" value="${esc(u.designation || 'Sales Man')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div><div><label>Alt Mobile:</label><input type="text" id="u_alt_mobile" value="${esc(u.altMobile || '')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>NID Number:</label><input type="text" id="u_nid" value="${esc(u.nid || '')}" class="w98-input"></div><div><label>Joining Date:</label><input type="date" id="u_join_date" value="${esc(u.joinDate || '')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Status:</label><select id="u_emp_status" class="w98-select"><option value="Active" ${u.empStatus==='Active'?'selected':''}>Active</option><option value="Inactive" ${u.empStatus==='Inactive'?'selected':''}>Inactive</option></select></div><div><label>Address:</label><input type="text" id="u_address" value="${esc(u.address || '')}" class="w98-input"></div></div></fieldset>`;
-            } else { h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Full Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div></div><div class="mt-2"><label>Address:</label><textarea id="u_address" class="w98-textarea">${esc(u.address || '')}</textarea></div></fieldset>`; }
+            const isEmployee = ['RSM', 'ASM', 'SE', 'DA'].includes(role);
+
+            if (isEmployee) {
+                const rsmList = State.users.filter(x => x.role === 'RSM');
+                const asmList = State.users.filter(x => x.role === 'ASM');
+                const seList = State.users.filter(x => x.role === 'SE');
+
+                let hierarchyHtml = '';
+                if (['ASM', 'SE', 'DA'].includes(role)) {
+                    hierarchyHtml += `<div><label>Assigned RSM:</label><select id="u_assigned_rsm" class="w98-select"><option value="">None</option>${rsmList.map(r => `<option value="${r.id}" ${u.assignedRSM===r.id?'selected':''}>${esc(r.name)}</option>`).join('')}</select></div>`;
+                }
+                if (['SE', 'DA'].includes(role)) {
+                    hierarchyHtml += `<div><label>Assigned ASM:</label><select id="u_assigned_asm" class="w98-select"><option value="">None</option>${asmList.map(r => `<option value="${r.id}" ${u.assignedASM===r.id?'selected':''}>${esc(r.name)}</option>`).join('')}</select></div>`;
+                }
+                if (role === 'DA') {
+                    hierarchyHtml += `<div><label>Assigned SE:</label><select id="u_assigned_se" class="w98-select"><option value="">None</option>${seList.map(r => `<option value="${r.id}" ${u.assignedSE===r.id?'selected':''}>${esc(r.name)}</option>`).join('')}</select></div>`;
+                }
+
+                h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Designation:</label><input type="text" id="u_designation" value="${esc(u.designation || role)}" class="w98-input"></div><div><label>Joining Date:</label><input type="date" id="u_join_date" value="${esc(u.joinDate || '')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Status:</label><select id="u_emp_status" class="w98-select"><option value="Active" ${u.empStatus==='Active'?'selected':''}>Active</option><option value="Inactive" ${u.empStatus==='Inactive'?'selected':''}>Inactive</option></select></div><div><label>NID:</label><input type="text" id="u_nid" value="${esc(u.nid || '')}" class="w98-input"></div></div><div class="mt-2"><label>Address:</label><input type="text" id="u_address" value="${esc(u.address || '')}" class="w98-input"></div></fieldset><fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Region & Hierarchy Assignment</legend><div class="grid grid-cols-3 gap-2"><div><label>Region:</label><input type="text" id="u_region" value="${esc(u.region || '')}" class="w98-input"></div><div><label>Area:</label><input type="text" id="u_area" value="${esc(u.area || '')}" class="w98-input"></div><div><label>Territory:</label><input type="text" id="u_territory" value="${esc(u.territory || '')}" class="w98-input"></div></div>${hierarchyHtml ? `<div class="grid grid-cols-3 gap-2 mt-2">${hierarchyHtml}</div>` : ''}</fieldset>`;
+                
+                if (role !== 'DA') {
+                    h += `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Salary & Target</legend><div class="grid grid-cols-2 gap-2"><div><label>Monthly Target (৳):</label><input type="number" id="u_target" value="${u.target || 0}" class="w98-input"></div><div><label>Basic Salary (৳):</label><input type="number" id="u_salary" value="${u.basicSalary || 0}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>TA (Monthly ৳):</label><input type="number" id="u_ta" value="${u.ta || 0}" class="w98-input"></div><div><label>DA (Monthly ৳):</label><input type="number" id="u_da" value="${u.da || 0}" class="w98-input"></div></div></fieldset>`;
+                }
+            } else if (role === 'DEALER' || role === 'RETAILER' || role === 'HOCKER') {
+                h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Business Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Business/Shop Name:</label><input type="text" id="u_shop" value="${esc(u.shopName || '')}" class="w98-input"></div><div><label>Proprietor Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Business Type:</label><input type="text" id="u_b_type" value="${esc(u.businessType || '')}" class="w98-input"></div><div><label>Trade License No.:</label><input type="text" id="u_trade_lic" value="${esc(u.tradeLicense || '')}" class="w98-input"></div></div></fieldset><fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Contact Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div><div><label>Alt Mobile:</label><input type="text" id="u_alt_mobile" value="${esc(u.altMobile || '')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Email:</label><input type="email" id="u_email" value="${esc(u.email || '')}" class="w98-input"></div><div><label>NID Number:</label><input type="text" id="u_nid" value="${esc(u.nid || '')}" class="w98-input"></div></div>${role === 'DEALER' ? `<div class="mt-2"><label>TIN Number:</label><input type="text" id="u_tin" value="${esc(u.tin || '')}" class="w98-input"></div>` : ''}</fieldset><fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Address & Financials</legend><div class="mb-2"><label>Address:</label><textarea id="u_address" class="w98-textarea">${esc(u.address || '')}</textarea></div><div class="grid grid-cols-2 gap-2"><div><label>Opening Due:</label><input type="number" id="u_due" value="${u.due || 0}" class="w98-input"></div>${role === 'RETAILER' ? `<div><label>Special Customer:</label><select id="u_special" class="w98-select"><option value="No" ${u.isSpecial === 'No' || !u.isSpecial ? 'selected' : ''}>No</option><option value="Yes" ${u.isSpecial === 'Yes' ? 'selected' : ''}>Yes</option></select></div>` : ''}</div></fieldset>`;
+            } else { 
+                h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Full Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div></div><div class="mt-2"><label>Address:</label><textarea id="u_address" class="w98-textarea">${esc(u.address || '')}</textarea></div></fieldset>`; 
+            }
             c.innerHTML = h;
         }
 
-        function addUser() { openModal('Add User / Customer', `<form onsubmit="saveUser(event, '')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value)" class="w98-select"><option value="ADMIN">Admin</option><option value="SALES MAN">Sales Man</option><option value="RETAILER">Retailer</option><option value="DEALER">Dealer</option><option value="HOCKER">Hocker</option></select></div><div><label>Username (Login):</label><input type="text" id="u_username" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save User</button></div></form>`); renderRoleFields('ADMIN'); }
-        function editUser(id) { const u = State.users.find(x => x.id === id); openModal('Edit User / Customer', `<form onsubmit="saveUser(event, '${u.id}')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value, ${JSON.stringify(u).replace(/"/g, '&quot;')})" class="w98-select" disabled><option value="ADMIN" ${u.role==='ADMIN'?'selected':''}>Admin</option><option value="SALES MAN" ${u.role==='SALES MAN'?'selected':''}>Sales Man</option><option value="RETAILER" ${u.role==='RETAILER'?'selected':''}>Retailer</option><option value="DEALER" ${u.role==='DEALER'?'selected':''}>Dealer</option><option value="HOCKER" ${u.role==='HOCKER'?'selected':''}>Hocker</option></select></div><div><label>Username:</label><input type="text" id="u_username" value="${esc(u.username || '')}" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" value="${esc(u.password || '')}" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update User</button></div></form>`); renderRoleFields(u.role, u); }
-        function saveUser(e, id) { e.preventDefault(); const iF = document.getElementById('u_image').files[0]; const val = (id) => document.getElementById(id)?.value || ''; const role = val('u_role'); const data = { username: val('u_username'), password: val('u_password'), role: role, name: val('u_name'), shopName: val('u_shop'), mobile: val('u_mobile'), altMobile: val('u_alt_mobile'), email: val('u_email'), address: val('u_address'), nid: val('u_nid'), businessType: val('u_b_type'), tradeLicense: val('u_trade_lic'), tin: val('u_tin'), designation: val('u_designation'), joinDate: val('u_join_date'), empStatus: val('u_emp_status'), due: parseFloat(val('u_due') || 0), status: 'Active' }; const s = (u) => { if(u) data.image = u; if (id) db.ref('users/' + id).update(data); else { const rP = { 'ADMIN': 'RFPA', 'SALES MAN': 'RFPS', 'DEALER': 'RFPD', 'HOCKER': 'RFPH', 'RETAILER': 'RFPR' }; const p = rP[role] || 'RFPX'; const rU = State.users.filter(u => u.userCode && u.userCode.startsWith(p)); let mS = 0; rU.forEach(u => { const s = parseInt(u.userCode.slice(p.length)); if (!isNaN(s) && s > mS) mS = s; }); data.userCode = `${p}${String(mS + 1).padStart(2, '0')}`; db.ref('users').push(data); } closeModal(); }; if(iF) { const r = new FileReader(); r.onload = (e) => s(e.target.result); r.readAsDataURL(iF); } else s(); }
+        function addUser() { openModal('Add System User', `<form onsubmit="saveUser(event, '')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value)" class="w98-select"><option value="ADMIN">Admin</option><option value="RSM">RSM</option><option value="ASM">ASM</option><option value="SE">SE</option><option value="DA">DA</option></select></div><div><label>Username (Login):</label><input type="text" id="u_username" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save User</button></div></form>`); renderRoleFields('ADMIN'); }
+        
+        function addCustomer() {
+            openModal('Add New Customer', `<form onsubmit="saveUser(event, '')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Customer Type:</label><select id="u_role" onchange="renderRoleFields(this.value)" class="w98-select"><option value="RETAILER">Retailer</option><option value="DEALER">Dealer</option><option value="HOCKER">Hocker</option></select></div><div><label>Username (Login):</label><input type="text" id="u_username" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save Customer</button></div></form>`); 
+            renderRoleFields('RETAILER');
+        }
+        
+        function editUser(id) { 
+            const u = State.users.find(x => x.id === id); 
+            const isEmp = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(u.role);
+            const roleOptions = isEmp ? `
+                <option value="ADMIN" ${u.role==='ADMIN'?'selected':''}>Admin</option>
+                <option value="RSM" ${u.role==='RSM'?'selected':''}>RSM</option>
+                <option value="ASM" ${u.role==='ASM'?'selected':''}>ASM</option>
+                <option value="SE" ${u.role==='SE'?'selected':''}>SE</option>
+                <option value="DA" ${u.role==='DA'?'selected':''}>DA</option>
+            ` : `
+                <option value="RETAILER" ${u.role==='RETAILER'?'selected':''}>Retailer</option>
+                <option value="DEALER" ${u.role==='DEALER'?'selected':''}>Dealer</option>
+                <option value="HOCKER" ${u.role==='HOCKER'?'selected':''}>Hocker</option>
+            `;
+            openModal('Edit User / Customer', `<form onsubmit="saveUser(event, '${u.id}')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value, ${JSON.stringify(u).replace(/"/g, '&quot;')})" class="w98-select" disabled>${roleOptions}</select></div><div><label>Username:</label><input type="text" id="u_username" value="${esc(u.username || '')}" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" value="${esc(u.password || '')}" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update</button></div></form>`); 
+            renderRoleFields(u.role, u); 
+        }
+        
+        function saveUser(e, id) { 
+            e.preventDefault(); 
+            const iF = document.getElementById('u_image').files[0]; 
+            const val = (id) => document.getElementById(id)?.value || ''; 
+            const role = val('u_role'); 
+            const data = { 
+                username: val('u_username'), password: val('u_password'), role: role, name: val('u_name'), shopName: val('u_shop'), mobile: val('u_mobile'), altMobile: val('u_alt_mobile'), email: val('u_email'), address: val('u_address'), nid: val('u_nid'), businessType: val('u_b_type'), tradeLicense: val('u_trade_lic'), tin: val('u_tin'), designation: val('u_designation'), joinDate: val('u_join_date'), empStatus: val('u_emp_status'), due: parseFloat(val('u_due') || 0), isSpecial: val('u_special') || 'No', target: parseFloat(val('u_target') || 0), basicSalary: parseFloat(val('u_salary') || 0), ta: parseFloat(val('u_ta') || 0), da: parseFloat(val('u_da') || 0), region: val('u_region'), area: val('u_area'), territory: val('u_territory'), assignedRSM: val('u_assigned_rsm'), assignedASM: val('u_assigned_asm'), assignedSE: val('u_assigned_se'), status: 'Active' 
+            }; 
+            
+            // Auto-assign SE if a Salesman is creating a customer
+            if (State.currentUser.role === 'SE' && ['DEALER', 'RETAILER', 'HOCKER'].includes(role)) {
+                data.assignedSE = State.currentUser.id;
+                data.assignedASM = State.currentUser.assignedASM || '';
+                data.assignedRSM = State.currentUser.assignedRSM || '';
+            }
+            
+            const s = (u) => { 
+                if(u) data.image = u; 
+                if (id) db.ref('users/' + id).update(data); 
+                else { 
+                    const rP = { 'ADMIN': 'RFPA', 'RSM': 'RFPRSM', 'ASM': 'RFPASM', 'SE': 'RFPSE', 'DA': 'RFPDA', 'DEALER': 'RFPD', 'HOCKER': 'RFPH', 'RETAILER': 'RFPR' }; 
+                    const p = rP[role] || 'RFPX'; 
+                    const rU = State.users.filter(u => u.userCode && u.userCode.startsWith(p)); 
+                    let mS = 0; rU.forEach(u => { const s = parseInt(u.userCode.slice(p.length)); if (!isNaN(s) && s > mS) mS = s; }); 
+                    data.userCode = `${p}${String(mS + 1).padStart(2, '0')}`; 
+                    db.ref('users').push(data); 
+                } 
+                closeModal(); 
+            }; 
+            if(iF) { const r = new FileReader(); r.onload = (e) => s(e.target.result); r.readAsDataURL(iF); } else s(); 
+        }
         function deleteUser(id) { if (confirm('Are you sure?')) db.ref('users/' + id).remove(); }
 
-        function renderOrderEntry() { State.cart = []; const isC = State.currentUser.role !== 'ADMIN' && State.currentUser.role !== 'SALES MAN'; document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-1 lg:grid-cols-3 gap-2"><div class="lg:col-span-2 win98-window p-2"><h3 class="font-bold mb-2">Select Products (Click to add)</h3><div class="win98-inset p-2 grid grid-cols-2 md:grid-cols-3 gap-2 max-h-[60vh] overflow-y-auto">${State.products.map(p => `<div onclick="showQtyPrompt('${p.id}', '${esc(p.name).replace(/'/g, "\\'")}')" class="win98-outset p-2 cursor-pointer text-center"><img src="${p.image || 'https://via.placeholder.com/80'}" class="w-full h-20 mb-1"><p class="font-bold text-xs truncate">${esc(p.name || 'N/A')}</p><p class="text-[10px]">Stock: ${p.stock || 0}</p><p class="font-bold text-sm">৳ <span id="price_${p.id}">0</span></p></div>`).join('')}</div></div><div class="win98-window p-2 flex flex-col"><h3 class="font-bold mb-2 border-b border-black">Order Summary</h3><div class="mb-2"><label class="text-xs">Customer Type:</label><select id="cust_type" onchange="handleCustomerTypeChange()" class="w98-select" ${isC ? 'disabled' : ''}><option value="RETAILER" ${isC && State.currentUser.role === 'RETAILER' ? 'selected' : ''}>Retailer</option><option value="DEALER" ${isC && State.currentUser.role === 'DEALER' ? 'selected' : ''}>Dealer</option><option value="HOCKER" ${isC && State.currentUser.role === 'HOCKER' ? 'selected' : ''}>Hocker</option></select></div><div class="mb-2"><label class="text-xs">Customer:</label><select id="cust_id" class="w98-select" ${isC ? 'disabled' : ''}>${isC ? `<option value="${State.currentUser.id}" selected>${esc(State.currentUser.name)}</option>` : ''}</select></div><div class="flex-1 win98-inset p-1 max-h-[30vh] overflow-y-auto mb-2"><table class="w-full text-xs text-left"><tbody id="cart-table"><tr><td colspan="3" class="text-center p-4">Cart is empty</td></tr></tbody></table></div><div class="text-xs border-t border-black pt-2 space-y-1"><div class="flex justify-between"><span>Gross Total:</span> <span id="gross_total" class="font-bold">৳ 0.00</span></div><div class="flex justify-between"><span>Paid Amount:</span> <input type="number" id="paid_amt" value="0" oninput="calcDue()" class="w98-input" style="width: 100px; text-align: right;"></div><div class="flex justify-between font-bold text-sm"><span>Current Due:</span> <span id="final_due">৳ 0.00</span></div></div><button onclick="submitOrder()" class="w98-btn mt-4 w-full">Submit Order</button></div></div>`; handleCustomerTypeChange(); }
+        function renderOrderEntry() { 
+            State.cart = []; 
+            const isC = !['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role); 
+            const isSM = ['RSM', 'ASM', 'SE'].includes(State.currentUser.role);
+            
+            let custTypeOptions = '';
+            if (isSM) {
+                custTypeOptions = '<option value="RETAILER" selected>Retailer</option>';
+            } else if (isC) {
+                custTypeOptions = `<option value="RETAILER" ${State.currentUser.role === 'RETAILER' ? 'selected' : ''}>Retailer</option>
+                                  <option value="DEALER" ${State.currentUser.role === 'DEALER' ? 'selected' : ''}>Dealer</option>
+                                  <option value="HOCKER" ${State.currentUser.role === 'HOCKER' ? 'selected' : ''}>Hocker</option>`;
+            } else {
+                custTypeOptions = `<option value="RETAILER" selected>Retailer</option>
+                                  <option value="DEALER">Dealer</option>
+                                  <option value="HOCKER">Hocker</option>`;
+            }
+            
+            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-1 lg:grid-cols-3 gap-2"><div class="lg:col-span-2 win98-window p-2"><h3 class="font-bold mb-2">Select Products (Click to add)</h3><div class="win98-inset p-2 grid grid-cols-2 md:grid-cols-3 gap-2 max-h-[60vh] overflow-y-auto">${State.products.map(p => `<div onclick="showQtyPrompt('${p.id}', '${esc(p.name).replace(/'/g, "\\'")}')" class="win98-outset p-2 cursor-pointer text-center"><img src="${p.image || 'https://via.placeholder.com/80'}" class="w-full h-20 mb-1"><p class="font-bold text-xs truncate">${esc(p.name || 'N/A')}</p><p class="text-[10px]">Stock: ${p.stock || 0}</p><p class="font-bold text-sm">৳ <span id="price_${p.id}">0</span></p></div>`).join('')}</div></div><div class="win98-window p-2 flex flex-col"><h3 class="font-bold mb-2 border-b border-black">Order Summary</h3><div class="mb-2"><label class="text-xs">Customer Type:</label><select id="cust_type" onchange="handleCustomerTypeChange()" class="w98-select" ${(isC || isSM) ? 'disabled' : ''}>${custTypeOptions}</select></div><div class="mb-2 relative" id="cust_search_container"><label class="text-xs">Customer (Search Shop/Mobile):</label><input type="text" id="cust_search" class="w98-input" placeholder="Type to search..." oninput="searchCustomer()" autocomplete="off" ${isC ? 'disabled' : ''}><input type="hidden" id="cust_id"><input type="hidden" id="special_percent" value="0"><div id="cust_dropdown" class="search-dropdown hidden"></div></div><div class="flex-1 win98-inset p-1 max-h-[30vh] overflow-y-auto mb-2"><table class="w-full text-xs text-left"><thead><tr class="border-b border-gray-500"><th class="py-1">Product</th><th class="py-1 text-center">Qty</th><th class="py-1 text-right">Total</th><th class="py-1 text-center">Action</th></tr></thead><tbody id="cart-table"><tr><td colspan="4" class="text-center p-4">Cart is empty</td></tr></tbody></table></div><div class="text-xs border-t border-black pt-2 space-y-1"><div class="flex justify-between"><span>Gross Total:</span> <span id="gross_total" class="font-bold">৳ 0.00</span></div><div class="flex justify-between items-center"><span>Special Discount:</span> <input type="number" id="special_discount" value="0" oninput="calcDue()" class="w98-input" style="width: 100px; text-align: right;" readonly></div><div class="flex justify-between items-center"><span>Paid Amount:</span> <input type="number" id="paid_amt" value="0" oninput="calcDue()" class="w98-input" style="width: 100px; text-align: right;"></div><div class="flex justify-between font-bold text-sm"><span>Current Due:</span> <span id="final_due">৳ 0.00</span></div></div><button onclick="submitOrder()" class="w98-btn mt-4 w-full">Submit Order</button></div></div>`; 
+            handleCustomerTypeChange(); 
+        }
+        
+        function searchCustomer() {
+            const term = document.getElementById('cust_search').value.toLowerCase();
+            const type = document.getElementById('cust_type').value;
+            const fC = State.users.filter(u => u.role === type);
+            const matches = fC.filter(c => (c.shopName || '').toLowerCase().includes(term) || (c.mobile || '').toLowerCase().includes(term) || (c.name || '').toLowerCase().includes(term));
+            const dropdown = document.getElementById('cust_dropdown');
+            if (matches.length === 0) { dropdown.innerHTML = '<div class="search-item">No match found</div>'; dropdown.classList.remove('hidden'); return; }
+            dropdown.innerHTML = matches.map(c => `<div onclick="selectCustomer('${c.id}', '${esc(c.shopName || c.name)} - ${esc(c.mobile || '')}')" class="search-item">${esc(c.shopName || c.name)} - ${esc(c.mobile || '')}</div>`).join('');
+            dropdown.classList.remove('hidden');
+        }
+        function selectCustomer(id, text) { document.getElementById('cust_id').value = id; document.getElementById('cust_search').value = text; document.getElementById('cust_dropdown').classList.add('hidden'); calculateSpecialDiscount(); }
         function showQtyPrompt(productId, productName) { openModal('Enter Quantity', `<div class="mb-4"><p class="mb-2">Product: <strong>${esc(productName)}</strong></p><label class="block mb-1">Quantity:</label><input type="number" id="qty_input" value="1" min="1" class="w98-input" autofocus></div><div class="flex justify-end space-x-2 mt-4"><button onclick="closeModal()" class="w98-btn">Cancel</button><button onclick="confirmQty('${productId}')" class="w98-btn">OK</button></div>`); setTimeout(() => { const input = document.getElementById('qty_input'); if(input) { input.focus(); input.select(); input.addEventListener('keypress', function(e) { if (e.key === 'Enter') { e.preventDefault(); confirmQty(productId); } }); } }, 100); }
         function confirmQty(productId) { const qty = parseInt(document.getElementById('qty_input').value) || 1; if (qty > 0) { addToCart(productId, qty); } closeModal(); }
-        function handleCustomerTypeChange() { const t = document.getElementById('cust_type').value; const isC = State.currentUser.role !== 'ADMIN' && State.currentUser.role !== 'SALES MAN'; if (isC) return; const fC = State.users.filter(u => u.role === t); const cS = document.getElementById('cust_id'); cS.innerHTML = fC.length ? fC.map(c => `<option value="${c.id}">${esc(c.name || 'N/A')} - ${esc(c.shopName || c.mobile || 'N/A')}</option>`).join('') : '<option value="">No customers found</option>'; updatePrices(); }
+        
+        function handleCustomerTypeChange() { 
+            const t = document.getElementById('cust_type').value; 
+            const isC = !['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role); 
+            if (isC) { 
+                document.getElementById('cust_search').value = State.currentUser.name; 
+                document.getElementById('cust_id').value = State.currentUser.id;
+                updatePrices();
+                return; 
+            } 
+            document.getElementById('cust_search').value = ''; 
+            document.getElementById('cust_id').value = ''; 
+            updatePrices(); 
+        }
+        
         function updatePrices() { const t = document.getElementById('cust_type').value; State.products.forEach(p => { let pr = p.mrp; if(t === 'RETAILER') pr = p.rPrice; if(t === 'DEALER') pr = p.dPrice; if(t === 'HOCKER') pr = p.hPrice; const el = document.getElementById(`price_${p.id}`); if(el) el.innerText = pr || 0; }); renderCart(); }
         function getActivePrice(p) { const t = document.getElementById('cust_type').value; if(t === 'RETAILER') return p.rPrice || 0; if(t === 'DEALER') return p.dPrice || 0; if(t === 'HOCKER') return p.hPrice || 0; return p.mrp || 0; }
         function addToCart(id, qty = 1) { const p = State.products.find(x => x.id === id); if(!p) return; const e = State.cart.find(i => i.id === id); if(e) e.qty += qty; else State.cart.push({ id: id, name: p.name, price: getActivePrice(p), qty: qty, mrp: p.mrp || 0 }); renderCart(); calcDue(); }
         function changeQty(id, a) { let i = State.cart.find(x => x.id === id); if(i) { if(a === 'inc') i.qty++; if(a === 'dec') i.qty--; if(i.qty <= 0) State.cart = State.cart.filter(x => x.id !== id); } renderCart(); calcDue(); }
-        function renderCart() { const cT = document.getElementById('cart-table'); if(!cT) return; if(State.cart.length === 0) cT.innerHTML = `<tr><td colspan="3" class="text-center p-4">Cart is empty</td></tr>`; else cT.innerHTML = State.cart.map(i => `<tr class="border-b border-gray-400"><td class="py-1">${esc(i.name || 'N/A')}</td><td class="py-1 text-center"><button onclick="changeQty('${i.id}', 'dec')" class="w98-btn" style="padding: 0 4px; min-width: 0;">-</button> ${i.qty || 0} <button onclick="changeQty('${i.id}', 'inc')" class="w98-btn" style="padding: 0 4px; min-width: 0;">+</button></td><td class="py-1 text-right">৳${(i.qty || 0) * (i.price || 0)}</td></tr>`).join(''); let g = State.cart.reduce((s, i) => s + ((i.qty || 0) * (i.price || 0)), 0); document.getElementById('gross_total').innerText = `৳ ${g.toFixed(2)}`; }
-        function calcDue() { let g = State.cart.reduce((s, i) => s + ((i.qty || 0) * (i.price || 0)), 0); let p = parseFloat(document.getElementById('paid_amt').value) || 0; document.getElementById('final_due').innerText = `৳ ${(g - p).toFixed(2)}`; }
+        
+        function updateQtyDirect(id, val) {
+            let qty = parseInt(val) || 1;
+            if (qty < 1) qty = 1;
+            let i = State.cart.find(x => x.id === id);
+            if (i) {
+                i.qty = qty;
+                renderCart();
+                calcDue();
+            }
+        }
+
+        function removeFromCart(id) {
+            if (confirm('Remove this product from cart?')) {
+                State.cart = State.cart.filter(x => x.id !== id);
+                renderCart();
+                calcDue();
+            }
+        }
+
+        function renderCart() { 
+            const cT = document.getElementById('cart-table'); 
+            if(!cT) return; 
+            if(State.cart.length === 0) {
+                cT.innerHTML = `<tr><td colspan="4" class="text-center p-4">Cart is empty</td></tr>`; 
+            } else {
+                cT.innerHTML = State.cart.map(i => `<tr class="border-b border-gray-400">
+                    <td class="py-1">${esc(i.name || 'N/A')}</td>
+                    <td class="py-1 text-center">
+                        <button onclick="changeQty('${i.id}', 'dec')" class="w98-btn" style="padding: 0 4px; min-width: 0;">-</button> 
+                        <input type="number" min="1" value="${i.qty || 0}" onchange="updateQtyDirect('${i.id}', this.value)" style="width: 50px; text-align: center; padding: 2px; display: inline-block;" class="w98-input"> 
+                        <button onclick="changeQty('${i.id}', 'inc')" class="w98-btn" style="padding: 0 4px; min-width: 0;">+</button>
+                    </td>
+                    <td class="py-1 text-right">৳${((i.qty || 0) * (i.price || 0)).toFixed(2)}</td>
+                    <td class="py-1 text-center"><button onclick="removeFromCart('${i.id}')" class="w98-btn" style="padding: 0 4px; min-width: 0; color: red; font-weight: bold;" title="Delete"><i class="fas fa-trash"></i></button></td>
+                </tr>`).join(''); 
+            }
+            let g = State.cart.reduce((s, i) => s + ((i.qty || 0) * (i.price || 0)), 0); 
+            document.getElementById('gross_total').innerText = `৳ ${g.toFixed(2)}`; 
+            calculateSpecialDiscount(); 
+        }
+        
+        function calculateSpecialDiscount() {
+            const custType = document.getElementById('cust_type').value;
+            const custId = document.getElementById('cust_id').value;
+            const customer = State.users.find(u => u.id === custId);
+            let gross = State.cart.reduce((s, i) => s + ((i.qty || 0) * (i.price || 0)), 0);
+            let discount = 0;
+            let percent = 0;
+
+            if (custType === 'RETAILER' && customer && customer.isSpecial === 'Yes') {
+                if (gross >= 1000 && gross <= 5000) {
+                    percent = 1;
+                    discount = gross * 0.01;
+                } else if (gross >= 5001) {  
+                    percent = 2;
+                    discount = gross * 0.02;
+                }
+            }
+            const sdInput = document.getElementById('special_discount');
+            const spInput = document.getElementById('special_percent');
+            if (sdInput) sdInput.value = discount.toFixed(2);
+            if (spInput) spInput.value = percent;
+            calcDue();
+        }
+
+        function calcDue() { 
+            let g = State.cart.reduce((s, i) => s + ((i.qty || 0) * (i.price || 0)), 0); 
+            let sd = parseFloat(document.getElementById('special_discount')?.value) || 0; 
+            let net = g - sd; 
+            let p = parseFloat(document.getElementById('paid_amt').value) || 0; 
+            document.getElementById('final_due').innerText = `৳ ${(net - p).toFixed(2)}`; 
+        }
+        
         function generateInvoiceNo() { const n = new Date(); const y = n.getFullYear(); const m = String(n.getMonth() + 1).padStart(2, '0'); const p = `RFP${y}${m}`; const mO = State.orders.filter(o => o.invoiceNo && o.invoiceNo.startsWith(p)); let mS = 0; mO.forEach(o => { const s = parseInt(o.invoiceNo.slice(-2)); if (s > mS) mS = s; }); return `${p}${String(mS + 1).padStart(2, '0')}`; }
-        function submitOrder() { if(State.cart.length === 0) return alert('Cart is empty!'); const cId = document.getElementById('cust_id').value; const c = State.users.find(u => u.id === cId); if(!c) return alert('Please select a customer!'); const g = State.cart.reduce((s, i) => s + ((i.qty || 0) * (i.price || 0)), 0); const p = parseFloat(document.getElementById('paid_amt').value) || 0; const d = g - p; const oD = { invoiceNo: generateInvoiceNo(), customerId: cId, customerName: c.name || 'N/A', customerShopName: c.shopName || 'N/A', customerMobile: c.mobile || 'N/A', customerAddress: c.address || 'N/A', customerType: document.getElementById('cust_type').value, items: State.cart, grossTotal: g, paid: p, due: d, orderDate: new Date().toISOString(), status: 'Pending', entryBy: State.currentUser.userCode || State.currentUser.name || 'N/A' }; db.ref('orders').push(oD).then(() => { const nD = (c.due || 0) + d; db.ref('users/' + cId).update({ due: nD }); alert('Order Saved! Invoice No: ' + oD.invoiceNo); renderPage('invoices'); }); }
+        function submitOrder() { 
+            if(State.cart.length === 0) return alert('Cart is empty!'); 
+            const cId = document.getElementById('cust_id').value; if(!cId) return alert('Please select a customer from the search list!'); 
+            const c = State.users.find(u => u.id === cId); if(!c) return alert('Invalid customer selected!'); 
+            const gross = State.cart.reduce((s, i) => s + ((i.qty || 0) * (i.price || 0)), 0); 
+            const sd = parseFloat(document.getElementById('special_discount').value) || 0; 
+            const sdPercent = parseFloat(document.getElementById('special_percent').value) || 0;
+            const net = gross - sd; 
+            const p = parseFloat(document.getElementById('paid_amt').value) || 0; 
+            const d = net - p; 
+            const oD = { 
+                invoiceNo: generateInvoiceNo(), customerId: cId, customerName: c.name || 'N/A', customerShopName: c.shopName || 'N/A', customerMobile: c.mobile || 'N/A', customerAddress: c.address || 'N/A', customerType: document.getElementById('cust_type').value, items: State.cart, grossTotal: gross, specialDiscount: sd, specialDiscountPercent: sdPercent, netTotal: net, paid: p, due: d, orderDate: new Date().toISOString(), status: 'Pending', entryBy: State.currentUser.id || State.currentUser.userCode || 'N/A' 
+            }; 
+            db.ref('orders').push(oD).then(() => { const nD = (c.due || 0) + d; db.ref('users/' + cId).update({ due: nD }); alert('Order Saved! Invoice No: ' + oD.invoiceNo); renderPage('invoices'); }); 
+        }
 
         function renderInvoices() {
-            const iA = ['ADMIN', 'SALES MAN'].includes(State.currentUser.role); 
+            const iA = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role);
+            const canChangeStatus = ['ADMIN', 'DA'].includes(State.currentUser.role);
+            const canAddCollection = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role);
             let oS = State.orders; if (!iA) oS = State.orders.filter(o => o.customerId === State.currentUser.id);
             const sC = (s) => `status-${s ? s.toLowerCase() : 'pending'}`;
             let rows = '';
             if (oS.length > 0) {
                 rows = oS.map(o => {
-                    // Logic: Show 'Delivery' button if Pending or Shipped. 
-                    // Once Delivered, no Return or Delete is possible.
                     let actionBtns = `<button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button>`;
-                    if (iA && (o.status === 'Pending' || o.status === 'Shipped')) {
-                        actionBtns += ` <button onclick="processReturn('${o.id}')" class="w98-btn" style="padding: 2px 6px;">Delivery</button>`;
-                    }
-                    if (State.currentUser.role === 'ADMIN' && o.status !== 'Delivered') {
-                        actionBtns += ` <button onclick="deleteOrder('${o.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>`;
-                    }
-
-                    return `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${safeDate(o.orderDate)}</td>${iA ? `<td>${esc(o.customerName || 'N/A')}</td>` : ''}<td>৳${o.grossTotal || 0}</td><td>৳${o.due || 0}</td><td class="text-center">${iA ? `<select onchange="updateStatus('${o.id}', this.value)" class="w98-select text-xs" ${o.status === 'Delivered' ? 'disabled' : ''}><option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option><option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option><option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option><option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option></select>` : `<span class="status-badge ${sC(o.status)}">${esc(o.status || 'Pending')}</span>`}</td><td class="text-center whitespace-nowrap">${actionBtns}</td></tr>`;
+                    if (canChangeStatus && (o.status === 'Pending' || o.status === 'Shipped')) { actionBtns += ` <button onclick="processReturn('${o.id}')" class="w98-btn" style="padding: 2px 6px;">Delivery</button>`; }
+                    if (canAddCollection && o.due > 0) { actionBtns += ` <button onclick="addCollection('${o.id}')" class="w98-btn" style="padding: 2px 6px; color: green;">Collect</button>`; }
+                    if (State.currentUser.role === 'ADMIN' && o.status !== 'Delivered') { actionBtns += ` <button onclick="deleteOrder('${o.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>`; }
+                    return `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${safeDate(o.orderDate)}</td>${iA ? `<td>${esc(o.customerShopName || 'N/A')}</td>` : ''}<td>৳${o.netTotal || o.grossTotal || 0}</td><td>৳${o.paid || 0}</td><td>৳${o.due || 0}</td><td class="text-center">${canChangeStatus ? `<select onchange="updateStatus('${o.id}', this.value)" class="w98-select text-xs" ${o.status === 'Delivered' ? 'disabled' : ''}><option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option><option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option><option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option><option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option></select>` : `<span class="status-badge ${sC(o.status)}">${esc(o.status || 'Pending')}</span>`}</td><td class="text-center whitespace-nowrap">${actionBtns}</td></tr>`;
                 }).join('');
-            } else { rows = `<tr><td colspan="7" class="text-center p-4">No orders found.</td></tr>`; }
-            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><h3 class="font-bold mb-2">Order History</h3><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Invoice No</th><th>Date</th>${iA ? '<th>Customer</th>' : ''}<th>Total</th><th>Due</th><th class="text-center">Status</th><th class="text-center">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+            } else { rows = `<tr><td colspan="${iA ? 8 : 7}" class="text-center p-4">No orders found.</td></tr>`; }
+            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><h3 class="font-bold mb-2">Order History</h3><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Invoice No</th><th>Date</th>${iA ? '<th>Shop Name</th>' : ''}<th>Total</th><th>Paid</th><th>Due</th><th class="text-center">Status</th><th class="text-center">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
         }
         function updateStatus(id, s) { db.ref('orders/' + id).update({ status: s }); alert(`Status updated to: ${s}`); }
+
+        function addCollection(id) {
+            const o = State.orders.find(x => x.id === id);
+            if(!o) return alert('Order not found!');
+            openModal('Add Collection', `<form onsubmit="saveCollection(event, '${id}')">
+                <div class="mb-3 p-2 win98-inset">
+                    <p>Invoice: <strong>${esc(o.invoiceNo)}</strong></p>
+                    <p>Shop: <strong>${esc(o.customerShopName)}</strong></p>
+                    <p>Net Total: ৳ ${(o.netTotal || o.grossTotal || 0).toFixed(2)}</p>
+                    <p>Already Paid: ৳ ${(o.paid || 0).toFixed(2)}</p>
+                    <p>Current Due: ৳ <strong style="color:red;">${(o.due || 0).toFixed(2)}</strong></p>
+                </div>
+                <div class="mb-3">
+                    <label class="block mb-1">Collection Amount:</label>
+                    <input type="number" id="coll_amt" class="w98-input" required autofocus>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button type="submit" class="w98-btn">Save Collection</button>
+                </div>
+            </form>`);
+            setTimeout(() => { const input = document.getElementById('coll_amt'); if(input) { input.focus(); input.addEventListener('keypress', function(e) { if (e.key === 'Enter') { e.preventDefault(); saveCollection(e, id); } }); } }, 100);
+        }
+
+        function saveCollection(e, id) {
+            e.preventDefault();
+            const o = State.orders.find(x => x.id === id);
+            if(!o) return;
+            const amount = parseFloat(document.getElementById('coll_amt').value) || 0;
+            if (amount <= 0) return alert('Invalid amount!');
+
+            const newPaid = (o.paid || 0) + amount;
+            const newDue = (o.netTotal || o.grossTotal || 0) - newPaid;
+
+            db.ref('orders/' + id).update({ paid: newPaid, due: newDue }).then(() => {
+                if (o.customerId) {
+                    const c = State.users.find(u => u.id === o.customerId);
+                    if (c) {
+                        const nCD = (c.due || 0) - amount;
+                        db.ref('users/' + o.customerId).update({ due: nCD }).then(() => {
+                            alert('Collection saved successfully!');
+                            closeModal();
+                        });
+                    } else {
+                        alert('Collection saved successfully!');
+                        closeModal();
+                    }
+                } else {
+                    alert('Collection saved successfully!');
+                    closeModal();
+                }
+            });
+        }
         
-        // Delivery & Return Adjustment Process
         function processReturn(id) {
             const o = State.orders.find(x => x.id === id); if(!o) return alert('Order not found!');
             const items = toArray(o.items);
             const iH = items.map((i, idx) => `<tr><td>${esc(i.name || 'N/A')}</td><td class="text-center">${i.qty || 0}</td><td class="text-center"><input type="number" id="ret_qty_${idx}" min="0" max="${i.qty || 0}" value="0" class="w98-input" style="width: 60px; text-align: center;"></td></tr>`).join('');
             openModal('Delivery & Return Adjustment', `<form onsubmit="submitReturn(event, '${id}')"><p class="text-xs mb-2">Enter returned quantity (if any). The remaining quantity will be marked as Delivered.</p><div class="win98-inset p-1 mb-2"><table class="w98-table text-xs"><thead><tr><th>Product</th><th class="text-center">Ordered Qty</th><th class="text-center">Return Qty</th></tr></thead><tbody>${iH}</tbody></table></div><div class="flex justify-end"><button type="submit" class="w98-btn">Confirm Delivery</button></div></form>`);
         }
-        
         function submitReturn(e, id) {
             e.preventDefault(); const o = State.orders.find(x => x.id === id); if(!o) return;
             const items = toArray(o.items);
-            let nG = 0; 
-            const uI = items.map((i, idx) => { 
-                const rQ = parseInt(document.getElementById(`ret_qty_${idx}`).value) || 0; 
-                if(rQ > (i.qty || 0)) { alert(`Return quantity cannot exceed ordered quantity for ${i.name || 'N/A'}`); throw new Error('Invalid'); } 
-                const nQ = (i.qty || 0) - rQ; // Delivered Qty = Order Qty - Return Qty
-                nG += (nQ * (i.price || 0)); 
-                return { ...i, qty: nQ }; // Update item to delivered qty
-            });
+            let nG = 0; const uI = items.map((i, idx) => { const rQ = parseInt(document.getElementById(`ret_qty_${idx}`).value) || 0; if(rQ > (i.qty || 0)) { alert(`Return quantity cannot exceed ordered quantity for ${i.name || 'N/A'}`); throw new Error('Invalid'); } const nQ = (i.qty || 0) - rQ; nG += (nQ * (i.price || 0)); return { ...i, qty: nQ }; });
+            
+            const rA = (o.grossTotal || 0) - nG; 
+            const nSD = (o.specialDiscount || 0) * (nG / (o.grossTotal || 1)); 
+            const nNet = nG - nSD; 
+            const nD = (o.due || 0) - (nNet - (o.netTotal || o.grossTotal || 0)); 
 
-            const rA = (o.grossTotal || 0) - nG; // Reduced Amount
-            const nD = (o.due || 0) - rA; // New Due
+            if (o.customerId) { const c = State.users.find(u => u.id === o.customerId); if (c) { const nCD = (c.due || 0) - ((o.netTotal || o.grossTotal || 0) - nNet); db.ref('users/' + c.id).update({ due: nCD }); } }
 
-            if (o.customerId) { const c = State.users.find(u => u.id === o.customerId); if (c) { const nCD = (c.due || 0) - rA; db.ref('users/' + c.id).update({ due: nCD }); } }
-
-            db.ref('orders/' + id).update({ items: uI, grossTotal: nG, due: nD, status: 'Delivered' }).then(() => { 
+            db.ref('orders/' + id).update({ items: uI, grossTotal: nG, specialDiscount: nSD, netTotal: nNet, due: nD, status: 'Delivered' }).then(() => { 
                 alert('Delivery completed successfully! Order marked as Delivered.'); 
                 closeModal(); renderPage('invoices'); 
             });
         }
-        
         function deleteOrder(id) { const o = State.orders.find(x => x.id === id); if (!o) return alert('Order not found!'); if (confirm(`Delete Invoice ${o.invoiceNo || ''}?`)) { if (o.customerId && o.due) { const c = State.users.find(u => u.id === o.customerId); if (c) { const nD = (c.due || 0) - o.due; db.ref('users/' + c.id).update({ due: nD }); } } db.ref('orders/' + id).remove().then(() => { alert('Order deleted!'); if (State.currentView === 'invoice_view') renderPage('invoices'); }); } }
         function toBn(n) { const b = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']; return String(n).replace(/[0-9]/g, d => b[d]); }
         function formatBnDate(dateStr) { try { const d = new Date(dateStr); if (isNaN(d.getTime())) return 'N/A'; const months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর']; return `${toBn(d.getDate())} ${months[d.getMonth()]}, ${toBn(d.getFullYear())}`; } catch(e) { return 'N/A'; } }
@@ -403,40 +708,167 @@
         
         function viewInvoice(id) {
             State.currentView = 'invoice_view'; const o = State.orders.find(x => x.id === id); if(!o) return alert('Invoice not found!');
+            const iA = ['ADMIN', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role);
+            if (!iA && o.customerId !== State.currentUser.id) { return alert('Access Denied: You can only view your own invoices.'); }
+
             const gC = (t) => { 
                 const items = toArray(o.items);
                 const iH = items.map((i, idx) => `<tr><td>${toBn(idx + 1)}</td><td>${esc(i.name || 'N/A')}</td><td>${toBn((i.mrp || 0).toFixed(2))}</td><td>${toBn(i.qty || 0)}</td><td>${toBn((i.price || 0).toFixed(2))}</td><td>${toBn(((i.qty || 0) * (i.price || 0)).toFixed(2))}</td></tr>`).join(''); 
-                return `<div class="invoice-box"><div class="copy-type">${t}</div><div class="inv-header"><div class="logo-section"><img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="Logo"></div><div class="company-info"><h1>Rafi Food Product</h1><p>প্রিমিয়াম কোয়ালিটি বেকারি ও ফুড আইটেম</p><p>ঠিকানা: Mosjid para Chuadanga, Chuadanga sadar-7200</p><p>ফোন: +৮৮০ 1756144900</p><p>ইমেইল: rafifoodproducts@gmail.com</p></div></div><table class="meta-table"><tr><td><strong>গ্রাহকের বিবরণ:</strong><br>দোকানের নাম: ${esc(o.customerShopName || 'N/A')}<br>নাম: ${esc(o.customerName || 'N/A')}<br>ঠিকানা: ${esc(o.customerAddress || 'N/A')}<br>মোবাইল: ${toBn(o.customerMobile || 'N/A')}</td><td style="text-align: right;"><strong>ইনভয়েস নম্বর:</strong> ${esc(o.invoiceNo || 'N/A')}<br><strong>তারিখ:</strong> ${formatBnDate(o.orderDate)}<br><strong>স্ট্যাটাস:</strong> ${translateStatus(o.status)}<br><strong>অর্ডার গ্রহণকারী:</strong> ${esc(o.entryBy || 'N/A')}</td></tr></table><table class="details-table"><thead><tr><th>SL</th><th>পণ্যের বিবরণ</th><th>MRP (টাকা)</th><th>পরিমাণ</th><th>বিক্রয় মূল্য (টাকা)</th><th>মোট (টাকা)</th></tr></thead><tbody>${iH}</tbody></table><div class="totals-section"><table class="totals-table"><tr><td>সাব-টোটাল:</td><td>${toBn((o.grossTotal || 0).toFixed(2))} ৳</td></tr><tr><td>পরিশোধিত:</td><td>${toBn((o.paid || 0).toFixed(2))} ৳</td></tr><tr><td>বকেয়া:</td><td>${toBn((o.due || 0).toFixed(2))} ৳</td></tr></table></div><div class="signatures"><div class="signature-box">গ্রাহকের স্বাক্ষর</div><div class="signature-box">অনুমোদিত স্বাক্ষর</div></div><div class="inv-footer"><p>আমাদের সাথে থাকার জন্য ধন্যবাদ! পণ্য ক্রয়ের জন্য আবার আমন্ত্রণ জানাচ্ছি।</p><p><strong>RafiFood Product</strong></p></div></div>`; 
+                
+                let sdPercentText = '';
+                if (o.specialDiscount > 0) {
+                    let p = o.specialDiscountPercent;
+                    if (!p && o.grossTotal > 0) {
+                        let ratio = o.specialDiscount / o.grossTotal;
+                        if (Math.abs(ratio - 0.01) < 0.001) p = 1;
+                        else if (Math.abs(ratio - 0.02) < 0.001) p = 2;
+                    }
+                    sdPercentText = p ? ` (${p}%)` : '';
+                }
+
+                return `<div class="invoice-box"><div class="copy-type">${t}</div><div class="inv-header"><div class="logo-section"><img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="Logo"></div><div class="company-info"><h1>Rafi Food Product</h1><p>প্রিমিয়াম কোয়ালিটি বেকারি ও ফুড আইটেম</p><p>ঠিকানা: Mosjid para Chuadanga, Chuadanga sadar-7200</p><p>ফোন: +৮৮০ 1756144900</p><p>ইমেইল: rafifoodproducts@gmail.com</p></div></div><table class="meta-table"><tr><td><strong>গ্রাহকের বিবরণ:</strong><br>দোকানের নাম: ${esc(o.customerShopName || 'N/A')}<br>নাম: ${esc(o.customerName || 'N/A')}<br>ঠিকানা: ${esc(o.customerAddress || 'N/A')}<br>মোবাইল: ${toBn(o.customerMobile || 'N/A')}</td><td style="text-align: right;"><strong>ইনভয়েস নম্বর:</strong> ${esc(o.invoiceNo || 'N/A')}<br><strong>তারিখ:</strong> ${formatBnDate(o.orderDate)}<br><strong>স্ট্যাটাস:</strong> ${translateStatus(o.status)}<br><strong>অর্ডার গ্রহণকারী:</strong> ${esc(o.entryBy || 'N/A')}</td></tr></table><table class="details-table"><thead><tr><th>SL</th><th>পণ্যের বিবরণ</th><th>MRP (টাকা)</th><th>পরিমাণ</th><th>বিক্রয় মূল্য (টাকা)</th><th>মোট (টাকা)</th></tr></thead><tbody>${iH}</tbody></table><div class="totals-section"><table class="totals-table"><tr><td>সাব-টোটাল (Gross):</td><td>${toBn((o.grossTotal || 0).toFixed(2))} ৳</td></tr>${o.specialDiscount > 0 ? `<tr><td>স্পেশাল ডিসকাউন্ট${sdPercentText}:</td><td>- ${toBn((o.specialDiscount || 0).toFixed(2))} ৳</td></tr>` : ''}<tr><td>নেট টোটাল:</td><td>${toBn((o.netTotal || o.grossTotal || 0).toFixed(2))} ৳</td></tr><tr><td>পরিশোধিত:</td><td>${toBn((o.paid || 0).toFixed(2))} ৳</td></tr><tr><td>বকেয়া:</td><td>${toBn((o.due || 0).toFixed(2))} ৳</td></tr></table></div><div class="signatures"><div class="signature-box">গ্রাহকের স্বাক্ষর</div><div class="signature-box">অনুমোদিত স্বাক্ষর</div></div><div class="inv-footer"><p>আমাদের সাথে থাকার জন্য ধন্যবাদ! পণ্য ক্রয়ের জন্য আবার আমন্ত্রণ জানাচ্ছি।</p><p><strong>RafiFood Product</strong></p></div></div>`; 
             };
             document.getElementById('main-content').innerHTML = `<div id="print-area"><span class="back-btn no-print" onclick="renderPage('invoices')"><< Back to Orders</span>${gC("Customer Copy")}<div class="page-break"></div>${gC("Office Copy")}<button class="print-btn no-print" onclick="window.print()">ইনভয়েস প্রিন্ট করুন / PDF সেভ করুন</button></div>`;
             window.scrollTo(0, 0);
         }
 
+        // --- Sales & Due Reports Module (Customer Category Grouping) ---
         function renderReports() {
-            const tS = State.orders.reduce((s, o) => s + (o.grossTotal || 0), 0); const tC = State.orders.reduce((s, o) => s + (o.paid || 0), 0); const tD = State.users.filter(u => u.role !== 'ADMIN' && u.role !== 'SALES MAN').reduce((s, u) => s + (u.due || 0), 0);
-            const shops = [...new Set(State.orders.filter(o => o.status === 'Delivered').map(o => o.customerShopName).filter(Boolean))];
-            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4"><div class="win98-outset p-2"><p class="text-xs">Total Sales</p><p class="text-lg font-bold">৳ ${tS.toFixed(2)}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Collection</p><p class="text-lg font-bold">৳ ${tC.toFixed(2)}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Due</p><p class="text-lg font-bold">৳ ${tD.toFixed(2)}</p></div></div><div class="win98-window p-2"><div class="flex flex-col md:flex-row justify-between md:items-center mb-2 gap-2"><h3 class="font-bold">Detailed Sales Report (Delivered Only)</h3><div class="flex flex-wrap gap-2 items-center"><select id="report-shop-filter" onchange="filterReports()" class="w98-select" style="max-width: 150px;"><option value="">All Shops</option>${shops.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('')}</select><input type="text" id="report-search" placeholder="Search..." oninput="filterReports()" class="w98-input" style="max-width: 150px;"><button onclick="printReport()" class="w98-btn" style="padding: 2px 6px;">Print</button><button onclick="exportToExcel()" class="w98-btn" style="padding: 2px 6px;">Excel</button></div></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Date</th><th>Invoice</th><th>Customer</th><th>Sales</th><th>Collected</th><th>Due</th><th class="text-center">View</th></tr></thead><tbody id="report-tbody"></tbody><tfoot id="report-tfoot" class="font-bold"></tfoot></table></div></div>`;
+            const iA = ['ADMIN', 'RSM', 'ASM', 'SE'].includes(State.currentUser.role);
+            const shops = iA ? [...new Set(State.orders.filter(o => o.status === 'Delivered').map(o => o.customerShopName).filter(Boolean))] : [];
+            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex flex-col md:flex-row justify-between md:items-center mb-2 gap-2"><h3 class="font-bold">Customer Wise Sales & Due Report</h3><div class="flex flex-wrap gap-2 items-center">${iA ? `<select id="report-shop-filter" onchange="filterReports()" class="w98-select" style="max-width: 150px;"><option value="">All Shops</option>${shops.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('')}</select>` : ''}<input type="text" id="report-search" placeholder="Search..." oninput="filterReports()" class="w98-input" style="max-width: 150px;"><button onclick="printReport()" class="w98-btn" style="padding: 2px 6px;">Print</button><button onclick="exportToExcel()" class="w98-btn" style="padding: 2px 6px;">Excel</button></div></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Date</th><th>Invoice</th><th>Shop Name</th><th>Type</th><th>Sales</th><th>Collected</th><th>Due</th><th class="text-center">View</th></tr></thead><tbody id="report-tbody"></tbody><tfoot id="report-tfoot" class="font-bold"></tfoot></table></div></div>`;
             filterReports();
         }
 
+        function getGroupedOrders() {
+            const role = State.currentUser.role;
+            const isAdmin = role === 'ADMIN';
+            const isRSM = role === 'RSM';
+            const isASM = role === 'ASM';
+            const isSE = role === 'SE';
+            
+            let baseOrders = State.orders.filter(o => o.status === 'Delivered');
+
+            if (!isAdmin && !isRSM && !isASM && !isSE) {
+                baseOrders = baseOrders.filter(o => o.customerId === State.currentUser.id);
+            }
+
+            const shopFilter = (isAdmin || isRSM || isASM || isSE) ? (document.getElementById('report-shop-filter')?.value || '') : '';
+            const searchTerm = (document.getElementById('report-search')?.value || '').toLowerCase();
+
+            const filteredOrders = baseOrders.filter(o => {
+                const matchShop = shopFilter ? (o.customerShopName === shopFilter) : true;
+                const matchText = (o.customerShopName || '').toLowerCase().includes(searchTerm) || 
+                                  (o.customerMobile || '').toLowerCase().includes(searchTerm);
+                return matchShop && matchText;
+            });
+
+            let grouped = {};
+            ['DEALER', 'RETAILER', 'HOCKER'].forEach(type => grouped[type] = []);
+            
+            filteredOrders.forEach(o => {
+                const type = o.customerType || 'OTHER';
+                if (!grouped[type]) grouped[type] = [];
+                grouped[type].push(o);
+            });
+
+            return grouped;
+        }
+
         function filterReports() {
-            const shopFilter = document.getElementById('report-shop-filter')?.value || '';
-            const t = (document.getElementById('report-search')?.value || '').toLowerCase();
-            const fO = State.orders.filter(o => { if (o.status !== 'Delivered') return false; const matchShop = shopFilter ? (o.customerShopName === shopFilter) : true; const matchText = (o.customerName || '').toLowerCase().includes(t) || (o.customerShopName || '').toLowerCase().includes(t) || (o.customerMobile || '').toLowerCase().includes(t); return matchShop && matchText; });
-            let gS = 0, gC = 0, gD = 0; let rows = '';
-            if (fO.length > 0) { rows = fO.map(o => { gS += (o.grossTotal || 0); gC += (o.paid || 0); gD += (o.due || 0); return `<tr><td>${safeDate(o.orderDate)}</td><td>${esc(o.invoiceNo || 'N/A')}</td><td>${esc(o.customerName || 'N/A')}<br><span class="text-[10px]">${esc(o.customerShopName || '')}</span></td><td>৳${(o.grossTotal || 0).toFixed(2)}</td><td>৳${(o.paid || 0).toFixed(2)}</td><td>৳${(o.due || 0).toFixed(2)}</td><td class="text-center"><button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button></td></tr>`; }).join(''); } else { rows = `<tr><td colspan="7" class="text-center p-4">No delivered records found.</td></tr>`; }
-            document.getElementById('report-tbody').innerHTML = rows;
-            document.getElementById('report-tfoot').innerHTML = `<tr><td colspan="3" class="text-right">GRAND TOTAL:</td><td>৳ ${gS.toFixed(2)}</td><td>৳ ${gC.toFixed(2)}</td><td>৳ ${gD.toFixed(2)}</td><td></td></tr>`;
+            const grouped = getGroupedOrders();
+            let html = '';
+            let gS = 0, gC = 0, gD = 0;
+
+            Object.keys(grouped).forEach(type => {
+                if (grouped[type].length === 0) return;
+
+                let tSales = 0, tColl = 0, tDue = 0;
+                
+                html += `<tr class="cat-row"><td colspan="8">CATEGORY: ${esc(type)}</td></tr>`;
+                
+                grouped[type].forEach(o => {
+                    tSales += (o.netTotal || o.grossTotal || 0);
+                    tColl += (o.paid || 0);
+                    tDue += (o.due || 0);
+                    
+                    html += `<tr>
+                        <td>${safeDate(o.orderDate)}</td>
+                        <td>${esc(o.invoiceNo || 'N/A')}</td>
+                        <td>${esc(o.customerShopName || 'N/A')}</td>
+                        <td>${esc(o.customerType || 'N/A')}</td>
+                        <td>৳${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td>
+                        <td>৳${(o.paid || 0).toFixed(2)}</td>
+                        <td>৳${(o.due || 0).toFixed(2)}</td>
+                        <td class="text-center"><button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button></td>
+                    </tr>`;
+                });
+
+                html += `<tr class="cat-subtotal">
+                    <td colspan="4">Subtotal for ${esc(type)}</td>
+                    <td>৳${tSales.toFixed(2)}</td>
+                    <td>৳${tColl.toFixed(2)}</td>
+                    <td>৳${tDue.toFixed(2)}</td>
+                    <td></td>
+                </tr>`;
+
+                gS += tSales;
+                gC += tColl;
+                gD += tDue;
+            });
+
+            if (html === '') {
+                html = `<tr><td colspan="8" class="text-center p-4">No delivered records found.</td></tr>`;
+            }
+
+            document.getElementById('report-tbody').innerHTML = html;
+            document.getElementById('report-tfoot').innerHTML = `<tr><td colspan="4" class="text-right">FINAL GRAND TOTAL:</td><td>৳ ${gS.toFixed(2)}</td><td>৳ ${gC.toFixed(2)}</td><td>৳ ${gD.toFixed(2)}</td><td></td></tr>`;
         }
 
         function printReport() {
-            const shopFilter = document.getElementById('report-shop-filter')?.value || 'All Shops';
-            const search = (document.getElementById('report-search')?.value || '').toLowerCase();
-            const fO = State.orders.filter(o => { if (o.status !== 'Delivered') return false; const matchShop = shopFilter !== 'All Shops' ? (o.customerShopName === shopFilter) : true; const matchText = (o.customerName || '').toLowerCase().includes(search) || (o.customerShopName || '').toLowerCase().includes(search) || (o.customerMobile || '').toLowerCase().includes(search); return matchShop && matchText; });
+            const grouped = getGroupedOrders();
+            let rows = '';
             let gS = 0, gC = 0, gD = 0;
-            let rows = fO.map(o => { gS += (o.grossTotal || 0); gC += (o.paid || 0); gD += (o.due || 0); return `<tr><td>${safeDate(o.orderDate)}</td><td>${esc(o.invoiceNo || 'N/A')}</td><td>${esc(o.customerName || 'N/A')}</td><td style="text-align:right;">${(o.grossTotal || 0).toFixed(2)}</td><td style="text-align:right;">${(o.paid || 0).toFixed(2)}</td><td style="text-align:right;">${(o.due || 0).toFixed(2)}</td></tr>`; }).join('');
 
-            const html = `<html><head><title>Print Report</title><style>body { font-family: Tahoma, sans-serif; margin: 20px; }h2 { text-align: center; margin-bottom: 5px; }p { text-align: center; margin-top: 0; }table { width: 100%; border-collapse: collapse; margin-top: 20px; }th, td { border: 1px solid #000; padding: 5px; font-size: 12px; text-align: left; }th { background: #e0e0e0; }tfoot td { border-top: 2px solid #000; font-weight: bold; background: #f0f0f0; text-align: right; }.right { text-align: right; }</style></head><body><h2>RAFI FOOD - Sales Report (Delivered Only)</h2><p>Shop: ${esc(shopFilter)}</p><table><thead><tr><th>Date</th><th>Invoice</th><th>Customer</th><th class="right">Sales</th><th class="right">Collected</th><th class="right">Due</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td colspan="3" class="right">GRAND TOTAL:</td><td>${gS.toFixed(2)}</td><td>${gC.toFixed(2)}</td><td>${gD.toFixed(2)}</td></tr></tfoot></table></body></html>`;
+            Object.keys(grouped).forEach(type => {
+                if (grouped[type].length === 0) return;
+
+                let tSales = 0, tColl = 0, tDue = 0;
+                
+                rows += `<tr style="background:#000080; color:#fff; font-weight:bold;"><td colspan="7">CATEGORY: ${esc(type)}</td></tr>`;
+                
+                grouped[type].forEach(o => {
+                    tSales += (o.netTotal || o.grossTotal || 0);
+                    tColl += (o.paid || 0);
+                    tDue += (o.due || 0);
+                    
+                    rows += `<tr>
+                        <td>${safeDate(o.orderDate)}</td>
+                        <td>${esc(o.invoiceNo || 'N/A')}</td>
+                        <td>${esc(o.customerShopName || 'N/A')}</td>
+                        <td>${esc(o.customerType || 'N/A')}</td>
+                        <td style="text-align:right;">${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td>
+                        <td style="text-align:right;">${(o.paid || 0).toFixed(2)}</td>
+                        <td style="text-align:right;">${(o.due || 0).toFixed(2)}</td>
+                    </tr>`;
+                });
+
+                rows += `<tr style="background:#dbeafe; font-weight:bold;">
+                    <td colspan="4">Subtotal for ${esc(type)}</td>
+                    <td style="text-align:right;">${tSales.toFixed(2)}</td>
+                    <td style="text-align:right;">${tColl.toFixed(2)}</td>
+                    <td style="text-align:right;">${tDue.toFixed(2)}</td>
+                </tr>`;
+
+                gS += tSales;
+                gC += tColl;
+                gD += tDue;
+            });
+
+            if (rows === '') rows = `<tr><td colspan="7" style="text-align:center;">No delivered records found.</td></tr>`;
+
+            const shopFilter = (document.getElementById('report-shop-filter')?.value || 'All Shops');
+            const html = `<html><head><title>Sales & Due Report</title><style>body { font-family: Tahoma, sans-serif; margin: 20px; }h2 { text-align: center; margin-bottom: 5px; }p { text-align: center; margin-top: 0; }table { width: 100%; border-collapse: collapse; margin-top: 20px; }th, td { border: 1px solid #000; padding: 5px; font-size: 11px; text-align: left; }th { background: #e0e0e0; }.right { text-align: right; }</style></head><body><h2>RAFI FOOD - Customer Wise Sales & Due Report</h2><p>Filter: ${esc(shopFilter)}</p><table><thead><tr><th>Date</th><th>Invoice</th><th>Shop Name</th><th>Type</th><th class="right">Sales</th><th class="right">Collected</th><th class="right">Due</th></tr></thead><tbody>${rows}</tbody><tfoot><tr style="border-top:2px solid #000; font-weight:bold; background:#f0f0f0;"><td colspan="4" class="right">FINAL GRAND TOTAL:</td><td class="right">${gS.toFixed(2)}</td><td class="right">${gC.toFixed(2)}</td><td class="right">${gD.toFixed(2)}</td></tr></tfoot></table></body></html>`;
             
             const iframe = document.createElement('iframe');
             iframe.style.position = "absolute"; iframe.style.width = "0px"; iframe.style.height = "0px"; iframe.style.border = "none";
@@ -448,18 +880,624 @@
         }
 
         function exportToExcel() {
-            const shopFilter = document.getElementById('report-shop-filter')?.value || 'All Shops';
-            const search = (document.getElementById('report-search')?.value || '').toLowerCase();
-            const fO = State.orders.filter(o => { if (o.status !== 'Delivered') return false; const matchShop = shopFilter !== 'All Shops' ? (o.customerShopName === shopFilter) : true; const matchText = (o.customerName || '').toLowerCase().includes(search) || (o.customerShopName || '').toLowerCase().includes(search) || (o.customerMobile || '').toLowerCase().includes(search); return matchShop && matchText; });
+            const grouped = getGroupedOrders();
+            let csv = "Category,Date,Invoice,Shop Name,Sales,Collected,Due\n";
+            let gS = 0, gC = 0, gD = 0;
 
-            let csv = "Date,Invoice,Customer,Shop Name,Sales,Collected,Due\n";
-            fO.forEach(o => { csv += `"${safeDate(o.orderDate)}","${esc(o.invoiceNo || 'N/A')}","${esc(o.customerName || 'N/A')}","${esc(o.customerShopName || 'N/A')}","${(o.grossTotal || 0).toFixed(2)}","${(o.paid || 0).toFixed(2)}","${(o.due || 0).toFixed(2)}"\n`; });
-            
+            Object.keys(grouped).forEach(type => {
+                if (grouped[type].length === 0) return;
+                
+                grouped[type].forEach(o => {
+                    const sales = (o.netTotal || o.grossTotal || 0).toFixed(2);
+                    const coll = (o.paid || 0).toFixed(2);
+                    const due = (o.due || 0).toFixed(2);
+                    csv += `"${esc(type)}","${safeDate(o.orderDate)}","${esc(o.invoiceNo || 'N/A')}","${esc(o.customerShopName || 'N/A')}","${sales}","${coll}","${due}"\n`;
+                    gS += parseFloat(sales); gC += parseFloat(coll); gD += parseFloat(due);
+                });
+            });
+
+            csv += `"","","","GRAND TOTAL:","${gS.toFixed(2)}","${gC.toFixed(2)}","${gD.toFixed(2)}"\n`;
             const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" }); 
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = `Delivered_Sales_Report.csv`;
+            link.download = `Sales_Due_Report.csv`;
             link.click();
+        }
+
+        // --- Salesman Performance & Salary Module ---
+        function renderSalesmanReport() {
+            const iA = State.currentUser.role === 'ADMIN';
+            const isSM = ['RSM', 'ASM', 'SE'].includes(State.currentUser.role);
+            
+            if (!iA && !isSM) {
+                document.getElementById('main-content').innerHTML = '<div>Access Denied</div>';
+                return;
+            }
+
+            const salesmen = State.users.filter(u => ['RSM', 'ASM', 'SE'].includes(u.role));
+            let smOptions = salesmen.map(s => `<option value="${s.id}" ${isSM && s.id === State.currentUser.id ? 'selected' : ''}>${esc(s.name)} (${s.role})</option>`).join('');
+
+            document.getElementById('main-content').innerHTML = `
+                <div class="win98-window p-2">
+                    <div class="win98-titlebar mb-2">Salesman Performance & Salary</div>
+                    <div class="p-2 flex flex-col md:flex-row gap-2 items-end mb-4">
+                        <div class="flex-1">
+                            <label>Salesman:</label>
+                            <select id="sm_filter" class="w98-select" ${isSM ? 'disabled' : ''}>${smOptions}</select>
+                        </div>
+                        <div>
+                            <label>Month:</label>
+                            <input type="month" id="sm_month" class="w98-input" value="${new Date().toISOString().slice(0,7)}">
+                        </div>
+                        <button onclick="calcSalesmanReport()" class="w98-btn">Calculate</button>
+                        <button onclick="printSalesmanReport()" class="w98-btn">Print</button>
+                    </div>
+                    <div id="sm_report_area" class="text-center p-4 text-gray-500">Select criteria and click Calculate to view report.</div>
+                </div>
+            `;
+        }
+
+        function calcSalesmanReport() {
+            const smId = document.getElementById('sm_filter')?.value || State.currentUser.id;
+            const smUser = State.users.find(u => u.id === smId);
+            const monthVal = document.getElementById('sm_month').value;
+            
+            if (!smUser || !monthVal) return alert('Please select Salesman and Month');
+
+            const [year, month] = monthVal.split('-').map(Number);
+            
+            const fOrders = State.orders.filter(o => {
+                if (o.status !== 'Delivered') return false;
+                const isEntryBy = o.entryBy === smId || o.entryBy === smUser.userCode;
+                if (!isEntryBy) return false;
+                const d = new Date(o.orderDate);
+                return d.getFullYear() === year && (d.getMonth() + 1) === month;
+            });
+
+            const totalSales = fOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0);
+            const totalCollection = fOrders.reduce((s, o) => s + (o.paid || 0), 0);
+            
+            const target = parseFloat(smUser.target) || 0;
+            const basicSalary = parseFloat(smUser.basicSalary) || 0;
+            const taMonthly = parseFloat(smUser.ta) || 0; 
+            const daMonthly = parseFloat(smUser.da) || 0; 
+            
+            let incentive = 0;
+            if (target > 0 && totalSales >= target) {
+                incentive = totalSales * 0.05; 
+            }
+            
+            const totalPayable = basicSalary + taMonthly + daMonthly + incentive;
+
+            const orderRows = fOrders.map(o => `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${safeDate(o.orderDate)}</td><td>${esc(o.customerShopName || 'N/A')}</td><td>৳${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td><td>৳${(o.paid || 0).toFixed(2)}</td></tr>`).join('') || `<tr><td colspan="5" class="text-center p-2">No orders found for this month.</td></tr>`;
+
+            document.getElementById('sm_report_area').innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="win98-inset p-2">
+                        <h4 class="font-bold mb-2 border-b pb-1">Summary: ${esc(smUser.name)} (${smUser.role})</h4>
+                        <table class="w98-table text-xs">
+                            <tr><td>Target:</td><td class="font-bold">৳ ${target.toFixed(2)}</td></tr>
+                            <tr><td>Achieved Sales:</td><td class="font-bold text-primary">৳ ${totalSales.toFixed(2)}</td></tr>
+                            <tr><td>Collection:</td><td class="font-bold">৳ ${totalCollection.toFixed(2)}</td></tr>
+                            <tr><td>Incentive (5%):</td><td class="font-bold text-green-600">৳ ${incentive.toFixed(2)}</td></tr>
+                            <tr><td>Basic Salary:</td><td>৳ ${basicSalary.toFixed(2)}</td></tr>
+                            <tr><td>TA (Monthly):</td><td>৳ ${taMonthly.toFixed(2)}</td></tr>
+                            <tr><td>DA (Monthly):</td><td>৳ ${daMonthly.toFixed(2)}</td></tr>
+                            <tr class="border-t-2 border-black"><td class="font-bold text-base">Total Payable:</td><td class="font-bold text-base text-primary">৳ ${totalPayable.toFixed(2)}</td></tr>
+                        </table>
+                    </div>
+                    <div class="win98-inset p-2 overflow-x-auto">
+                        <h4 class="font-bold mb-2 border-b pb-1">Orders in ${monthVal}</h4>
+                        <table class="w98-table text-xs">
+                            <thead><tr><th>Invoice</th><th>Date</th><th>Shop Name</th><th>Sales</th><th>Collected</th></tr></thead>
+                            <tbody>${orderRows}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function printSalesmanReport() {
+            const smId = document.getElementById('sm_filter')?.value || State.currentUser.id;
+            const smUser = State.users.find(u => u.id === smId);
+            const monthVal = document.getElementById('sm_month').value;
+            
+            if (!smUser || !monthVal) return alert('Please select Salesman and Month first.');
+
+            const [year, month] = monthVal.split('-').map(Number);
+            const fOrders = State.orders.filter(o => {
+                if (o.status !== 'Delivered') return false;
+                const isEntryBy = o.entryBy === smId || o.entryBy === smUser.userCode;
+                if (!isEntryBy) return false;
+                const d = new Date(o.orderDate);
+                return d.getFullYear() === year && (d.getMonth() + 1) === month;
+            });
+
+            const totalSales = fOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0);
+            const totalCollection = fOrders.reduce((s, o) => s + (o.paid || 0), 0);
+            
+            const target = parseFloat(smUser.target) || 0;
+            const basicSalary = parseFloat(smUser.basicSalary) || 0;
+            const taMonthly = parseFloat(smUser.ta) || 0;
+            const daMonthly = parseFloat(smUser.da) || 0;
+            
+            let incentive = 0;
+            if (target > 0 && totalSales >= target) {
+                incentive = totalSales * 0.05;
+            }
+            const totalPayable = basicSalary + taMonthly + daMonthly + incentive;
+
+            const orderRows = fOrders.map(o => `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${safeDate(o.orderDate)}</td><td>${esc(o.customerShopName || 'N/A')}</td><td style="text-align:right;">${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td><td style="text-align:right;">${(o.paid || 0).toFixed(2)}</td></tr>`).join('') || `<tr><td colspan="5" style="text-align:center;">No orders found for this month.</td></tr>`;
+
+            const html = `
+                <html><head><title>Salesman Performance Report</title>
+                <style>
+                    body { font-family: Tahoma, sans-serif; margin: 20px; }
+                    h2 { text-align: center; margin-bottom: 5px; }
+                    h3 { text-align: center; margin-top: 0; margin-bottom: 20px; }
+                    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                    th, td { border: 1px solid #000; padding: 5px; font-size: 12px; text-align: left; }
+                    th { background: #e0e0e0; }
+                    .summary-table { width: 50%; float: right; }
+                    .orders-table { width: 100%; }
+                    .right { text-align: right; }
+                    .center { text-align: center; }
+                </style>
+                </head><body>
+                    <h2>RAFI FOOD - Salesman Performance Report</h2>
+                    <h3>Name: ${esc(smUser.name)} | Role: ${smUser.role} | Month: ${monthVal}</h3>
+                    
+                    <table class="summary-table">
+                        <tr><th colspan="2" style="text-align:center;">Summary</th></tr>
+                        <tr><td>Target:</td><td class="right">৳ ${target.toFixed(2)}</td></tr>
+                        <tr><td>Achieved Sales:</td><td class="right">৳ ${totalSales.toFixed(2)}</td></tr>
+                        <tr><td>Collection:</td><td class="right">৳ ${totalCollection.toFixed(2)}</td></tr>
+                        <tr><td>Incentive (5%):</td><td class="right">৳ ${incentive.toFixed(2)}</td></tr>
+                        <tr><td>Basic Salary:</td><td class="right">৳ ${basicSalary.toFixed(2)}</td></tr>
+                        <tr><td>TA (Monthly):</td><td class="right">৳ ${taMonthly.toFixed(2)}</td></tr>
+                        <tr><td>DA (Monthly):</td><td class="right">৳ ${daMonthly.toFixed(2)}</td></tr>
+                        <tr style="border-top: 2px solid #000;"><td><b>Total Payable:</b></td><td class="right"><b>৳ ${totalPayable.toFixed(2)}</b></td></tr>
+                    </table>
+
+                    <table class="orders-table">
+                        <thead><tr><th>Invoice</th><th>Date</th><th>Shop Name</th><th class="right">Sales</th><th class="right">Collected</th></tr></thead>
+                        <tbody>${orderRows}</tbody>
+                    </table>
+                </body></html>
+            `;
+            
+            const iframe = document.createElement('iframe');
+            iframe.style.position = "absolute"; iframe.style.width = "0px"; iframe.style.height = "0px"; iframe.style.border = "none";
+            document.body.appendChild(iframe);
+            iframe.contentWindow.document.open();
+            iframe.contentWindow.document.write(html);
+            iframe.contentWindow.document.close();
+            setTimeout(() => { 
+                iframe.contentWindow.focus(); 
+                iframe.contentWindow.print(); 
+                setTimeout(() => { if (iframe.parentNode) document.body.removeChild(iframe); }, 1000); 
+            }, 500);
+        }
+
+        // ============================================================
+        // ACHIEVEMENT REPORT MODULE (SE -> ASM -> RSM Hierarchy)
+        // ============================================================
+
+        function renderAchievementReport() {
+            const role = State.currentUser.role;
+            const isAdmin = role === 'ADMIN';
+            const isRSM = role === 'RSM';
+            const isASM = role === 'ASM';
+            const isSE  = role === 'SE';
+
+            if (!isAdmin && !isRSM && !isASM && !isSE) {
+                document.getElementById('main-content').innerHTML = '<div class="p-4">Access Denied</div>';
+                return;
+            }
+
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            const rsmOptions = isAdmin
+                ? State.users.filter(u => u.role === 'RSM').map(r => `<option value="${r.id}">${esc(r.name)}</option>`).join('')
+                : '';
+
+            document.getElementById('main-content').innerHTML = `
+                <div class="win98-window p-2">
+                    <div class="win98-titlebar mb-2">Achievement Report</div>
+                    <div class="p-2 flex flex-col md:flex-row gap-2 items-end mb-4">
+                        <div>
+                            <label class="block mb-1">Month:</label>
+                            <input type="month" id="ach_month" class="w98-input" value="${currentMonth}" onchange="calcAchievementReport()">
+                        </div>
+                        ${isAdmin ? `
+                        <div>
+                            <label class="block mb-1">Filter RSM:</label>
+                            <select id="ach_rsm_filter" class="w98-select" onchange="calcAchievementReport()">
+                                <option value="">All RSM</option>
+                                ${rsmOptions}
+                            </select>
+                        </div>` : ''}
+                        <button onclick="printAchievementReport()" class="w98-btn"><i class="fas fa-print mr-1"></i> Print</button>
+                    </div>
+                    <div id="ach_report_area" class="text-center p-4 text-gray-500">
+                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                        <p>Loading report...</p>
+                    </div>
+                </div>
+            `;
+            calcAchievementReport(); // Auto-load on tab open
+        }
+
+        function getAchievementData() {
+            const role = State.currentUser.role;
+            const monthVal = document.getElementById('ach_month')?.value;
+            if (!monthVal) return null;
+
+            const [year, month] = monthVal.split('-').map(Number);
+            const rsmFilter = document.getElementById('ach_rsm_filter')?.value || '';
+
+            const fOrders = State.orders.filter(o => {
+                if (o.status !== 'Delivered') return false;
+                const d = new Date(o.orderDate);
+                return d.getFullYear() === year && (d.getMonth() + 1) === month;
+            });
+
+            let allSEs = State.users.filter(u => u.role === 'SE');
+
+            if (role === 'SE') {
+                allSEs = allSEs.filter(u => u.id === State.currentUser.id);
+            } else if (role === 'ASM') {
+                allSEs = allSEs.filter(u => u.assignedASM === State.currentUser.id);
+            } else if (role === 'RSM') {
+                allSEs = allSEs.filter(u => u.assignedRSM === State.currentUser.id);
+            } else if (role === 'ADMIN' && rsmFilter) {
+                allSEs = allSEs.filter(u => u.assignedRSM === rsmFilter);
+            }
+
+            let asmGroups = {};
+            allSEs.forEach(se => {
+                const asmId = se.assignedASM || 'unassigned';
+                if (!asmGroups[asmId]) {
+                    const asm = State.users.find(u => u.id === asmId);
+                    asmGroups[asmId] = {
+                        asm: asm || { id: 'unassigned', name: 'Unassigned ASM', userCode: 'N/A' },
+                        rsmId: asm?.assignedRSM || se.assignedRSM || 'unassigned',
+                        ses: []
+                    };
+                }
+                asmGroups[asmId].ses.push(se);
+            });
+
+            let rsmGroups = {};
+            Object.values(asmGroups).forEach(g => {
+                const rsmId = g.rsmId;
+                if (!rsmGroups[rsmId]) {
+                    const rsm = State.users.find(u => u.id === rsmId);
+                    rsmGroups[rsmId] = {
+                        rsm: rsm || { id: 'unassigned', name: 'Unassigned RSM', userCode: 'N/A' },
+                        asms: []
+                    };
+                }
+                rsmGroups[rsmId].asms.push(g);
+            });
+
+            let slNo = 0;
+            let result = { rsmGroups: [], grandTotal: { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 } };
+
+            Object.values(rsmGroups).forEach(rg => {
+                let rsmTotal = { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 };
+
+                rg.asms.forEach(ag => {
+                    let asmTotal = { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 };
+
+                    ag.ses.forEach(se => {
+                        slNo++;
+                        const seOrders = fOrders.filter(o => o.entryBy === se.id || o.entryBy === se.userCode);
+                        const tp          = seOrders.reduce((s, o) => s + (o.grossTotal || 0), 0);
+                        const net         = seOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0);
+                        const collected   = seOrders.reduce((s, o) => s + (o.paid || 0), 0);
+                        const outstanding = seOrders.reduce((s, o) => s + (o.due || 0), 0);
+                        const target      = parseFloat(se.target) || 0;
+                        const achPct      = target > 0 ? (net / target * 100) : 0;
+
+                        se.stats = { slNo, tp, net, collected, outstanding, target, achPct };
+
+                        asmTotal.target      += target;
+                        asmTotal.tp          += tp;
+                        asmTotal.net         += net;
+                        asmTotal.total       += collected;
+                        asmTotal.outstanding += outstanding;
+                    });
+
+                    ag.asmTotal = asmTotal;
+
+                    rsmTotal.target      += asmTotal.target;
+                    rsmTotal.tp          += asmTotal.tp;
+                    rsmTotal.net         += asmTotal.net;
+                    rsmTotal.total       += asmTotal.total;
+                    rsmTotal.outstanding += asmTotal.outstanding;
+                });
+
+                rg.rsmTotal = rsmTotal;
+                result.rsmGroups.push(rg);
+
+                result.grandTotal.target      += rsmTotal.target;
+                result.grandTotal.tp          += rsmTotal.tp;
+                result.grandTotal.net         += rsmTotal.net;
+                result.grandTotal.total       += rsmTotal.total;
+                result.grandTotal.outstanding += rsmTotal.outstanding;
+            });
+
+            return result;
+        }
+
+        function calcAchievementReport() {
+            const data = getAchievementData();
+            const reportArea = document.getElementById('ach_report_area');
+            if (!reportArea) return; 
+            if (!data) {
+                reportArea.innerHTML = `<div class="text-center p-4 text-gray-500">Please select a month.</div>`;
+                return;
+            }
+
+            const monthVal = document.getElementById('ach_month').value;
+            let html = `
+                <div class="win98-inset p-2 overflow-x-auto">
+                    <div class="text-center mb-2">
+                        <h2 class="font-bold text-base">🏆 Achievement Report</h2>
+                        <p class="text-xs">Month: ${monthVal}</p>
+                    </div>
+                    <table class="w98-table text-xs">
+                        <thead>
+                            <tr>
+                                <th>SL NO</th>
+                                <th>EMP Code</th>
+                                <th>Name of MPO</th>
+                                <th>Territory</th>
+                                <th>Target</th>
+                                <th>Total TP</th>
+                                <th>Net Sales</th>
+                                <th>Ach%</th>
+                                <th>Total</th>
+                                <th>Outstanding</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+            let hasData = false;
+
+            data.rsmGroups.forEach(rg => {
+                rg.asms.forEach(ag => {
+                    ag.ses.forEach(se => {
+                        hasData = true;
+                        const s = se.stats;
+                        const achClass = s.achPct >= 100 ? 'text-green-700 font-bold'
+                                       : s.achPct >= 75  ? 'font-bold'
+                                       : 'text-red-700';
+                        const outClass = s.outstanding > 0 ? 'text-red-700 font-bold' : 'text-green-700 font-bold';
+
+                        html += `<tr>
+                            <td>${s.slNo}</td>
+                            <td>${esc(se.userCode || 'N/A')}</td>
+                            <td>${esc(se.name || 'N/A')}</td>
+                            <td>${esc(se.territory || 'N/A')}</td>
+                            <td style="text-align:right;">${s.target.toLocaleString()}</td>
+                            <td style="text-align:right;">${s.tp.toLocaleString()}</td>
+                            <td style="text-align:right;">${s.net.toLocaleString()}</td>
+                            <td class="${achClass}" style="text-align:center;">${s.achPct.toFixed(0)}%</td>
+                            <td style="text-align:right;">${s.collected.toLocaleString()}</td>
+                            <td class="${outClass}" style="text-align:right;">${s.outstanding.toLocaleString()}</td>
+                        </tr>`;
+                    });
+
+                    const aT = ag.asmTotal;
+                    const aAchPct = aT.target > 0 ? (aT.net / aT.target * 100) : 0;
+
+                    html += `<tr style="background:#000080; color:#fff; font-weight:bold; border-top:2px solid #000;">
+                        <td colspan="4">ASM — ${esc(ag.asm.name || 'N/A')} (${esc(ag.asm.userCode || 'N/A')})</td>
+                        <td style="text-align:right;">${aT.target.toLocaleString()}</td>
+                        <td style="text-align:right;">${aT.tp.toLocaleString()}</td>
+                        <td style="text-align:right;">${aT.net.toLocaleString()}</td>
+                        <td style="text-align:center;">${aAchPct.toFixed(0)}%</td>
+                        <td style="text-align:right;">${aT.total.toLocaleString()}</td>
+                        <td style="text-align:right;">${aT.outstanding.toLocaleString()}</td>
+                    </tr>`;
+                });
+
+                const rT = rg.rsmTotal;
+                const rAchPct = rT.target > 0 ? (rT.net / rT.target * 100) : 0;
+
+                html += `<tr style="background:#222; color:#fff; font-weight:bold; border-top:3px solid #000;">
+                    <td colspan="4">RSM — ${esc(rg.rsm.name || 'N/A')} (${esc(rg.rsm.userCode || 'N/A')})</td>
+                    <td style="text-align:right;">${rT.target.toLocaleString()}</td>
+                    <td style="text-align:right;">${rT.tp.toLocaleString()}</td>
+                    <td style="text-align:right;">${rT.net.toLocaleString()}</td>
+                    <td style="text-align:center;">${rAchPct.toFixed(0)}%</td>
+                    <td style="text-align:right;">${rT.total.toLocaleString()}</td>
+                    <td style="text-align:right;">${rT.outstanding.toLocaleString()}</td>
+                </tr>`;
+            });
+
+            if (!hasData && data.rsmGroups.length === 0) {
+                html += `<tr><td colspan="10" class="text-center p-4">No data found for the selected period.</td></tr>`;
+            }
+
+            if (data.rsmGroups.length > 1) {
+                const g = data.grandTotal;
+                const gAchPct = g.target > 0 ? (g.net / g.target * 100) : 0;
+                html += `<tr style="background:#5C1D24; color:#D4AF37; font-weight:bold; border-top:3px solid #000;">
+                    <td colspan="4">GRAND TOTAL</td>
+                    <td style="text-align:right;">${g.target.toLocaleString()}</td>
+                    <td style="text-align:right;">${g.tp.toLocaleString()}</td>
+                    <td style="text-align:right;">${g.net.toLocaleString()}</td>
+                    <td style="text-align:center;">${gAchPct.toFixed(0)}%</td>
+                    <td style="text-align:right;">${g.total.toLocaleString()}</td>
+                    <td style="text-align:right;">${g.outstanding.toLocaleString()}</td>
+                </tr>`;
+            }
+
+            html += `</tbody></table></div>`;
+            reportArea.innerHTML = html;
+        }
+
+        function printAchievementReport() {
+            const data = getAchievementData();
+            if (!data) return alert('Please select a month.');
+
+            const monthVal = document.getElementById('ach_month').value;
+            let monthName = monthVal;
+            try {
+                monthName = new Date(monthVal + '-01').toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+            } catch(e) {}
+
+            let rows = '';
+
+            data.rsmGroups.forEach(rg => {
+                rg.asms.forEach(ag => {
+                    ag.ses.forEach(se => {
+                        const s = se.stats;
+                        const outClass = s.outstanding > 0 ? 'class="due"' : 'class="zero"';
+                        const achClass = s.achPct >= 100 ? 'class="ach-good"' : '';
+
+                        rows += `<tr class="se-row">
+                            <td>${s.slNo}</td>
+                            <td>${esc(se.userCode || 'N/A')}</td>
+                            <td>${esc(se.name || 'N/A')}</td>
+                            <td>${esc(se.territory || 'N/A')}</td>
+                            <td>${s.target.toLocaleString()}</td>
+                            <td>${s.tp.toLocaleString()}</td>
+                            <td>${s.net.toLocaleString()}</td>
+                            <td ${achClass} style="text-align:center;">${s.achPct.toFixed(0)}%</td>
+                            <td>${s.collected.toLocaleString()}</td>
+                            <td ${outClass}>${s.outstanding.toLocaleString()}</td>
+                        </tr>`;
+                    });
+
+                    const aT = ag.asmTotal;
+                    const aAchPct = aT.target > 0 ? (aT.net / aT.target * 100) : 0;
+
+                    rows += `<tr class="asm-row">
+                        <td colspan="4">ASM — ${esc(ag.asm.name || 'N/A')}</td>
+                        <td>${aT.target.toLocaleString()}</td>
+                        <td>${aT.tp.toLocaleString()}</td>
+                        <td>${aT.net.toLocaleString()}</td>
+                        <td style="text-align:center;">${aAchPct.toFixed(0)}%</td>
+                        <td>${aT.total.toLocaleString()}</td>
+                        <td>${aT.outstanding.toLocaleString()}</td>
+                    </tr>`;
+                });
+
+                const rT = rg.rsmTotal;
+                const rAchPct = rT.target > 0 ? (rT.net / rT.target * 100) : 0;
+
+                rows += `<tr class="rsm-row">
+                    <td colspan="4">RSM — ${esc(rg.rsm.name || 'N/A')}</td>
+                    <td>${rT.target.toLocaleString()}</td>
+                    <td>${rT.tp.toLocaleString()}</td>
+                    <td>${rT.net.toLocaleString()}</td>
+                    <td style="text-align:center;">${rAchPct.toFixed(0)}%</td>
+                    <td>${rT.total.toLocaleString()}</td>
+                    <td>${rT.outstanding.toLocaleString()}</td>
+                </tr>`;
+            });
+
+            if (rows === '') {
+                rows = `<tr><td colspan="10" style="text-align:center; padding:20px;">No data found for the selected period.</td></tr>`;
+            }
+
+            let grandTotalRow = '';
+            if (data.rsmGroups.length > 1) {
+                const g = data.grandTotal;
+                const gAchPct = g.target > 0 ? (g.net / g.target * 100) : 0;
+                grandTotalRow = `<tr class="rsm-row" style="background:#5C1D24;">
+                    <td colspan="4">GRAND TOTAL</td>
+                    <td>${g.target.toLocaleString()}</td>
+                    <td>${g.tp.toLocaleString()}</td>
+                    <td>${g.net.toLocaleString()}</td>
+                    <td style="text-align:center;">${gAchPct.toFixed(0)}%</td>
+                    <td>${g.total.toLocaleString()}</td>
+                    <td>${g.outstanding.toLocaleString()}</td>
+                </tr>`;
+            }
+
+            const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Achievement Report</title>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;padding:20px;font-family:Arial,sans-serif;background:#f4f6f8;color:#222;}
+.report{max-width:1500px;margin:auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 3px 15px rgba(0,0,0,.08);}
+.header{text-align:center;margin-bottom:15px;}
+.header h2{margin:0;font-size:24px;}
+.header p{margin:5px 0 0;color:#666;}
+.table-wrapper{overflow-x:auto;}
+table{width:100%;min-width:1200px;border-collapse:collapse;}
+th,td{border:1px solid #d9d9d9;padding:9px 8px;font-size:13px;}
+th{background:#f1f3f5;text-align:center;white-space:nowrap;}
+td{text-align:right;}
+td:nth-child(1),td:nth-child(2),td:nth-child(3),td:nth-child(4){text-align:left;}
+.se-row{background:#fff;}
+.asm-row{background:#e9ecef;font-weight:bold;}
+.asm-row td{border-top:2px solid #888;border-bottom:2px solid #888;}
+.rsm-row{background:#222;color:#fff;font-weight:bold;}
+.rsm-row td{border-color:#555;}
+.ach-good{font-weight:bold;}
+.due{color:#c62828;font-weight:bold;}
+.zero{color:#198754;font-weight:bold;}
+@media print{
+    body{background:#fff;padding:0;}
+    .report{max-width:100%;padding:0;box-shadow:none;}
+    .header{margin-bottom:10px;}
+    table{min-width:100%;}
+}
+</style>
+</head>
+<body>
+<div class="report">
+    <div class="header">
+        <h2>Achievement Report</h2>
+        <p>Month: ${monthName}</p>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>SL NO</th>
+                    <th>EMP Code</th>
+                    <th>Name of MPO</th>
+                    <th>Territory</th>
+                    <th>Target</th>
+                    <th>Total TP</th>
+                    <th>Net Sales</th>
+                    <th>Ach%</th>
+                    <th>Total</th>
+                    <th>Outstanding</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${rows}
+                ${grandTotalRow}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>window.onload=function(){setTimeout(function(){window.print();},300);};<\/script>
+</body>
+</html>`;
+
+            const iframe = document.createElement('iframe');
+            iframe.style.position = "absolute";
+            iframe.style.width = "0px";
+            iframe.style.height = "0px";
+            iframe.style.border = "none";
+            document.body.appendChild(iframe);
+            iframe.contentWindow.document.open();
+            iframe.contentWindow.document.write(html);
+            iframe.contentWindow.document.close();
+            setTimeout(() => {
+                if (iframe.parentNode) document.body.removeChild(iframe);
+            }, 1500);
         }
     </script>
 </body>
