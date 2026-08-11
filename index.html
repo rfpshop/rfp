@@ -185,6 +185,7 @@
                     <div class="win98-outset m-1 mb-2">
                         <a href="#" data-page="products" class="admin-only menu-item"><i class="fas fa-boxes w-4"></i> Product Mgmt</a>
                         <a href="#" data-page="users" class="admin-only menu-item"><i class="fas fa-user-shield w-4"></i> User Mgmt</a>
+                        <a href="#" data-page="salary-target" class="admin-only menu-item"><i class="fas fa-money-check-alt w-4"></i> Salary & Target</a>
                         <a href="#" data-page="customers" class="menu-item can-view-customers"><i class="fas fa-users w-4"></i> Customer Mgmt</a>
                     </div>
                     <div class="px-2 py-1 font-bold text-[11px]">Reports</div>
@@ -237,6 +238,7 @@
         function esc(s) { if (s === null || s === undefined) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/`/g, '&#96;'); }
         function safeDate(dateStr) { try { if(!dateStr) return 'N/A'; const d = new Date(dateStr); if (isNaN(d.getTime())) return 'N/A'; return d.toLocaleDateString(); } catch (e) { return 'N/A'; } }
         function toArray(obj) { if (Array.isArray(obj)) return obj; if (typeof obj === 'object' && obj !== null) return Object.keys(obj).map(k => obj[k]); return []; }
+        function money(value) { if (value === null || value === undefined || value === "") return "-"; return Number(value).toLocaleString("en-US"); }
 
         const State = { currentUser: null, currentPage: null, currentView: null, products: [], users: [], customers: [], orders: [], cart: [] };
 
@@ -269,8 +271,8 @@
             const role = State.currentUser.role;
             const canEnterOrder = ['ADMIN', 'SE'].includes(role); 
             const canViewMgrReports = ['ADMIN', 'RSM', 'ASM'].includes(role);
-            const canViewCustomers = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE'].includes(role);
-            const canViewReports = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
+            const canViewCustomers = ['ADMIN', 'OPERATOR', 'AC', 'RSM', 'ASM', 'SE'].includes(role);
+            const canViewReports = ['ADMIN', 'OPERATOR', 'AC', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
             const canViewDeliverySummary = ['ADMIN', 'OPERATOR', 'DA'].includes(role);
             const canViewOrderHistory = ['ADMIN', 'OPERATOR', 'DA', 'SE'].includes(role);
             
@@ -325,6 +327,7 @@
                 State.users = []; 
                 s.forEach(c => { const val = c.val(); val.id = c.key; State.users.push(val); }); 
                 if (State.currentPage === 'users') renderUsers(); 
+                if (State.currentPage === 'salary-target') renderSalaryTarget();
                 if (State.currentPage === 'dashboard') renderDashboard(); 
                 if (State.currentPage === 'order-entry') renderOrderEntry(); 
                 if (State.currentPage === 'reports') renderReports(); 
@@ -366,6 +369,7 @@
                     case 'dashboard': document.getElementById('page-title').textContent = 'Dashboard'; renderDashboard(); break;
                     case 'products': document.getElementById('page-title').textContent = 'Product Management'; renderProducts(); break;
                     case 'users': document.getElementById('page-title').textContent = 'System Users'; renderUsers(); break;
+                    case 'salary-target': document.getElementById('page-title').textContent = 'Salary & Target'; renderSalaryTarget(); break;
                     case 'customers': document.getElementById('page-title').textContent = 'Customer Management'; renderCustomers(); break;
                     case 'order-entry': document.getElementById('page-title').textContent = 'Order Entry'; renderOrderEntry(); break;
                     case 'invoices': document.getElementById('page-title').textContent = 'Order History'; renderInvoices(); break;
@@ -381,7 +385,7 @@
 
         function renderDashboard() {
             const role = State.currentUser.role;
-            const isC = !['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
+            const isC = !['ADMIN', 'OPERATOR', 'AC', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
             const isAdmin = role === 'ADMIN';
             
             let statProducts = State.products.length;
@@ -421,13 +425,91 @@
 
         function renderUsers() {
             let rows = '';
-            const empUsers = State.users.filter(u => ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(u.role));
-            if (empUsers.length > 0) { rows = empUsers.map(u => `<tr><td><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(u.userCode || 'N/A')}</td><td>${esc(u.username || 'N/A')}</td><td>${esc(u.name || 'N/A')}</td><td>${esc(u.role || 'N/A')}</td><td>${esc(u.territory || 'N/A')}</td><td class="text-right"><button onclick="editEmployee('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteEmployee('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button></td></tr>`).join(''); } else { rows = `<tr><td colspan="7" class="text-center p-4">No employees found.</td></tr>`; }
-            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">System Users (Employees)</h3><button onclick="addEmployee()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add Employee</button></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>User ID</th><th>Username</th><th>Name</th><th>Role</th><th>Territory</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+            const empUsers = State.users.filter(u => ['ADMIN', 'OPERATOR', 'AC', 'RSM', 'ASM', 'SE', 'DA'].includes(u.role));
+            if (empUsers.length > 0) { rows = empUsers.map(u => `<tr><td><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(u.userCode || 'N/A')}</td><td>${esc(u.username || 'N/A')}</td><td>${esc(u.name || 'N/A')}</td><td>${esc(u.role || 'N/A')}</td><td>${esc(u.territory || u.area || u.region || 'N/A')}</td><td class="text-right"><button onclick="editEmployee('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteEmployee('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button></td></tr>`).join(''); } else { rows = `<tr><td colspan="7" class="text-center p-4">No employees found.</td></tr>`; }
+            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">System Users (Employees)</h3><button onclick="addEmployee()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add Employee</button></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>User ID</th><th>Username</th><th>Name</th><th>Role</th><th>Location</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+        }
+
+        // --- Salary & Target Module (Admin Only) ---
+        function renderSalaryTarget() {
+            if (State.currentUser.role !== 'ADMIN') {
+                document.getElementById('main-content').innerHTML = '<div class="p-4 text-red-600 font-bold">Access Denied</div>';
+                return;
+            }
+            const empUsers = State.users.filter(u => ['RSM', 'ASM', 'SE', 'ADMIN'].includes(u.role));
+            let rows = '';
+            let totalTarget = 0, totalBasic = 0, totalTA = 0, totalDA = 0;
+            
+            if (empUsers.length > 0) {
+                rows = empUsers.map(u => {
+                    const target = u.target || 0;
+                    const basic = u.basicSalary || 0;
+                    const ta = u.ta || 0;
+                    const da = u.da || 0;
+                    
+                    totalTarget += target;
+                    totalBasic += basic;
+                    totalTA += ta;
+                    totalDA += da;
+                    
+                    return `<tr>
+                        <td><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td>
+                        <td>${esc(u.userCode || 'N/A')}</td>
+                        <td>${esc(u.name || 'N/A')}</td>
+                        <td>${esc(u.role || 'N/A')}</td>
+                        <td>৳ ${target}</td>
+                        <td>৳ ${basic}</td>
+                        <td>৳ ${ta}</td>
+                        <td>৳ ${da}</td>
+                        <td class="text-right"><button onclick="editSalaryTarget('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button></td>
+                    </tr>`;
+                }).join('');
+            } else {
+                rows = `<tr><td colspan="9" class="text-center p-4">No employees found.</td></tr>`;
+            }
+            
+            const footerRow = `<tr style="background:#000080; color:#fff; font-weight:bold;">
+                <td colspan="4">GRAND TOTAL</td>
+                <td>৳ ${totalTarget}</td>
+                <td>৳ ${totalBasic}</td>
+                <td>৳ ${totalTA}</td>
+                <td>৳ ${totalDA}</td>
+                <td></td>
+            </tr>`;
+            
+            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">Salary & Target Management</h3></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>Emp ID</th><th>Name</th><th>Role</th><th>Target</th><th>Basic</th><th>TA</th><th>DA</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody><tfoot>${footerRow}</tfoot></table></div></div>`;
+        }
+
+        function editSalaryTarget(id) {
+            const u = State.users.find(x => x.id === id);
+            openModal(`Edit Salary & Target: ${u.name}`, `<form onsubmit="saveSalaryTarget(event, '${u.id}')">
+                <div class="grid grid-cols-2 gap-2 mb-2">
+                    <div><label>Monthly Target (৳):</label><input type="number" id="u_target" value="${u.target || 0}" class="w98-input"></div>
+                    <div><label>Basic Salary (৳):</label><input type="number" id="u_salary" value="${u.basicSalary || 0}" class="w98-input"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mb-2">
+                    <div><label>TA (Monthly ৳):</label><input type="number" id="u_ta" value="${u.ta || 0}" class="w98-input"></div>
+                    <div><label>DA (Monthly ৳):</label><input type="number" id="u_da" value="${u.da || 0}" class="w98-input"></div>
+                </div>
+                <div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update Salary & Target</button></div>
+            </form>`);
+        }
+
+        function saveSalaryTarget(e, id) {
+            e.preventDefault();
+            const data = {
+                target: parseFloat(document.getElementById('u_target').value) || 0,
+                basicSalary: parseFloat(document.getElementById('u_salary').value) || 0,
+                ta: parseFloat(document.getElementById('u_ta').value) || 0,
+                da: parseFloat(document.getElementById('u_da').value) || 0
+            };
+            db.ref('users/' + id).update(data);
+            alert('Salary & Target updated successfully!');
+            closeModal();
         }
 
         function renderCustomers() {
-            const cE = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE'].includes(State.currentUser.role);
+            const cE = ['ADMIN', 'OPERATOR', 'AC', 'RSM', 'ASM', 'SE'].includes(State.currentUser.role);
             let rows = '';
             let custUsers = State.customers;
             
@@ -445,66 +527,67 @@
 
         function renderRoleFields(role, u = {}) {
             const c = document.getElementById('role-specific-fields'); let h = '';
-            const isEmployee = ['OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
+            const isEmployee = ['OPERATOR', 'AC', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
 
             if (isEmployee) {
                 const rsmList = State.users.filter(x => x.role === 'RSM');
                 const asmList = State.users.filter(x => x.role === 'ASM');
-                const seList = State.users.filter(x => x.role === 'SE');
 
-                let hierarchyHtml = '';
-                if (['ASM', 'SE', 'DA'].includes(role)) {
-                    hierarchyHtml += `<div><label>Assigned RSM:</label><select id="u_assigned_rsm" class="w98-select"><option value="">None</option>${rsmList.map(r => `<option value="${r.id}" ${u.assignedRSM===r.id?'selected':''}>${esc(r.name)}</option>`).join('')}</select></div>`;
-                }
-                if (['SE', 'DA'].includes(role)) {
-                    hierarchyHtml += `<div><label>Assigned ASM:</label><select id="u_assigned_asm" class="w98-select"><option value="">None</option>${asmList.map(r => `<option value="${r.id}" ${u.assignedASM===r.id?'selected':''}>${esc(r.name)}</option>`).join('')}</select></div>`;
-                }
-                if (role === 'DA') {
-                    hierarchyHtml += `<div><label>Assigned SE:</label><select id="u_assigned_se" class="w98-select"><option value="">None</option>${seList.map(r => `<option value="${r.id}" ${u.assignedSE===r.id?'selected':''}>${esc(r.name)}</option>`).join('')}</select></div>`;
+                let desigOptions = '';
+                if (role === 'SE') desigOptions = `<option value="Sales Executive" ${u.designation==='Sales Executive'?'selected':''}>Sales Executive</option>`;
+                else if (role === 'ASM') desigOptions = `<option value="Area Sales Manager" ${u.designation==='Area Sales Manager'?'selected':''}>Area Sales Manager</option>`;
+                else if (role === 'RSM') desigOptions = `<option value="Regional Sales Manager" ${u.designation==='Regional Sales Manager'?'selected':''}>Regional Sales Manager</option>`;
+                else if (role === 'DA') desigOptions = `<option value="Delivery Assistant" ${u.designation==='Delivery Assistant'?'selected':''}>Delivery Assistant</option>`;
+                else if (role === 'OPERATOR') desigOptions = `<option value="Computer Operator" ${u.designation==='Computer Operator'?'selected':''}>Computer Operator</option>`;
+                else if (role === 'AC') desigOptions = `<option value="Accounts Officer" ${u.designation==='Accounts Officer'?'selected':''}>Accounts Officer</option>`;
+                else desigOptions = `<option value="${esc(u.designation || role)}">${esc(u.designation || role)}</option>`;
+
+                let personalInfoHtml = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label>Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div>
+                        <div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <div><label>Designation:</label><select id="u_designation" class="w98-select">${desigOptions}</select></div>
+                        <div><label>Joining Date:</label><input type="date" id="u_join_date" value="${esc(u.joinDate || '')}" class="w98-input"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <div><label>Status:</label><select id="u_emp_status" class="w98-select"><option value="Active" ${u.empStatus==='Active'?'selected':''}>Active</option><option value="Inactive" ${u.empStatus==='Inactive'?'selected':''}>Inactive</option></select></div>
+                        <div></div>
+                    </div>
+                </fieldset>`;
+                h = personalInfoHtml;
+
+                let assignmentHtml = '';
+                if (role === 'RSM') {
+                    assignmentHtml = `<div class="grid grid-cols-3 gap-2"><div><label>Region:</label><input type="text" id="u_region" value="${esc(u.region || '')}" class="w98-input"></div><div></div><div></div></div>`;
+                } else if (role === 'ASM') {
+                    assignmentHtml = `<div class="grid grid-cols-2 gap-2">
+                        <div><label>Assigned RSM:</label><select id="u_assigned_rsm" class="w98-select"><option value="">None</option>${rsmList.map(r => `<option value="${r.id}" ${u.assignedRSM===r.id?'selected':''}>${esc(r.name)}</option>`).join('')}</select></div>
+                        <div><label>Area:</label><input type="text" id="u_area" value="${esc(u.area || '')}" class="w98-input"></div>
+                    </div>`;
+                } else if (role === 'SE') {
+                    assignmentHtml = `<div class="grid grid-cols-3 gap-2">
+                        <div><label>Assigned RSM:</label><select id="u_assigned_rsm" class="w98-select"><option value="">None</option>${rsmList.map(r => `<option value="${r.id}" ${u.assignedRSM===r.id?'selected':''}>${esc(r.name)}</option>`).join('')}</select></div>
+                        <div><label>Assigned ASM:</label><select id="u_assigned_asm" class="w98-select"><option value="">None</option>${asmList.map(r => `<option value="${r.id}" ${u.assignedASM===r.id?'selected':''}>${esc(r.name)}</option>`).join('')}</select></div>
+                        <div><label>Territory:</label><input type="text" id="u_territory" value="${esc(u.territory || '')}" class="w98-input"></div>
+                    </div>`;
                 }
 
-                h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Designation:</label><input type="text" id="u_designation" value="${esc(u.designation || role)}" class="w98-input"></div><div><label>Joining Date:</label><input type="date" id="u_join_date" value="${esc(u.joinDate || '')}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Status:</label><select id="u_emp_status" class="w98-select"><option value="Active" ${u.empStatus==='Active'?'selected':''}>Active</option><option value="Inactive" ${u.empStatus==='Inactive'?'selected':''}>Inactive</option></select></div><div><label>NID:</label><input type="text" id="u_nid" value="${esc(u.nid || '')}" class="w98-input"></div></div><div class="mt-2"><label>Address:</label><input type="text" id="u_address" value="${esc(u.address || '')}" class="w98-input"></div></fieldset><fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Region & Hierarchy Assignment</legend><div class="grid grid-cols-3 gap-2"><div><label>Region:</label><input type="text" id="u_region" value="${esc(u.region || '')}" class="w98-input"></div><div><label>Area:</label><input type="text" id="u_area" value="${esc(u.area || '')}" class="w98-input"></div><div><label>Territory:</label><input type="text" id="u_territory" value="${esc(u.territory || '')}" class="w98-input"></div></div>${hierarchyHtml ? `<div class="grid grid-cols-3 gap-2 mt-2">${hierarchyHtml}</div>` : ''}</fieldset>`;
-                
-                if (role !== 'DA' && role !== 'OPERATOR') {
-                    h += `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Salary & Target</legend><div class="grid grid-cols-2 gap-2"><div><label>Monthly Target (৳):</label><input type="number" id="u_target" value="${u.target || 0}" class="w98-input"></div><div><label>Basic Salary (৳):</label><input type="number" id="u_salary" value="${u.basicSalary || 0}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>TA (Monthly ৳):</label><input type="number" id="u_ta" value="${u.ta || 0}" class="w98-input"></div><div><label>DA (Monthly ৳):</label><input type="number" id="u_da" value="${u.da || 0}" class="w98-input"></div></div></fieldset>`;
-                }
+                if (assignmentHtml) h += `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Region & Hierarchy Assignment</legend>${assignmentHtml}</fieldset>`;
             } else if (role === 'DEALER' || role === 'RETAILER' || role === 'HOCKER') {
-                h = `<fieldset class="border border-black p-2 mt-2">
-                        <legend class="text-xs font-bold">Financial Information</legend>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label>Opening Due (৳):</label>
-                                <input type="number" id="u_due" value="${u.due || 0}" class="w98-input">
-                            </div>
-                            ${role === 'RETAILER' ? `
-                            <div>
-                                <label>Special Customer:</label>
-                                <select id="u_special" class="w98-select">
-                                    <option value="No" ${u.isSpecial === 'No' || !u.isSpecial ? 'selected' : ''}>No</option>
-                                    <option value="Yes" ${u.isSpecial === 'Yes' ? 'selected' : ''}>Yes</option>
-                                </select>
-                            </div>` : ''}
-                        </div>
-                    </fieldset>`;
+                h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Financial Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Opening Due (৳):</label><input type="number" id="u_due" value="${u.due || 0}" class="w98-input"></div>${role === 'RETAILER' ? `<div><label>Special Customer:</label><select id="u_special" class="w98-select"><option value="No" ${u.isSpecial === 'No' || !u.isSpecial ? 'selected' : ''}>No</option><option value="Yes" ${u.isSpecial === 'Yes' ? 'selected' : ''}>Yes</option></select></div>` : ''}</div></fieldset>`;
             } else { 
-                h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Full Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div></div><div class="mt-2"><label>Address:</label><textarea id="u_address" class="w98-textarea">${esc(u.address || '')}</textarea></div></fieldset>`; 
+                h = `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Personal Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Full Name:</label><input type="text" id="u_name" value="${esc(u.name || '')}" class="w98-input" required></div><div><label>Mobile:</label><input type="text" id="u_mobile" value="${esc(u.mobile || '')}" class="w98-input"></div></div></fieldset>`; 
             }
             c.innerHTML = h;
         }
 
-        function addEmployee() { openModal('Add System User', `<form onsubmit="saveEmployee(event, '')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value)" class="w98-select"><option value="ADMIN">Admin</option><option value="OPERATOR">Operator</option><option value="RSM">RSM</option><option value="ASM">ASM</option><option value="SE">SE</option><option value="DA">DA</option></select></div><div><label>Username (Login):</label><input type="text" id="u_username" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save User</button></div></form>`); renderRoleFields('ADMIN'); }
+        function addEmployee() { openModal('Add System User', `<form onsubmit="saveEmployee(event, '')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value)" class="w98-select"><option value="ADMIN">Admin</option><option value="OPERATOR">Operator</option><option value="AC">Accounts Officer</option><option value="RSM">RSM</option><option value="ASM">ASM</option><option value="SE">SE</option><option value="DA">DA</option></select></div><div><label>Username (Login):</label><input type="text" id="u_username" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save User</button></div></form>`); renderRoleFields('ADMIN'); }
         
         function editEmployee(id) { 
             const u = State.users.find(x => x.id === id); 
-            const isEmp = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(u.role);
-            const roleOptions = `
-                <option value="ADMIN" ${u.role==='ADMIN'?'selected':''}>Admin</option>
-                <option value="OPERATOR" ${u.role==='OPERATOR'?'selected':''}>Operator</option>
-                <option value="RSM" ${u.role==='RSM'?'selected':''}>RSM</option>
-                <option value="ASM" ${u.role==='ASM'?'selected':''}>ASM</option>
-                <option value="SE" ${u.role==='SE'?'selected':''}>SE</option>
-                <option value="DA" ${u.role==='DA'?'selected':''}>DA</option>
-            `;
+            const roleOptions = `<option value="ADMIN" ${u.role==='ADMIN'?'selected':''}>Admin</option><option value="OPERATOR" ${u.role==='OPERATOR'?'selected':''}>Operator</option><option value="AC" ${u.role==='AC'?'selected':''}>Accounts Officer</option><option value="RSM" ${u.role==='RSM'?'selected':''}>RSM</option><option value="ASM" ${u.role==='ASM'?'selected':''}>ASM</option><option value="SE" ${u.role==='SE'?'selected':''}>SE</option><option value="DA" ${u.role==='DA'?'selected':''}>DA</option>`;
             openModal('Edit Employee', `<form onsubmit="saveEmployee(event, '${u.id}')"><div class="mb-3 flex flex-col items-center"><img id="u_img_preview" src="${u.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Role:</label><select id="u_role" onchange="renderRoleFields(this.value, ${JSON.stringify(u).replace(/"/g, '&quot;')})" class="w98-select" disabled>${roleOptions}</select></div><div><label>Username:</label><input type="text" id="u_username" value="${esc(u.username || '')}" class="w98-input" required></div></div><div class="mb-2"><label>Password:</label><input type="text" id="u_password" value="${esc(u.password || '')}" class="w98-input" required></div><div id="role-specific-fields"></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update Employee</button></div></form>`); 
             renderRoleFields(u.role, u); 
         }
@@ -515,13 +598,13 @@
             const val = (id) => document.getElementById(id)?.value || ''; 
             const role = val('u_role'); 
             const data = { 
-                username: val('u_username'), password: val('u_password'), role: role, name: val('u_name'), mobile: val('u_mobile'), address: val('u_address'), nid: val('u_nid'), designation: val('u_designation'), joinDate: val('u_join_date'), empStatus: val('u_emp_status'), target: parseFloat(val('u_target') || 0), basicSalary: parseFloat(val('u_salary') || 0), ta: parseFloat(val('u_ta') || 0), da: parseFloat(val('u_da') || 0), region: val('u_region'), area: val('u_area'), territory: val('u_territory'), assignedRSM: val('u_assigned_rsm'), assignedASM: val('u_assigned_asm'), assignedSE: val('u_assigned_se'), status: 'Active' 
+                username: val('u_username'), password: val('u_password'), role: role, name: val('u_name'), mobile: val('u_mobile'), designation: val('u_designation'), joinDate: val('u_join_date'), empStatus: val('u_emp_status'), target: parseFloat(val('u_target') || 0), basicSalary: parseFloat(val('u_salary') || 0), ta: parseFloat(val('u_ta') || 0), da: parseFloat(val('u_da') || 0), region: val('u_region'), area: val('u_area'), territory: val('u_territory'), assignedRSM: val('u_assigned_rsm'), assignedASM: val('u_assigned_asm'), assignedSE: val('u_assigned_se'), status: 'Active' 
             }; 
             const s = (u) => { 
                 if(u) data.image = u; 
                 if (id) db.ref('users/' + id).update(data); 
                 else { 
-                    const rP = { 'ADMIN': 'RFPA', 'OPERATOR': 'RFPOP', 'RSM': 'RFPRSM', 'ASM': 'RFPASM', 'SE': 'RFPSE', 'DA': 'RFPDA' }; 
+                    const rP = { 'ADMIN': 'RFPA', 'OPERATOR': 'RFPOP', 'AC': 'RFPAC', 'RSM': 'RFPRSM', 'ASM': 'RFPASM', 'SE': 'RFPSE', 'DA': 'RFPDA' }; 
                     const p = rP[role] || 'RFPX'; 
                     const rU = State.users.filter(u => u.userCode && u.userCode.startsWith(p)); 
                     let mS = 0; rU.forEach(u => { const s = parseInt(u.userCode.slice(p.length)); if (!isNaN(s) && s > mS) mS = s; }); 
@@ -537,208 +620,37 @@
         function deleteEmployee(id) { if (confirm('Are you sure?')) db.ref('users/' + id).remove(); }
 
         function addCustomer() {
-            const isSalesTeam = ['OPERATOR', 'RSM', 'ASM', 'SE'].includes(State.currentUser.role);
+            const isSalesTeam = ['OPERATOR', 'AC', 'RSM', 'ASM', 'SE'].includes(State.currentUser.role);
             const roleOptions = isSalesTeam 
                 ? `<option value="RETAILER" selected>Retailer (R)</option>` 
-                : `<option value="RETAILER" selected>Retailer (R)</option>
-                   <option value="HOCKER">Hocker (H)</option>
-                   <option value="DEALER">Dealer (D)</option>`;
+                : `<option value="RETAILER" selected>Retailer (R)</option><option value="HOCKER">Hocker (H)</option><option value="DEALER">Dealer (D)</option>`;
 
             const role = State.currentUser.role;
             const allSEs = State.users.filter(u => u.role === 'SE');
             let assignSEHtml = '';
             
             if (role === 'SE') {
-                assignSEHtml = `
-                    <select id="u_assigned_se" class="w98-select" required>
-                        <option value="${State.currentUser.id}" selected>${esc(State.currentUser.name)} (Self)</option>
-                    </select>
-                    <p class="text-[10px] text-gray-600 mt-1"><i class="fas fa-info-circle mr-1"></i>You can only assign customers to yourself.</p>
-                `;
-            } else if (role === 'ADMIN' || role === 'OPERATOR') {
-                assignSEHtml = `
-                    <select id="u_assigned_se" class="w98-select">
-                        <option value="">None (Admin Direct)</option>
-                        ${allSEs.map(s => `<option value="${s.id}">${esc(s.name)} (${esc(s.userCode || 'SE')})</option>`).join('')}
-                    </select>
-                `;
+                assignSEHtml = `<select id="u_assigned_se" class="w98-select" required><option value="${State.currentUser.id}" selected>${esc(State.currentUser.name)} (Self)</option></select><p class="text-[10px] text-gray-600 mt-1"><i class="fas fa-info-circle mr-1"></i>You can only assign customers to yourself.</p>`;
+            } else if (role === 'ADMIN' || role === 'OPERATOR' || role === 'AC') {
+                assignSEHtml = `<select id="u_assigned_se" class="w98-select"><option value="">None (Admin Direct)</option>${allSEs.map(s => `<option value="${s.id}">${esc(s.name)} (${esc(s.userCode || 'SE')})</option>`).join('')}</select>`;
             } else if (role === 'RSM' || role === 'ASM') {
                 const teamSEs = allSEs.filter(s => role === 'RSM' ? s.assignedRSM === State.currentUser.id : s.assignedASM === State.currentUser.id);
-                assignSEHtml = `
-                    <select id="u_assigned_se" class="w98-select">
-                        <option value="">None</option>
-                        ${teamSEs.map(s => `<option value="${s.id}">${esc(s.name)} (${esc(s.userCode || 'SE')})</option>`).join('')}
-                    </select>
-                `;
+                assignSEHtml = `<select id="u_assigned_se" class="w98-select"><option value="">None</option>${teamSEs.map(s => `<option value="${s.id}">${esc(s.name)} (${esc(s.userCode || 'SE')})</option>`).join('')}</select>`;
             }
 
-            const assignSESection = (role !== 'DA') ? `
-                <fieldset class="border border-black p-2 mt-2">
-                    <legend class="text-xs font-bold">Assignment</legend>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label>Assign SE:</label>
-                            ${assignSEHtml}
-                        </div>
-                    </div>
-                </fieldset>
-            ` : '';
+            const assignSESection = (role !== 'DA') ? `<fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Assignment</legend><div class="grid grid-cols-2 gap-2"><div><label>Assign SE:</label>${assignSEHtml}</div></div></fieldset>` : '';
 
-            openModal('Add New Customer', `
-                <form onsubmit="saveCustomer(event, '')">
-                    <div class="win98-titlebar mb-3">
-                        <span><i class="fas fa-store mr-2"></i>Customer Information</span>
-                    </div>
-                    <div class="grid grid-cols-3 gap-3 mb-3">
-                        <div class="col-span-1 flex flex-col items-center">
-                            <label class="block mb-1 text-xs font-bold">Shop Image</label>
-                            <img id="u_img_preview" src="https://via.placeholder.com/100" 
-                                 class="w-24 h-24 mb-2 border-2 border-black object-cover">
-                            <input type="file" id="u_image" accept="image/*" 
-                                   onchange="previewUserImage(this)" class="text-xs">
-                        </div>
-                        <div class="col-span-2 grid grid-cols-1 gap-2">
-                            <div>
-                                <label class="block mb-1 text-xs">Shop ID / Code:</label>
-                                <input type="text" class="w98-input" value="Auto Generated" 
-                                       disabled style="background:#f0f0f0;">
-                            </div>
-                            <div>
-                                <label class="block mb-1 text-xs">Customer Type <span class="text-red-600">*</span>:</label>
-                                <select id="u_role" onchange="renderRoleFields(this.value)" 
-                                        class="w98-select" ${isSalesTeam ? 'disabled' : ''} required>
-                                    ${roleOptions}
-                                </select>
-                                ${isSalesTeam ? '<input type="hidden" id="u_role_hidden" value="RETAILER">' : ''}
-                            </div>
-                        </div>
-                    </div>
-                    <fieldset class="border border-black p-2">
-                        <legend class="text-xs font-bold">Required Information</legend>
-                        <div class="grid grid-cols-2 gap-2 mb-2">
-                            <div>
-                                <label class="block mb-1 text-xs">Shop Name <span class="text-red-600">*</span>:</label>
-                                <input type="text" id="u_shop" class="w98-input" required>
-                            </div>
-                            <div>
-                                <label class="block mb-1 text-xs">Owner / Proprietor Name <span class="text-red-600">*</span>:</label>
-                                <input type="text" id="u_name" class="w98-input" required>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 mb-2">
-                            <div>
-                                <label class="block mb-1 text-xs">Mobile Number <span class="text-red-600">*</span>:</label>
-                                <input type="text" id="u_mobile" class="w98-input" required pattern="[0-9+]{11,14}">
-                            </div>
-                            <div>
-                                <label class="block mb-1 text-xs">Trade License No.:</label>
-                                <input type="text" id="u_trade_lic" class="w98-input">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block mb-1 text-xs">Address <span class="text-red-600">*</span>:</label>
-                            <textarea id="u_address" class="w98-textarea" required></textarea>
-                        </div>
-                    </fieldset>
-                    ${assignSESection}
-                    <div id="role-specific-fields"></div>
-                    <div class="flex justify-end mt-4 gap-2">
-                        <button type="button" onclick="closeModal()" class="w98-btn">Cancel</button>
-                        <button type="submit" class="w98-btn">
-                            <i class="fas fa-save mr-1"></i> Save Customer
-                        </button>
-                    </div>
-                </form>
-            `); 
+            openModal('Add New Customer', `<form onsubmit="saveCustomer(event, '')"><div class="win98-titlebar mb-3"><span><i class="fas fa-store mr-2"></i>Customer Information</span></div><div class="grid grid-cols-3 gap-3 mb-3"><div class="col-span-1 flex flex-col items-center"><label class="block mb-1 text-xs font-bold">Shop Image</label><img id="u_img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black object-cover"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="col-span-2 grid grid-cols-1 gap-2"><div><label class="block mb-1 text-xs">Shop ID / Code:</label><input type="text" class="w98-input" value="Auto Generated" disabled style="background:#f0f0f0;"></div><div><label class="block mb-1 text-xs">Customer Type <span class="text-red-600">*</span>:</label><select id="u_role" onchange="renderRoleFields(this.value)" class="w98-select" ${isSalesTeam ? 'disabled' : ''} required>${roleOptions}</select>${isSalesTeam ? '<input type="hidden" id="u_role_hidden" value="RETAILER">' : ''}</div></div></div><fieldset class="border border-black p-2"><legend class="text-xs font-bold">Required Information</legend><div class="grid grid-cols-2 gap-2 mb-2"><div><label class="block mb-1 text-xs">Shop Name <span class="text-red-600">*</span>:</label><input type="text" id="u_shop" class="w98-input" required></div><div><label class="block mb-1 text-xs">Owner / Proprietor Name <span class="text-red-600">*</span>:</label><input type="text" id="u_name" class="w98-input" required></div></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label class="block mb-1 text-xs">Mobile Number <span class="text-red-600">*</span>:</label><input type="text" id="u_mobile" class="w98-input" required pattern="[0-9+]{11,14}"></div><div><label class="block mb-1 text-xs">Trade License No.:</label><input type="text" id="u_trade_lic" class="w98-input"></div></div><div><label class="block mb-1 text-xs">Address <span class="text-red-600">*</span>:</label><textarea id="u_address" class="w98-textarea" required></textarea></div></fieldset>${assignSESection}<div id="role-specific-fields"></div><div class="flex justify-end mt-4 gap-2"><button type="button" onclick="closeModal()" class="w98-btn">Cancel</button><button type="submit" class="w98-btn"><i class="fas fa-save mr-1"></i> Save Customer</button></div></form>`); 
             renderRoleFields('RETAILER');
         }
         
         function editCustomer(id) {
             const c = State.customers.find(x => x.id === id);
-            const roleOptions = `
-                <option value="RETAILER" ${c.role==='RETAILER'?'selected':''}>Retailer</option>
-                <option value="DEALER" ${c.role==='DEALER'?'selected':''}>Dealer</option>
-                <option value="HOCKER" ${c.role==='HOCKER'?'selected':''}>Hocker</option>
-            `;
+            const roleOptions = `<option value="RETAILER" ${c.role==='RETAILER'?'selected':''}>Retailer</option><option value="DEALER" ${c.role==='DEALER'?'selected':''}>Dealer</option><option value="HOCKER" ${c.role==='HOCKER'?'selected':''}>Hocker</option>`;
             const allSEs = State.users.filter(u => u.role === 'SE');
             const seOptions = `<option value="">None (Admin Direct)</option>${allSEs.map(s => `<option value="${s.id}" ${c.assignedSE===s.id?'selected':''}>${esc(s.name)} (${esc(s.userCode || 'SE')})</option>`).join('')}`;
             
-            openModal('Edit Customer', `
-                <form onsubmit="saveCustomer(event, '${c.id}')">
-                    <div class="win98-titlebar mb-3">
-                        <span><i class="fas fa-store mr-2"></i>Customer Information</span>
-                    </div>
-                    <div class="grid grid-cols-3 gap-3 mb-3">
-                        <div class="col-span-1 flex flex-col items-center">
-                            <label class="block mb-1 text-xs font-bold">Shop Image</label>
-                            <img id="u_img_preview" src="${c.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black object-cover">
-                            <input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs">
-                        </div>
-                        <div class="col-span-2 grid grid-cols-1 gap-2">
-                            <div>
-                                <label class="block mb-1 text-xs">Shop ID / Code:</label>
-                                <input type="text" class="w98-input" value="${esc(c.userCode || 'N/A')}" disabled style="background:#f0f0f0;">
-                            </div>
-                            <div>
-                                <label class="block mb-1 text-xs">Customer Type:</label>
-                                <select id="u_role" class="w98-select" disabled>${roleOptions}</select>
-                            </div>
-                        </div>
-                    </div>
-                    <fieldset class="border border-black p-2">
-                        <legend class="text-xs font-bold">Required Information</legend>
-                        <div class="grid grid-cols-2 gap-2 mb-2">
-                            <div>
-                                <label class="block mb-1 text-xs">Shop Name <span class="text-red-600">*</span>:</label>
-                                <input type="text" id="u_shop" value="${esc(c.shopName || '')}" class="w98-input" required>
-                            </div>
-                            <div>
-                                <label class="block mb-1 text-xs">Owner Name <span class="text-red-600">*</span>:</label>
-                                <input type="text" id="u_name" value="${esc(c.name || '')}" class="w98-input" required>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 mb-2">
-                            <div>
-                                <label class="block mb-1 text-xs">Mobile Number <span class="text-red-600">*</span>:</label>
-                                <input type="text" id="u_mobile" value="${esc(c.mobile || '')}" class="w98-input" required pattern="[0-9+]{11,14}">
-                            </div>
-                            <div>
-                                <label class="block mb-1 text-xs">Trade License No.:</label>
-                                <input type="text" id="u_trade_lic" value="${esc(c.tradeLicense || '')}" class="w98-input">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block mb-1 text-xs">Address <span class="text-red-600">*</span>:</label>
-                            <textarea id="u_address" class="w98-textarea" required>${esc(c.address || '')}</textarea>
-                        </div>
-                    </fieldset>
-                    <fieldset class="border border-black p-2 mt-2">
-                        <legend class="text-xs font-bold">Assignment</legend>
-                        <label>Assign SE:</label>
-                        <select id="u_assigned_se" class="w98-select">${seOptions}</select>
-                    </fieldset>
-                    <fieldset class="border border-black p-2 mt-2">
-                        <legend class="text-xs font-bold">Financial Information</legend>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label>Opening Due (৳):</label>
-                                <input type="number" id="u_due" value="${c.due || 0}" class="w98-input">
-                            </div>
-                            <div>
-                                <label>Special Customer:</label>
-                                <select id="u_special" class="w98-select">
-                                    <option value="No" ${c.isSpecial === 'No' || !c.isSpecial ? 'selected' : ''}>No</option>
-                                    <option value="Yes" ${c.isSpecial === 'Yes' ? 'selected' : ''}>Yes</option>
-                                </select>
-                            </div>
-                        </div>
-                    </fieldset>
-                    <div class="flex justify-end mt-4 gap-2">
-                        <button type="button" onclick="closeModal()" class="w98-btn">Cancel</button>
-                        <button type="submit" class="w98-btn"><i class="fas fa-save mr-1"></i> Update Customer</button>
-                    </div>
-                </form>
-            `);
+            openModal('Edit Customer', `<form onsubmit="saveCustomer(event, '${c.id}')"><div class="win98-titlebar mb-3"><span><i class="fas fa-store mr-2"></i>Customer Information</span></div><div class="grid grid-cols-3 gap-3 mb-3"><div class="col-span-1 flex flex-col items-center"><label class="block mb-1 text-xs font-bold">Shop Image</label><img id="u_img_preview" src="${c.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black object-cover"><input type="file" id="u_image" accept="image/*" onchange="previewUserImage(this)" class="text-xs"></div><div class="col-span-2 grid grid-cols-1 gap-2"><div><label class="block mb-1 text-xs">Shop ID / Code:</label><input type="text" class="w98-input" value="${esc(c.userCode || 'N/A')}" disabled style="background:#f0f0f0;"></div><div><label class="block mb-1 text-xs">Customer Type:</label><select id="u_role" class="w98-select" disabled>${roleOptions}</select></div></div></div><fieldset class="border border-black p-2"><legend class="text-xs font-bold">Required Information</legend><div class="grid grid-cols-2 gap-2 mb-2"><div><label class="block mb-1 text-xs">Shop Name <span class="text-red-600">*</span>:</label><input type="text" id="u_shop" value="${esc(c.shopName || '')}" class="w98-input" required></div><div><label class="block mb-1 text-xs">Owner Name <span class="text-red-600">*</span>:</label><input type="text" id="u_name" value="${esc(c.name || '')}" class="w98-input" required></div></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label class="block mb-1 text-xs">Mobile Number <span class="text-red-600">*</span>:</label><input type="text" id="u_mobile" value="${esc(c.mobile || '')}" class="w98-input" required pattern="[0-9+]{11,14}"></div><div><label class="block mb-1 text-xs">Trade License No.:</label><input type="text" id="u_trade_lic" value="${esc(c.tradeLicense || '')}" class="w98-input"></div></div><div><label class="block mb-1 text-xs">Address <span class="text-red-600">*</span>:</label><textarea id="u_address" class="w98-textarea" required>${esc(c.address || '')}</textarea></div></fieldset><fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Assignment</legend><label>Assign SE:</label><select id="u_assigned_se" class="w98-select">${seOptions}</select></fieldset><fieldset class="border border-black p-2 mt-2"><legend class="text-xs font-bold">Financial Information</legend><div class="grid grid-cols-2 gap-2"><div><label>Opening Due (৳):</label><input type="number" id="u_due" value="${c.due || 0}" class="w98-input"></div><div><label>Special Customer:</label><select id="u_special" class="w98-select"><option value="No" ${c.isSpecial === 'No' || !c.isSpecial ? 'selected' : ''}>No</option><option value="Yes" ${c.isSpecial === 'Yes' ? 'selected' : ''}>Yes</option></select></div></div></fieldset><div class="flex justify-end mt-4 gap-2"><button type="button" onclick="closeModal()" class="w98-btn">Cancel</button><button type="submit" class="w98-btn"><i class="fas fa-save mr-1"></i> Update Customer</button></div></form>`);
         }
 
         function saveCustomer(e, id) {
@@ -761,16 +673,9 @@
             const val = (id) => document.getElementById(id)?.value || '';
             
             const data = {
-                role: role,
-                name: ownerName,
-                shopName: shopName,
-                mobile: mobile,
-                address: address,
-                tradeLicense: val('u_trade_lic'),
-                due: parseFloat(val('u_due') || 0),
-                isSpecial: val('u_special') || 'No',
-                status: 'Active',
-                createdDate: new Date().toISOString()
+                role: role, name: ownerName, shopName: shopName, mobile: mobile, address: address,
+                tradeLicense: val('u_trade_lic'), due: parseFloat(val('u_due') || 0), isSpecial: val('u_special') || 'No',
+                status: 'Active', createdDate: new Date().toISOString()
             };
             
             const selectedSE = val('u_assigned_se');
@@ -821,7 +726,7 @@
             }
 
             State.cart = []; 
-            const isC = !['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role); 
+            const isC = !['ADMIN', 'OPERATOR', 'AC', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role); 
             const isSM = ['RSM', 'ASM', 'SE'].includes(State.currentUser.role);
             
             let custTypeOptions = '';
@@ -860,7 +765,7 @@
         
         function handleCustomerTypeChange() { 
             const t = document.getElementById('cust_type').value; 
-            const isC = !['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role); 
+            const isC = !['ADMIN', 'OPERATOR', 'AC', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role); 
             if (isC) { 
                 document.getElementById('cust_search').value = State.currentUser.name; 
                 document.getElementById('cust_id').value = State.currentUser.id;
@@ -902,16 +807,7 @@
             if(State.cart.length === 0) {
                 cT.innerHTML = `<tr><td colspan="4" class="text-center p-4">Cart is empty</td></tr>`; 
             } else {
-                cT.innerHTML = State.cart.map(i => `<tr class="border-b border-gray-400">
-                    <td class="py-1">${esc(i.name || 'N/A')}</td>
-                    <td class="py-1 text-center">
-                        <button onclick="changeQty('${i.id}', 'dec')" class="w98-btn" style="padding: 0 4px; min-width: 0;">-</button> 
-                        <input type="number" min="1" value="${i.qty || 0}" onchange="updateQtyDirect('${i.id}', this.value)" style="width: 50px; text-align: center; padding: 2px; display: inline-block;" class="w98-input"> 
-                        <button onclick="changeQty('${i.id}', 'inc')" class="w98-btn" style="padding: 0 4px; min-width: 0;">+</button>
-                    </td>
-                    <td class="py-1 text-right">৳${((i.qty || 0) * (i.price || 0)).toFixed(2)}</td>
-                    <td class="py-1 text-center"><button onclick="removeFromCart('${i.id}')" class="w98-btn" style="padding: 0 4px; min-width: 0; color: red; font-weight: bold;" title="Delete"><i class="fas fa-trash"></i></button></td>
-                </tr>`).join(''); 
+                cT.innerHTML = State.cart.map(i => `<tr class="border-b border-gray-400"><td class="py-1">${esc(i.name || 'N/A')}</td><td class="py-1 text-center"><button onclick="changeQty('${i.id}', 'dec')" class="w98-btn" style="padding: 0 4px; min-width: 0;">-</button> <input type="number" min="1" value="${i.qty || 0}" onchange="updateQtyDirect('${i.id}', this.value)" style="width: 50px; text-align: center; padding: 2px; display: inline-block;" class="w98-input"> <button onclick="changeQty('${i.id}', 'inc')" class="w98-btn" style="padding: 0 4px; min-width: 0;">+</button></td><td class="py-1 text-right">৳${((i.qty || 0) * (i.price || 0)).toFixed(2)}</td><td class="py-1 text-center"><button onclick="removeFromCart('${i.id}')" class="w98-btn" style="padding: 0 4px; min-width: 0; color: red; font-weight: bold;" title="Delete"><i class="fas fa-trash"></i></button></td></tr>`).join(''); 
             }
             let g = State.cart.reduce((s, i) => s + ((i.qty || 0) * (i.price || 0)), 0); 
             document.getElementById('gross_total').innerText = `৳ ${g.toFixed(2)}`; 
@@ -987,13 +883,13 @@
 
         function renderInvoices() {
             const role = State.currentUser.role;
-            const iA = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
+            const iA = ['ADMIN', 'OPERATOR', 'AC', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
             const canAccept = ['ADMIN', 'OPERATOR'].includes(role);
             const canDeliver = ['ADMIN', 'DA'].includes(role);
-            const canAddCollection = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
+            const canAddCollection = ['ADMIN', 'OPERATOR', 'AC', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
             
             let oS = [];
-            if (role === 'ADMIN' || role === 'OPERATOR' || role === 'DA') {
+            if (role === 'ADMIN' || role === 'OPERATOR' || role === 'AC' || role === 'DA') {
                 oS = State.orders;
             } else if (role === 'RSM') {
                 const seIds = State.users.filter(u => u.role === 'SE' && u.assignedRSM === State.currentUser.id).map(u => u.id);
@@ -1026,22 +922,7 @@
         function addCollection(id) {
             const o = State.orders.find(x => x.id === id);
             if(!o) return alert('Order not found!');
-            openModal('Add Collection', `<form onsubmit="saveCollection(event, '${id}')">
-                <div class="mb-3 p-2 win98-inset">
-                    <p>Invoice: <strong>${esc(o.invoiceNo)}</strong></p>
-                    <p>Shop: <strong>${esc(o.customerShopName)}</strong></p>
-                    <p>Net Total: ৳ ${(o.netTotal || o.grossTotal || 0).toFixed(2)}</p>
-                    <p>Already Paid: ৳ ${(o.paid || 0).toFixed(2)}</p>
-                    <p>Current Due: ৳ <strong style="color:red;">${(o.due || 0).toFixed(2)}</strong></p>
-                </div>
-                <div class="mb-3">
-                    <label class="block mb-1">Collection Amount:</label>
-                    <input type="number" id="coll_amt" class="w98-input" required autofocus>
-                </div>
-                <div class="flex justify-end mt-4">
-                    <button type="submit" class="w98-btn">Save Collection</button>
-                </div>
-            </form>`);
+            openModal('Add Collection', `<form onsubmit="saveCollection(event, '${id}')"><div class="mb-3 p-2 win98-inset"><p>Invoice: <strong>${esc(o.invoiceNo)}</strong></p><p>Shop: <strong>${esc(o.customerShopName)}</strong></p><p>Net Total: ৳ ${(o.netTotal || o.grossTotal || 0).toFixed(2)}</p><p>Already Paid: ৳ ${(o.paid || 0).toFixed(2)}</p><p>Current Due: ৳ <strong style="color:red;">${(o.due || 0).toFixed(2)}</strong></p></div><div class="mb-3"><label class="block mb-1">Collection Amount:</label><input type="number" id="coll_amt" class="w98-input" required autofocus></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save Collection</button></div></form>`);
             setTimeout(() => { const input = document.getElementById('coll_amt'); if(input) { input.focus(); input.addEventListener('keypress', function(e) { if (e.key === 'Enter') { e.preventDefault(); saveCollection(e, id); } }); } }, 100);
         }
 
@@ -1061,17 +942,10 @@
                     if (c) {
                         const nCD = (c.due || 0) - amount;
                         db.ref('customers/' + o.customerId).update({ due: nCD }).then(() => {
-                            alert('Collection saved successfully!');
-                            closeModal();
+                            alert('Collection saved successfully!'); closeModal();
                         });
-                    } else {
-                        alert('Collection saved successfully!');
-                        closeModal();
-                    }
-                } else {
-                    alert('Collection saved successfully!');
-                    closeModal();
-                }
+                    } else { alert('Collection saved successfully!'); closeModal(); }
+                } else { alert('Collection saved successfully!'); closeModal(); }
             });
         }
         
@@ -1105,7 +979,7 @@
         
         function viewInvoice(id) {
             State.currentView = 'invoice_view'; const o = State.orders.find(x => x.id === id); if(!o) return alert('Invoice not found!');
-            const iA = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role);
+            const iA = ['ADMIN', 'OPERATOR', 'AC', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role);
             if (!iA && o.customerId !== State.currentUser.id) { return alert('Access Denied: You can only view your own invoices.'); }
 
             const gC = (t) => { 
@@ -1123,16 +997,16 @@
                     sdPercentText = p ? ` (${p}%)` : '';
                 }
 
-                return `<div class="invoice-box"><div class="copy-type">${t}</div><div class="inv-header"><div class="logo-section"><img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="Logo"></div><div class="company-info"><h1>Rafi Food Product</h1><p>প্রিমিয়াম কোয়ালিটি বেকারি ও ফুড আইটেম</p><p>ঠিকানা: Mosjid para Chuadanga, Chuadanga sadar-7200</p><p>ফোন: +৮৮০ 1756144900</p><p>ইমেইল: rafifoodproducts@gmail.com</p></div></div><table class="meta-table"><tr><td><strong>গ্রাহকের বিবরণ:</strong><br>গ্রাহকের আইডি: ${esc(o.customerCode || 'N/A')}<br>দোকানের নাম: ${esc(o.customerShopName || 'N/A')}<br>নাম: ${esc(o.customerName || 'N/A')}<br>ঠিকানা: ${esc(o.customerAddress || 'N/A')}<br>মোবাইল: ${toBn(o.customerMobile || 'N/A')}</td><td style="text-align: right;"><strong>ইনভয়েস নম্বর:</strong> ${esc(o.invoiceNo || 'N/A')}<br><strong>তারিখ:</strong> ${formatBnDate(o.orderDate)}<br><strong>স্ট্যাটাস:</strong> ${translateStatus(o.status)}<br><strong>অর্ডার গ্রহণকারী:</strong> ${esc(o.salesRole === 'ADMIN' ? 'Admin Sales' : (o.entryByName || o.entryBy || 'N/A'))}</td></tr></table><table class="details-table"><thead><tr><th>SL</th><th>পণ্যের বিবরণ</th><th>MRP (টাকা)</th><th>পরিমাণ</th><th>বিক্রয় মূল্য (টাকা)</th><th>মোট (টাকা)</th></tr></thead><tbody>${iH}</tbody></table><div class="totals-section"><table class="totals-table"><tr><td>সাব-টোটাল (Gross):</td><td>${toBn((o.grossTotal || 0).toFixed(2))} ৳</td></tr>${o.specialDiscount > 0 ? `<tr><td>স্পেশাল ডিসকাউন্ট${sdPercentText}:</td><td>- ${toBn((o.specialDiscount || 0).toFixed(2))} ৳</td></tr>` : ''}<tr><td>নেট টোটাল:</td><td>${toBn((o.netTotal || o.grossTotal || 0).toFixed(2))} ৳</td></tr><tr><td>পরিশোধিত:</td><td>${toBn((o.paid || 0).toFixed(2))} ৳</td></tr><tr><td>বকেয়া:</td><td>${toBn((o.due || 0).toFixed(2))} ৳</td></tr></table></div><div class="signatures"><div class="signature-box">গ্রাহকের স্বাক্ষর</div><div class="signature-box">অনুমোদিত স্বাক্ষর</div></div><div class="inv-footer"><p>আমাদের সাথে থাকার জন্য ধন্যবাদ! পণ্য ক্রয়ের জন্য আবার আমন্ত্রণ জানাচ্ছি।</p><p><strong>RafiFood Product</strong></p></div></div>`; 
+                return `<div class="invoice-box"><div class="copy-type">${t}</div><div class="inv-header"><div class="logo-section"><img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="Logo"></div><div class="company-info"><h1>Rafi Food Product</h1><p>প্রিমিয়াম কোয়ালিটি বেকারি ও ফুড আইটেম</p><p>ঠিকানা: Mosjid para Chuadanga, Chuadanga sadar-7200</p><p>ফোন: +৮৮০ 1756144900</p><p>ইমেইল: rafifoodproducts@gmail.com</p></div></div><table class="meta-table"><tr><td><strong>গ্রাহকের বিবরণ:</strong><br>গ্রাহকের আইডি: ${esc(o.customerCode || 'N/A')}<br>দোকানের নাম: ${esc(o.customerShopName || 'N/A')}<br>নাম: ${esc(o.customerName || 'N/A')}<br>ঠিকানা: ${esc(o.customerAddress || 'N/A')}<br>মোবাইল: ${toBn(o.customerMobile || 'N/A')}</td><td style="text-align: right;"><strong>ইনভয়েস নম্বর:</strong> ${esc(o.invoiceNo || 'N/A')}<br><strong>তারিখ:</strong> ${formatBnDate(o.orderDate)}<br><strong>স্ট্যাটাস:</strong> ${translateStatus(o.status)}<br><strong>অর্ডার গ্রহণকারী:</strong> ${esc(o.salesRole === 'ADMIN' ? 'Admin Sales' : (o.entryByName || o.entryBy || 'N/A'))}</td></tr></table><table class="details-table"><thead><tr><th>SL</th><th>পণ্যের বিবরণ</th><th>MRP (টাকা)</th><th>পরিমাণ</th><th>বিক্রয় মূল্য (টাকা)</th><th>মোট (টাকা)</th></tr></thead><tbody>${iH}</tbody></table><div class="totals-section"><table class="totals-table"><tr><td>সাব-টোটাল (Gross):</td><td>${toBn((o.grossTotal || 0).toFixed(2))} ৳</td></tr>${o.specialDiscount > 0 ? `<tr><td>স্পেশাল ডিসকাউন্ট${sdPercentText}:</td><td>- ${toBn((o.specialDiscount || 0).toFixed(2))} ৳</td></tr>` : ''}<tr><td>নেট টোটাল:</td><td>${toBn((o.netTotal || o.grossTotal || 0).toFixed(2))} ৳</td></tr><tr><td>পরিশোধিত:</td><td>${toBn((o.paid || 0).toFixed(2))} ৳</td></tr><tr><td>বকেয়া:</td><td>${toBn((o.due || 0).toFixed(2))} ৳</td></tr></table></div><div class="signatures"><div class="signature-box">গ্রাহকের স্বাক্ষর</div><div class="signature-box">অনুমোদিত স্বাক্ষর</div></div><div class="inv-footer"><p>আমাদের সাথে থাকার জন্য ধন্যবাদ! পণ্য ক্রয়ের জন্য আবার আমন্ত্রণ জানাচ্ছি।</p><p><strong>RafiFood Product</strong></p></div></div>`; 
             };
-            document.getElementById('main-content').innerHTML = `<div id="print-area"><div class="no-print" style="text-align:center;"><button class="back-btn" onclick="renderPage('delivery-summary')">Delivery Summary</button></div>${gC("Customer Copy")}<div class="page-break"></div>${gC("Office Copy")}<button class="print-btn no-print" onclick="window.print()">ইনভয়েস প্রিন্ট করুন / PDF সেভ করুন</button></div>`;
+            document.getElementById('main-content').innerHTML = `<div id="print-area"><div class="no-print" style="text-align:center;"><button class="back-btn" onclick="renderPage('delivery-summary')">Delivery Summary</button></div>${gC("Customer Copy")}<div class="page-break"></div>${gC("Office Copy")}<button class="print-btn no-print" onclick="window.print()">ইনভয়েস প্রিন্ট করুন / PDF সেভ করুন</button></div>`;
             window.scrollTo(0, 0);
         }
 
-        // --- Delivery Summary Module (Product-wise for DA) ---
+        // --- Delivery Summary Module ---
         function renderDeliverySummary() {
             const role = State.currentUser.role;
-            const isAdmin = role === 'ADMIN' || role === 'OPERATOR';
+            const isAdmin = role === 'ADMIN' || role === 'OPERATOR' || role === 'AC';
             const today = new Date().toISOString().slice(0, 10);
             const seOptions = State.users.filter(u => u.role === 'SE').map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('');
 
@@ -1192,52 +1066,26 @@
                 });
             });
 
-            const prodRows = Object.values(productSummary).map(p => `
-                <tr>
-                    <td>${esc(p.name || 'N/A')}</td>
-                    <td class="text-center font-bold text-base">${p.qty}</td>
-                    <td class="text-right">৳ ${(p.price || 0).toFixed(2)}</td>
-                </tr>
-            `).join('') || `<tr><td colspan="3" class="text-center p-4">No products to deliver.</td></tr>`;
+            const prodRows = Object.values(productSummary).map(p => `<tr><td>${esc(p.name || 'N/A')}</td><td class="text-center font-bold text-base">${p.qty}</td><td class="text-right">৳ ${(p.price || 0).toFixed(2)}</td></tr>`).join('') || `<tr><td colspan="3" class="text-center p-4">No products to deliver.</td></tr>`;
 
-            const orderRows = fOrders.map(o => `
-                <tr>
-                    <td>${esc(o.invoiceNo || 'N/A')}</td>
-                    <td>${esc(o.customerShopName || 'N/A')}</td>
-                    <td>${esc(o.customerAddress || 'N/A')}</td>
-                    <td>৳${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td>
-                    <td class="text-center"><button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button></td>
-                </tr>
-            `).join('') || `<tr><td colspan="5" class="text-center p-4">No accepted orders found for this date.</td></tr>`;
+            const orderRows = fOrders.map(o => `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${esc(o.customerShopName || 'N/A')}</td><td>${esc(o.customerAddress || 'N/A')}</td><td>৳${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td><td class="text-center"><button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button></td></tr>`).join('') || `<tr><td colspan="5" class="text-center p-4">No accepted orders found for this date.</td></tr>`;
 
             document.getElementById('delv_summary_area').innerHTML = `
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
-                    <div class="win98-outset p-2 text-center">
-                        <p class="text-xs">Total Orders to Deliver</p>
-                        <p class="text-lg font-bold">${totalOrders}</p>
-                    </div>
-                    <div class="win98-outset p-2 text-center">
-                        <p class="text-xs">Total Sales Amount</p>
-                        <p class="text-lg font-bold">৳ ${totalSales.toFixed(2)}</p>
-                    </div>
+                    <div class="win98-outset p-2 text-center"><p class="text-xs">Total Orders to Deliver</p><p class="text-lg font-bold">${totalOrders}</p></div>
+                    <div class="win98-outset p-2 text-center"><p class="text-xs">Total Sales Amount</p><p class="text-lg font-bold">৳ ${totalSales.toFixed(2)}</p></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div class="win98-window p-2">
                         <h4 class="font-bold mb-2 border-b pb-1">Product Pickup Summary</h4>
                         <div class="win98-inset p-1 overflow-x-auto max-h-[50vh]">
-                            <table class="w98-table text-xs">
-                                <thead><tr><th>Product Name</th><th class="text-center">Total Qty</th><th class="text-right">Rate</th></tr></thead>
-                                <tbody>${prodRows}</tbody>
-                            </table>
+                            <table class="w98-table text-xs"><thead><tr><th>Product Name</th><th class="text-center">Total Qty</th><th class="text-right">Rate</th></tr></thead><tbody>${prodRows}</tbody></table>
                         </div>
                     </div>
                     <div class="win98-window p-2">
                         <h4 class="font-bold mb-2 border-b pb-1">Customer Delivery List</h4>
                         <div class="win98-inset p-1 overflow-x-auto max-h-[50vh]">
-                            <table class="w98-table text-xs">
-                                <thead><tr><th>Invoice</th><th>Shop Name</th><th>Address</th><th>Total</th><th class="text-center">View</th></tr></thead>
-                                <tbody>${orderRows}</tbody>
-                            </table>
+                            <table class="w98-table text-xs"><thead><tr><th>Invoice</th><th>Shop Name</th><th>Address</th><th>Total</th><th class="text-center">View</th></tr></thead><tbody>${orderRows}</tbody></table>
                         </div>
                     </div>
                 </div>
@@ -1274,56 +1122,11 @@
                 });
             });
 
-            const prodRows = Object.values(productSummary).map(p => `
-                <tr>
-                    <td>${esc(p.name || 'N/A')}</td>
-                    <td style="text-align:center; font-weight:bold; font-size:14px;">${p.qty}</td>
-                    <td style="text-align:right;">${(p.price || 0).toFixed(2)}</td>
-                </tr>
-            `).join('') || `<tr><td colspan="3" style="text-align:center;">No products to deliver.</td></tr>`;
+            const prodRows = Object.values(productSummary).map(p => `<tr><td>${esc(p.name || 'N/A')}</td><td style="text-align:center; font-weight:bold; font-size:14px;">${p.qty}</td><td style="text-align:right;">${(p.price || 0).toFixed(2)}</td></tr>`).join('') || `<tr><td colspan="3" style="text-align:center;">No products to deliver.</td></tr>`;
 
-            const orderRows = fOrders.map(o => `
-                <tr>
-                    <td>${esc(o.invoiceNo || 'N/A')}</td>
-                    <td>${esc(o.customerShopName || 'N/A')}</td>
-                    <td>${esc(o.customerAddress || 'N/A')}</td>
-                    <td style="text-align:right;">${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td>
-                </tr>
-            `).join('') || `<tr><td colspan="4" style="text-align:center;">No accepted orders found.</td></tr>`;
+            const orderRows = fOrders.map(o => `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${esc(o.customerShopName || 'N/A')}</td><td>${esc(o.customerAddress || 'N/A')}</td><td style="text-align:right;">${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td></tr>`).join('') || `<tr><td colspan="4" style="text-align:center;">No accepted orders found.</td></tr>`;
 
-            const html = `
-                <html><head><title>Delivery Summary</title>
-                <style>
-                    body { font-family: Tahoma, sans-serif; margin: 20px; }
-                    h2 { text-align: center; margin-bottom: 5px; }
-                    p { text-align: center; margin-top: 0; }
-                    .summary-box { display: flex; justify-content: space-around; margin-bottom: 20px; border: 1px solid #000; padding: 10px; }
-                    .summary-box div { text-align: center; }
-                    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                    th, td { border: 1px solid #000; padding: 5px; font-size: 12px; text-align: left; }
-                    th { background: #e0e0e0; }
-                </style></head><body>
-                    <h2>RAFI FOOD - Delivery Summary</h2>
-                    <p>Date: ${dateVal} | SE: ${seName}</p>
-                    <div class="summary-box">
-                        <div><b>Total Orders:</b><br>${totalOrders}</div>
-                        <div><b>Total Sales:</b><br>৳ ${totalSales.toFixed(2)}</div>
-                        <div><b>Total Due:</b><br>৳ ${totalDue.toFixed(2)}</div>
-                    </div>
-                    
-                    <h3>Product Pickup List</h3>
-                    <table>
-                        <thead><tr><th>Product Name</th><th style="text-align:center;">Total Qty</th><th style="text-align:right;">Rate</th></tr></thead>
-                        <tbody>${prodRows}</tbody>
-                    </table>
-
-                    <h3>Customer Delivery List</h3>
-                    <table>
-                        <thead><tr><th>Invoice</th><th>Shop Name</th><th>Address</th><th style="text-align:right;">Total</th></tr></thead>
-                        <tbody>${orderRows}</tbody>
-                    </table>
-                </body></html>
-            `;
+            const html = `<html><head><title>Delivery Summary</title><style>body { font-family: Tahoma, sans-serif; margin: 20px; }h2 { text-align: center; margin-bottom: 5px; }p { text-align: center; margin-top: 0; }.summary-box { display: flex; justify-content: space-around; margin-bottom: 20px; border: 1px solid #000; padding: 10px; }.summary-box div { text-align: center; }table { width: 100%; border-collapse: collapse; margin-top: 10px; }th, td { border: 1px solid #000; padding: 5px; font-size: 12px; text-align: left; }th { background: #e0e0e0; }</style></head><body><h2>RAFI FOOD - Delivery Summary</h2><p>Date: ${dateVal} | SE: ${seName}</p><div class="summary-box"><div><b>Total Orders:</b><br>${totalOrders}</div><div><b>Total Sales:</b><br>৳ ${totalSales.toFixed(2)}</div><div><b>Total Due:</b><br>৳ ${totalDue.toFixed(2)}</div></div><h3>Product Pickup List</h3><table><thead><tr><th>Product Name</th><th style="text-align:center;">Total Qty</th><th style="text-align:right;">Rate</th></tr></thead><tbody>${prodRows}</tbody></table><h3>Customer Delivery List</h3><table><thead><tr><th>Invoice</th><th>Shop Name</th><th>Address</th><th style="text-align:right;">Total</th></tr></thead><tbody>${orderRows}</tbody></table></body></html>`;
             
             const iframe = document.createElement('iframe');
             iframe.style.position = "absolute"; iframe.style.width = "0px"; iframe.style.height = "0px"; iframe.style.border = "none";
@@ -1336,7 +1139,7 @@
 
         // --- Sales & Due Reports Module ---
         function renderReports() {
-            const iA = ['ADMIN', 'OPERATOR', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role);
+            const iA = ['ADMIN', 'OPERATOR', 'AC', 'RSM', 'ASM', 'SE', 'DA'].includes(State.currentUser.role);
             let shops = [];
             if (iA) {
                 let custUsers = State.customers;
@@ -1359,25 +1162,25 @@
             const isSE = role === 'SE';
             const isDA = role === 'DA';
             const isOP = role === 'OPERATOR';
+            const isAC = role === 'AC';
             
             let baseOrders = State.orders.filter(o => o.status === 'Delivered');
 
             if (isSE) {
                 const seCustIds = State.customers.filter(u => u.assignedSE === State.currentUser.id).map(u => u.id);
                 baseOrders = baseOrders.filter(o => seCustIds.includes(o.customerId) || o.entryBy === State.currentUser.id);
-            } else if (isDA || isOP) {
-                // DA/Operator sees all delivered orders for reporting
+            } else if (isDA || isOP || isAC) {
+                // DA/Operator/Accounts sees all delivered orders for reporting
             } else if (!isAdmin && !isRSM && !isASM) {
                 baseOrders = baseOrders.filter(o => o.customerId === State.currentUser.id);
             }
 
-            const shopFilter = (isAdmin || isRSM || isASM || isSE || isDA || isOP) ? (document.getElementById('report-shop-filter')?.value || '') : '';
+            const shopFilter = (isAdmin || isRSM || isASM || isSE || isDA || isOP || isAC) ? (document.getElementById('report-shop-filter')?.value || '') : '';
             const searchTerm = (document.getElementById('report-search')?.value || '').toLowerCase();
 
             const filteredOrders = baseOrders.filter(o => {
                 const matchShop = shopFilter ? (o.customerShopName === shopFilter) : true;
-                const matchText = (o.customerShopName || '').toLowerCase().includes(searchTerm) || 
-                                  (o.customerMobile || '').toLowerCase().includes(searchTerm);
+                const matchText = (o.customerShopName || '').toLowerCase().includes(searchTerm) || (o.customerMobile || '').toLowerCase().includes(searchTerm);
                 return matchShop && matchText;
             });
 
@@ -1410,29 +1213,12 @@
                     tColl += (o.paid || 0);
                     tDue += (o.due || 0);
                     
-                    html += `<tr>
-                        <td>${safeDate(o.orderDate)}</td>
-                        <td>${esc(o.invoiceNo || 'N/A')}</td>
-                        <td>${esc(o.customerShopName || 'N/A')}</td>
-                        <td>${esc(o.customerType || 'N/A')}</td>
-                        <td>৳${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td>
-                        <td>৳${(o.paid || 0).toFixed(2)}</td>
-                        <td>৳${(o.due || 0).toFixed(2)}</td>
-                        <td class="text-center"><button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button></td>
-                    </tr>`;
+                    html += `<tr><td>${safeDate(o.orderDate)}</td><td>${esc(o.invoiceNo || 'N/A')}</td><td>${esc(o.customerShopName || 'N/A')}</td><td>${esc(o.customerType || 'N/A')}</td><td>৳${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td><td>৳${(o.paid || 0).toFixed(2)}</td><td>৳${(o.due || 0).toFixed(2)}</td><td class="text-center"><button onclick="viewInvoice('${o.id}')" class="w98-btn" style="padding: 2px 6px;">View</button></td></tr>`;
                 });
 
-                html += `<tr class="cat-subtotal">
-                    <td colspan="4">Subtotal for ${esc(type)}</td>
-                    <td>৳${tSales.toFixed(2)}</td>
-                    <td>৳${tColl.toFixed(2)}</td>
-                    <td>৳${tDue.toFixed(2)}</td>
-                    <td></td>
-                </tr>`;
+                html += `<tr class="cat-subtotal"><td colspan="4">Subtotal for ${esc(type)}</td><td>৳${tSales.toFixed(2)}</td><td>৳${tColl.toFixed(2)}</td><td>৳${tDue.toFixed(2)}</td><td></td></tr>`;
 
-                gS += tSales;
-                gC += tColl;
-                gD += tDue;
+                gS += tSales; gC += tColl; gD += tDue;
             });
 
             if (html === '') {
@@ -1460,27 +1246,12 @@
                     tColl += (o.paid || 0);
                     tDue += (o.due || 0);
                     
-                    rows += `<tr>
-                        <td>${safeDate(o.orderDate)}</td>
-                        <td>${esc(o.invoiceNo || 'N/A')}</td>
-                        <td>${esc(o.customerShopName || 'N/A')}</td>
-                        <td>${esc(o.customerType || 'N/A')}</td>
-                        <td style="text-align:right;">${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td>
-                        <td style="text-align:right;">${(o.paid || 0).toFixed(2)}</td>
-                        <td style="text-align:right;">${(o.due || 0).toFixed(2)}</td>
-                    </tr>`;
+                    rows += `<tr><td>${safeDate(o.orderDate)}</td><td>${esc(o.invoiceNo || 'N/A')}</td><td>${esc(o.customerShopName || 'N/A')}</td><td>${esc(o.customerType || 'N/A')}</td><td style="text-align:right;">${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td><td style="text-align:right;">${(o.paid || 0).toFixed(2)}</td><td style="text-align:right;">${(o.due || 0).toFixed(2)}</td></tr>`;
                 });
 
-                rows += `<tr style="background:#dbeafe; font-weight:bold;">
-                    <td colspan="4">Subtotal for ${esc(type)}</td>
-                    <td style="text-align:right;">${tSales.toFixed(2)}</td>
-                    <td style="text-align:right;">${tColl.toFixed(2)}</td>
-                    <td style="text-align:right;">${tDue.toFixed(2)}</td>
-                </tr>`;
+                rows += `<tr style="background:#dbeafe; font-weight:bold;"><td colspan="4">Subtotal for ${esc(type)}</td><td style="text-align:right;">${tSales.toFixed(2)}</td><td style="text-align:right;">${tColl.toFixed(2)}</td><td style="text-align:right;">${tDue.toFixed(2)}</td></tr>`;
 
-                gS += tSales;
-                gC += tColl;
-                gD += tDue;
+                gS += tSales; gC += tColl; gD += tDue;
             });
 
             if (rows === '') rows = `<tr><td colspan="7" style="text-align:center;">No delivered records found.</td></tr>`;
@@ -1608,14 +1379,7 @@
             let orderTableHtml = '';
             if (role === 'SE' || role === 'ADMIN') {
                 const orderRows = fOrders.map(o => `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${safeDate(o.orderDate)}</td><td>${esc(o.customerShopName || 'N/A')}</td><td>৳${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td><td>৳${(o.paid || 0).toFixed(2)}</td></tr>`).join('') || `<tr><td colspan="5" class="text-center p-2">No orders found for this month.</td></tr>`;
-                orderTableHtml = `
-                    <div class="win98-inset p-2 overflow-x-auto">
-                        <h4 class="font-bold mb-2 border-b pb-1">Orders in ${monthVal}</h4>
-                        <table class="w98-table text-xs">
-                            <thead><tr><th>Invoice</th><th>Date</th><th>Shop Name</th><th>Sales</th><th>Collected</th></tr></thead>
-                            <tbody>${orderRows}</tbody>
-                        </table>
-                    </div>`;
+                orderTableHtml = `<div class="win98-inset p-2 overflow-x-auto"><h4 class="font-bold mb-2 border-b pb-1">Orders in ${monthVal}</h4><table class="w98-table text-xs"><thead><tr><th>Invoice</th><th>Date</th><th>Shop Name</th><th>Sales</th><th>Collected</th></tr></thead><tbody>${orderRows}</tbody></table></div>`;
             }
 
             const gridClass = orderTableHtml ? 'md:grid-cols-2' : '';
@@ -1686,12 +1450,7 @@
             let ordersTableHtml = '';
             if (role === 'SE' || role === 'ADMIN') {
                 const orderRows = fOrders.map(o => `<tr><td>${esc(o.invoiceNo || 'N/A')}</td><td>${safeDate(o.orderDate)}</td><td>${esc(o.customerShopName || 'N/A')}</td><td style="text-align:right;">${(o.netTotal || o.grossTotal || 0).toFixed(2)}</td><td style="text-align:right;">${(o.paid || 0).toFixed(2)}</td></tr>`).join('') || `<tr><td colspan="5" style="text-align:center;">No orders found for this month.</td></tr>`;
-                ordersTableHtml = `
-                    <table class="orders-table">
-                        <thead><tr><th>Invoice</th><th>Date</th><th>Shop Name</th><th class="right">Sales</th><th class="right">Collected</th></tr></thead>
-                        <tbody>${orderRows}</tbody>
-                    </table>
-                    <div style="clear:both;"></div>`;
+                ordersTableHtml = `<table class="orders-table"><thead><tr><th>Invoice</th><th>Date</th><th>Shop Name</th><th class="right">Sales</th><th class="right">Collected</th></tr></thead><tbody>${orderRows}</tbody></table><div style="clear:both;"></div>`;
             }
 
             const summaryWidth = ordersTableHtml ? 'width: 50%; float: right;' : 'width: 100%; margin: auto;';
@@ -1742,463 +1501,535 @@
         }
 
         // ============================================================
-        // ACHIEVEMENTREPORT MODULE
-// ============================================================
+        // ACHIEVEMENT REPORT MODULE (WITH MODERN TEMPLATE & AUTO-FIT)
+        // ============================================================
 
-function renderAchievementReport() {
-const role = State.currentUser.role;
-if (!['ADMIN', 'RSM', 'ASM'].includes(role)) {
-document.getElementById('main-content').innerHTML = '<div class="p-4">Access Denied</div>';
-return;
-}
+        function renderAchievementReport() {
+            const role = State.currentUser.role;
+            if (!['ADMIN', 'RSM', 'ASM'].includes(role)) {
+                document.getElementById('main-content').innerHTML = '<div class="p-4">Access Denied</div>';
+                return;
+            }
 
-const isAdmin = role === 'ADMIN';
-const currentMonth = new Date().toISOString().slice(0, 7);
-const rsmOptions = isAdmin
-? State.users.filter(u => u.role === 'RSM').map(r => `<option value="${r.id}">${esc(r.name)}</option>`).join('')
-: '';
+            const isAdmin = role === 'ADMIN';
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            const rsmOptions = isAdmin
+                ? State.users.filter(u => u.role === 'RSM').map(r => `<option value="${r.id}">${esc(r.name)}</option>`).join('')
+                : '';
 
-document.getElementById('main-content').innerHTML = `
-<div class="win98-window p-2">
-<div class="win98-titlebar mb-2">Achievement Report</div>
-<div class="p-2 flex flex-col md:flex-row gap-2 items-end mb-4">
-<div class="w-full md:w-auto">
-<label class="block mb-1">Month:</label>
-<input type="month" id="ach_month" class="w98-input" value="${currentMonth}" onchange="calcAchievementReport()">
-</div>
-${isAdmin ? `
-<div class="w-full md:w-auto">
-<label class="block mb-1">Filter RSM:</label>
-<select id="ach_rsm_filter" class="w98-select" onchange="calcAchievementReport()">
-<option value="">All RSM</option>
-${rsmOptions}
-</select>
-</div>` : ''}
-<button onclick="printAchievementReport()" class="w98-btn"><i class="fas fa-print mr-1"></i> Print</button>
-</div>
-<div id="ach_report_area" class="text-center p-4 text-gray-500">
-<i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-<p>Loading report...</p>
-</div>
-</div>
-`;
-calcAchievementReport();
-}
+            document.getElementById('main-content').innerHTML = `
+                <div class="win98-window p-2">
+                    <div class="win98-titlebar mb-2">Achievement Report</div>
+                    <div class="p-2 flex flex-col md:flex-row gap-2 items-end mb-4">
+                        <div class="w-full md:w-auto">
+                            <label class="block mb-1">Month:</label>
+                            <input type="month" id="ach_month" class="w98-input" value="${currentMonth}" onchange="calcAchievementReport()">
+                        </div>
+                        ${isAdmin ? `
+                        <div class="w-full md:w-auto">
+                            <label class="block mb-1">Filter RSM:</label>
+                            <select id="ach_rsm_filter" class="w98-select" onchange="calcAchievementReport()">
+                                <option value="">All RSM</option>
+                                ${rsmOptions}
+                            </select>
+                        </div>` : ''}
+                        <button onclick="printAchievementReport()" class="w98-btn"><i class="fas fa-print mr-1"></i> Print</button>
+                    </div>
+                    <div id="ach_report_area" class="text-center p-4 text-gray-500">
+                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                        <p>Loading report...</p>
+                    </div>
+                </div>
+            `;
+            calcAchievementReport();
+        }
 
-function getAchievementData() {
-const role = State.currentUser.role;
-const monthVal = document.getElementById('ach_month')?.value;
-if (!monthVal) return null;
+        function getAchievementData() {
+            const role = State.currentUser.role;
+            const monthVal = document.getElementById('ach_month')?.value;
+            if (!monthVal) return null;
 
-const [year, month] = monthVal.split('-').map(Number);
-const rsmFilter = document.getElementById('ach_rsm_filter')?.value || '';
+            const [year, month] = monthVal.split('-').map(Number);
+            const rsmFilter = document.getElementById('ach_rsm_filter')?.value || '';
 
-const fOrdersAll = State.orders.filter(o => {
-if (o.status !== 'Delivered') return false;
-const d = new Date(o.orderDate);
-return d.getFullYear() === year && (d.getMonth() + 1) === month;
-});
+            const fOrdersAll = State.orders.filter(o => {
+                if (o.status !== 'Delivered') return false;
+                const d = new Date(o.orderDate);
+                return d.getFullYear() === year && (d.getMonth() + 1) === month;
+            });
 
-const adminOrders = fOrdersAll.filter(o => o.salesRole === 'ADMIN');
-const normalOrders = fOrdersAll.filter(o => o.salesRole !== 'ADMIN');
+            const adminOrders = fOrdersAll.filter(o => o.salesRole === 'ADMIN');
+            const normalOrders = fOrdersAll.filter(o => o.salesRole !== 'ADMIN');
 
-let allSEs = State.users.filter(u => u.role === 'SE');
+            let allSEs = State.users.filter(u => u.role === 'SE');
 
-if (role === 'ASM') {
-allSEs = allSEs.filter(u => u.assignedASM === State.currentUser.id);
-} else if (role === 'RSM') {
-allSEs = allSEs.filter(u => u.assignedRSM === State.currentUser.id);
-} else if (role === 'ADMIN' && rsmFilter) {
-allSEs = allSEs.filter(u => u.assignedRSM === rsmFilter);
-}
+            if (role === 'ASM') {
+                allSEs = allSEs.filter(u => u.assignedASM === State.currentUser.id);
+            } else if (role === 'RSM') {
+                allSEs = allSEs.filter(u => u.assignedRSM === State.currentUser.id);
+            } else if (role === 'ADMIN' && rsmFilter) {
+                allSEs = allSEs.filter(u => u.assignedRSM === rsmFilter);
+            }
 
-let asmGroups = {};
-allSEs.forEach(se => {
-const asmId = se.assignedASM || 'unassigned';
-if (!asmGroups[asmId]) {
-const asm = State.users.find(u => u.id === asmId);
-asmGroups[asmId] = {
-asm: asm || { id: 'unassigned', name: 'Unassigned ASM', userCode: 'N/A' },
-rsmId: asm?.assignedRSM || se.assignedRSM || 'unassigned',
-ses: []
-};
-}
-asmGroups[asmId].ses.push(se);
-});
+            let asmGroups = {};
+            allSEs.forEach(se => {
+                const asmId = se.assignedASM || 'unassigned';
+                if (!asmGroups[asmId]) {
+                    const asm = State.users.find(u => u.id === asmId);
+                    asmGroups[asmId] = {
+                        asm: asm || { id: 'unassigned', name: 'Unassigned ASM', userCode: 'N/A' },
+                        rsmId: asm?.assignedRSM || se.assignedRSM || 'unassigned',
+                        ses: []
+                    };
+                }
+                asmGroups[asmId].ses.push(se);
+            });
 
-let rsmGroups = {};
-Object.values(asmGroups).forEach(g => {
-const rsmId = g.rsmId;
-if (!rsmGroups[rsmId]) {
-const rsm = State.users.find(u => u.id === rsmId);
-rsmGroups[rsmId] = {
-rsm: rsm || { id: 'unassigned', name: 'Unassigned RSM', userCode: 'N/A' },
-asms: []
-};
-}
-rsmGroups[rsmId].asms.push(g);
-});
+            let rsmGroups = {};
+            Object.values(asmGroups).forEach(g => {
+                const rsmId = g.rsmId;
+                if (!rsmGroups[rsmId]) {
+                    const rsm = State.users.find(u => u.id === rsmId);
+                    rsmGroups[rsmId] = {
+                        rsm: rsm || { id: 'unassigned', name: 'Unassigned RSM', userCode: 'N/A' },
+                        asms: []
+                    };
+                }
+                rsmGroups[rsmId].asms.push(g);
+            });
 
-let slNo = 0;
-let result = { rsmGroups: [], adminGroup: null, grandTotal: { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 } };
+            let slNo = 0;
+            let result = { rsmGroups: [], adminGroup: null, grandTotal: { target: 0, net: 0, total: 0, outstanding: 0 } };
 
-Object.values(rsmGroups).forEach(rg => {
-let rsmTotal = { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 };
+            Object.values(rsmGroups).forEach(rg => {
+                let rsmTotal = { target: 0, net: 0, total: 0, outstanding: 0 };
 
-rg.asms.forEach(ag => {
-let asmTotal = { target: 0, tp: 0, net: 0, total: 0, outstanding: 0 };
+                rg.asms.forEach(ag => {
+                    let asmTotal = { target: 0, net: 0, total: 0, outstanding: 0 };
 
-ag.ses.forEach(se => {
-slNo++;
-const seOrders = normalOrders.filter(o => o.entryBy === se.id || o.entryBy === se.userCode);
-const tp = seOrders.reduce((s, o) => s + (o.grossTotal || 0), 0);
-const net = seOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0);
-const collected = seOrders.reduce((s, o) => s + (o.paid || 0), 0);
-const outstanding = seOrders.reduce((s, o) => s + (o.due || 0), 0);
-const target = parseFloat(se.target) || 0;
-const achPct = target > 0 ? (net / target * 100) : 0;
+                    ag.ses.forEach(se => {
+                        slNo++;
+                        const seOrders = normalOrders.filter(o => o.entryBy === se.id || o.entryBy === se.userCode);
+                        const net = seOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0);
+                        const collected = seOrders.reduce((s, o) => s + (o.paid || 0), 0);
+                        const outstanding = seOrders.reduce((s, o) => s + (o.due || 0), 0);
+                        const target = parseFloat(se.target) || 0;
+                        const achPct = target > 0 ? (net / target * 100) : 0;
 
-se.stats = { slNo, tp, net, collected, outstanding, target, achPct };
+                        se.stats = { slNo, net, collected, outstanding, target, achPct };
 
-asmTotal.target += target;
-asmTotal.tp += tp;
-asmTotal.net += net;
-asmTotal.total += collected;
-asmTotal.outstanding += outstanding;
-});
+                        asmTotal.target += target;
+                        asmTotal.net += net;
+                        asmTotal.total += collected;
+                        asmTotal.outstanding += outstanding;
+                    });
 
-ag.asmTotal = asmTotal;
+                    ag.asmTotal = asmTotal;
 
-rsmTotal.target += asmTotal.target;
-rsmTotal.tp += asmTotal.tp;
-rsmTotal.net += asmTotal.net;
-rsmTotal.total += asmTotal.total;
-rsmTotal.outstanding += asmTotal.outstanding;
-});
+                    rsmTotal.target += asmTotal.target;
+                    rsmTotal.net += asmTotal.net;
+                    rsmTotal.total += asmTotal.total;
+                    rsmTotal.outstanding += asmTotal.outstanding;
+                });
 
-rg.rsmTotal = rsmTotal;
-result.rsmGroups.push(rg);
+                rg.rsmTotal = rsmTotal;
+                result.rsmGroups.push(rg);
 
-result.grandTotal.target += rsmTotal.target;
-result.grandTotal.tp += rsmTotal.tp;
-result.grandTotal.net += rsmTotal.net;
-result.grandTotal.total += rsmTotal.total;
-result.grandTotal.outstanding += rsmTotal.outstanding;
-});
+                result.grandTotal.target += rsmTotal.target;
+                result.grandTotal.net += rsmTotal.net;
+                result.grandTotal.total += rsmTotal.total;
+                result.grandTotal.outstanding += rsmTotal.outstanding;
+            });
 
-if (adminOrders.length > 0) {
-const adminTotals = {
-tp: adminOrders.reduce((s, o) => s + (o.grossTotal || 0), 0),
-net: adminOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0),
-total: adminOrders.reduce((s, o) => s + (o.paid || 0), 0),
-outstanding: adminOrders.reduce((s, o) => s + (o.due || 0), 0),
-target: 0
-};
+            if (adminOrders.length > 0) {
+                const adminTotals = {
+                    net: adminOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0),
+                    total: adminOrders.reduce((s, o) => s + (o.paid || 0), 0),
+                    outstanding: adminOrders.reduce((s, o) => s + (o.due || 0), 0),
+                    target: 0
+                };
 
-result.adminGroup = { name: 'Admin Sales', userCode: 'ADMIN', totals: adminTotals };
+                result.adminGroup = { name: 'Admin Sales', userCode: 'ADMIN', totals: adminTotals };
 
-result.grandTotal.tp += adminTotals.tp;
-result.grandTotal.net += adminTotals.net;
-result.grandTotal.total += adminTotals.total;
-result.grandTotal.outstanding += adminTotals.outstanding;
-}
+                result.grandTotal.net += adminTotals.net;
+                result.grandTotal.total += adminTotals.total;
+                result.grandTotal.outstanding += adminTotals.outstanding;
+            }
 
-return result;
-}
+            return result;
+        }
 
-function calcAchievementReport() {
-const data = getAchievementData();
-const reportArea = document.getElementById('ach_report_area');
-if (!reportArea) return;
-if (!data) {
-reportArea.innerHTML = `<div class="text-center p-4 text-gray-500">Please select a month.</div>`;
-return;
-}
+        function calcAchievementReport() {
+            const data = getAchievementData();
+            const reportArea = document.getElementById('ach_report_area');
+            if (!reportArea) return;
+            if (!data) {
+                reportArea.innerHTML = `<div class="text-center p-4 text-gray-500">Please select a month.</div>`;
+                return;
+            }
 
-const monthVal = document.getElementById('ach_month').value;
-let html = `
-<div class="win98-inset p-2 overflow-x-auto">
-<div class="text-center mb-2">
-<h2 class="font-bold text-base">🏆 Achievement Report</h2>
-<p class="text-xs">Month: ${monthVal}</p>
-</div>
-<table class="w98-table text-xs">
-<thead>
-<tr>
-<th>SL NO</th>
-<th>EMP Code</th>
-<th>Name of MPO</th>
-<th>Territory</th>
-<th>Target</th>
-<th>Total TP</th>
-<th>Net Sales</th>
-<th>Ach%</th>
-<th>Total</th>
-<th>Outstanding</th>
-</tr>
-</thead>
-<tbody>`;
+            const monthVal = document.getElementById('ach_month').value;
+            let rows = '';
+            let slNo = 0;
+            let targetSum = 0, salesSum = 0, collectionSum = 0;
 
-let hasData = false;
+            data.rsmGroups.forEach(rg => {
+                rg.asms.forEach(ag => {
+                    ag.ses.forEach(se => {
+                        slNo++;
+                        const s = se.stats;
+                        const ach = s.achPct;
+                        const achCls = ach >= 80 ? "ach-high" : (ach >= 60 ? "ach-medium" : "ach-low");
+                        
+                        targetSum += s.target;
+                        salesSum += s.net;
+                        collectionSum += s.collected;
+                        
+                        rows += `<tr class="row-se">
+                            <td>${slNo}</td>
+                            <td>${esc(se.userCode || '-')}</td>
+                            <td>${esc(se.name || '-')}</td>
+                            <td>${esc(se.territory || '-')}</td>
+                            <td>${money(s.target)}</td>
+                            <td>${money(s.net)}</td>
+                            <td class="${achCls}">${ach.toFixed(0)}%</td>
+                            <td>${money(s.collected)}</td>
+                        </tr>`;
+                    });
 
-data.rsmGroups.forEach(rg => {
-rg.asms.forEach(ag => {
-ag.ses.forEach(se => {
-hasData = true;
-const s = se.stats;
-const achClass = s.achPct >= 100 ? 'text-green-700 font-bold'
-: s.achPct >= 75 ? 'font-bold'
-: 'text-red-700';
-const outClass = s.outstanding > 0 ? 'text-red-700 font-bold' : 'text-green-700 font-bold';
+                    const aT = ag.asmTotal;
+                    const aAch = aT.target > 0 ? (aT.net / aT.target * 100) : 0;
+                    const aAchCls = aAch >= 80 ? "ach-high" : (aAch >= 60 ? "ach-medium" : "ach-low");
 
-html += `<tr>
-<td>${s.slNo}</td>
-<td>${esc(se.userCode || 'N/A')}</td>
-<td>${esc(se.name || 'N/A')}</td>
-<td>${esc(se.territory || 'N/A')}</td>
-<td style="text-align:right;">${s.target.toLocaleString()}</td>
-<td style="text-align:right;">${s.tp.toLocaleString()}</td>
-<td style="text-align:right;">${s.net.toLocaleString()}</td>
-<td class="${achClass}" style="text-align:center;">${s.achPct.toFixed(0)}%</td>
-<td style="text-align:right;">${s.collected.toLocaleString()}</td>
-<td class="${outClass}" style="text-align:right;">${s.outstanding.toLocaleString()}</td>
-</tr>`;
-});
+                    targetSum += aT.target;
+                    salesSum += aT.net;
+                    collectionSum += aT.total;
 
-const aT = ag.asmTotal;
-const aAchPct = aT.target > 0 ? (aT.net / aT.target * 100) : 0;
+                    rows += `<tr class="row-asm">
+                        <td>${slNo}</td>
+                        <td>${esc(ag.asm.userCode || '-')}</td>
+                        <td>${esc(ag.asm.name || '-')}</td>
+                        <td>${esc(ag.asm.area || '-')}</td>
+                        <td>${money(aT.target)}</td>
+                        <td>${money(aT.net)}</td>
+                        <td class="${aAchCls}">${aAch.toFixed(0)}%</td>
+                        <td>${money(aT.total)}</td>
+                    </tr>`;
+                });
 
-html += `<tr style="background:#000080; color:#fff; font-weight:bold; border-top:2px solid #000;">
-<td colspan="4">ASM — ${esc(ag.asm.name || 'N/A')} (${esc(ag.asm.userCode || 'N/A')})</td>
-<td style="text-align:right;">${aT.target.toLocaleString()}</td>
-<td style="text-align:right;">${aT.tp.toLocaleString()}</td>
-<td style="text-align:right;">${aT.net.toLocaleString()}</td>
-<td style="text-align:center;">${aAchPct.toFixed(0)}%</td>
-<td style="text-align:right;">${aT.total.toLocaleString()}</td>
-<td style="text-align:right;">${aT.outstanding.toLocaleString()}</td>
-</tr>`;
-});
+                const rT = rg.rsmTotal;
+                const rAch = rT.target > 0 ? (rT.net / rT.target * 100) : 0;
+                const rAchCls = rAch >= 80 ? "ach-high" : (rAch >= 60 ? "ach-medium" : "ach-low");
 
-const rT = rg.rsmTotal;
-const rAchPct = rT.target > 0 ? (rT.net / rT.target * 100) : 0;
+                targetSum += rT.target;
+                salesSum += rT.net;
+                collectionSum += rT.total;
 
-html += `<tr style="background:#222; color:#fff; font-weight:bold; border-top:3px solid #000;">
-<td colspan="4">RSM — ${esc(rg.rsm.name || 'N/A')} (${esc(rg.rsm.userCode || 'N/A')})</td>
-<td style="text-align:right;">${rT.target.toLocaleString()}</td>
-<td style="text-align:right;">${rT.tp.toLocaleString()}</td>
-<td style="text-align:right;">${rT.net.toLocaleString()}</td>
-<td style="text-align:center;">${rAchPct.toFixed(0)}%</td>
-<td style="text-align:right;">${rT.total.toLocaleString()}</td>
-<td style="text-align:right;">${rT.outstanding.toLocaleString()}</td>
-</tr>`;
-});
+                rows += `<tr class="row-rsm">
+                    <td>${slNo}</td>
+                    <td>${esc(rg.rsm.userCode || '-')}</td>
+                    <td>${esc(rg.rsm.name || '-')}</td>
+                    <td>${esc(rg.rsm.region || '-')}</td>
+                    <td>${money(rT.target)}</td>
+                    <td>${money(rT.net)}</td>
+                    <td class="${rAchCls}">${rAch.toFixed(0)}%</td>
+                    <td>${money(rT.total)}</td>
+                </tr>`;
+            });
 
-if (data.adminGroup) {
-hasData = true;
-const aT = data.adminGroup.totals;
-html += `<tr style="background:#5C1D24; color:#D4AF37; font-weight:bold; border-top:3px solid #000;">
-<td colspan="4">${esc(data.adminGroup.name)} (Direct Entry)</td>
-<td style="text-align:right;">${aT.target.toLocaleString()}</td>
-<td style="text-align:right;">${aT.tp.toLocaleString()}</td>
-<td style="text-align:right;">${aT.net.toLocaleString()}</td>
-<td style="text-align:center;">-</td>
-<td style="text-align:right;">${aT.total.toLocaleString()}</td>
-<td style="text-align:right;">${aT.outstanding.toLocaleString()}</td>
-</tr>`;
-}
+            if (data.adminGroup) {
+                const aT = data.adminGroup.totals;
+                salesSum += aT.net;
+                collectionSum += aT.total;
+                
+                rows += `<tr class="row-admin">
+                    <td>${slNo}</td>
+                    <td>${esc(data.adminGroup.userCode || '-')}</td>
+                    <td>${esc(data.adminGroup.name || '-')}</td>
+                    <td>-</td>
+                    <td>${money(aT.target)}</td>
+                    <td>${money(aT.net)}</td>
+                    <td>-</td>
+                    <td>${money(aT.total)}</td>
+                </tr>`;
+            }
 
-if (!hasData && data.rsmGroups.length === 0 && !data.adminGroup) {
-html += `<tr><td colspan="10" class="text-center p-4">No data found for the selected period.</td></tr>`;
-}
+            if (rows === '') {
+                rows = `<tr><td colspan="8" style="text-align:center; padding:20px;">No data found for the selected period.</td></tr>`;
+            }
 
-if (hasData) {
-const g = data.grandTotal;
-const gAchPct = g.target > 0 ? (g.net / g.target * 100) : 0;
-html += `<tr style="background:#000; color:#FFF; font-weight:bold; border-top:3px solid #000;">
-<td colspan="4">GRAND TOTAL</td>
-<td style="text-align:right;">${g.target.toLocaleString()}</td>
-<td style="text-align:right;">${g.tp.toLocaleString()}</td>
-<td style="text-align:right;">${g.net.toLocaleString()}</td>
-<td style="text-align:center;">${gAchPct.toFixed(0)}%</td>
-<td style="text-align:right;">${g.total.toLocaleString()}</td>
-<td style="text-align:right;">${g.outstanding.toLocaleString()}</td>
-</tr>`;
-}
+            const overallAch = targetSum > 0 ? Math.round((salesSum / targetSum) * 100) : 0;
+            const reportDate = new Date().toLocaleDateString('en-GB');
 
-html += `</tbody></table></div>`;
-reportArea.innerHTML = html;
-}
+            reportArea.innerHTML = `
+            <style>
+                .ar-container { background: #fff; padding: 0; font-family: Arial, Helvetica, sans-serif; color: #222; }
+                .ar-header { text-align: center; margin-bottom: 15px; }
+                .ar-header h1 { margin: 0; font-size: 24px; }
+                .ar-header p { margin: 5px 0 0; color: #777; font-size: 13px; }
+                .ar-info { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 12px; }
+                .ar-table-wrap { width: 100%; overflow-x: auto; }
+                .ar-table { width: 100%; border-collapse: collapse; table-layout: auto; }
+                .ar-table th, .ar-table td { border: 1px solid #bfc5cc; padding: 7px 10px; font-size: 12px; white-space: nowrap; }
+                .ar-table th { background: #eef1f4; color: #222; text-align: center; font-weight: 700; }
+                .ar-table td { text-align: right; }
+                .ar-table td:nth-child(1), .ar-table td:nth-child(2), .ar-table td:nth-child(3), .ar-table td:nth-child(4) { text-align: left; }
+                .row-se:nth-child(even) { background: #fcfcfc; }
+                .row-asm { background: #f2f7fc; font-weight: bold; }
+                .row-rsm { background: #fffaf2; font-weight: bold; }
+                .row-admin { background: #faf6ff; font-weight: bold; }
+                .ach-high { color: #2f6b4f; font-weight: 700; }
+                .ach-medium { color: #8a6418; font-weight: 700; }
+                .ach-low { color: #a04444; font-weight: 700; }
+                .ar-table tfoot th { background: #f1f3f5; color: #222; font-weight: 700; text-align: right; }
+                .ar-table tfoot th:nth-child(1), .ar-table tfoot th:nth-child(2), .ar-table tfoot th:nth-child(3), .ar-table tfoot th:nth-child(4) { text-align: left; }
+            </style>
+            <div class="ar-container">
+                <div class="ar-header">
+                    <h1>🏆 Achievement Report</h1>
+                    <p>Sales Achievement & Collection Report - ${monthVal}</p>
+                </div>
+                <div class="ar-info">
+                    <div><strong>Report Date:</strong> <span>${reportDate}</span></div>
+                    <div><strong>Period:</strong> Monthly</div>
+                </div>
+                <div class="ar-table-wrap">
+                    <table class="ar-table">
+                        <thead>
+                            <tr>
+                                <th>SL NO</th>
+                                <th>EMP Code</th>
+                                <th>Name of MPO</th>
+                                <th>Territory</th>
+                                <th>Target</th>
+                                <th>Net Sales</th>
+                                <th>Ach%</th>
+                                <th>Collection</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="4">GRAND TOTAL</th>
+                                <th>${money(targetSum)}</th>
+                                <th>${money(salesSum)}</th>
+                                <th>${overallAch}%</th>
+                                <th>${money(collectionSum)}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>`;
+        }
 
-function printAchievementReport() {
-const data = getAchievementData();
-if (!data) return alert('Please select a month.');
+        function printAchievementReport() {
+            const data = getAchievementData();
+            if (!data) return alert('Please select a month.');
 
-const monthVal = document.getElementById('ach_month').value;
-let monthName = monthVal;
-try {
-monthName = new Date(monthVal + '-01').toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-} catch(e) {}
+            const monthVal = document.getElementById('ach_month').value;
+            let monthName = monthVal;
+            try {
+                monthName = new Date(monthVal + '-01').toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+            } catch(e) {}
 
-let rows = '';
+            let rows = '';
+            let slNo = 0;
+            let targetSum = 0, salesSum = 0, collectionSum = 0;
 
-data.rsmGroups.forEach(rg => {
-rg.asms.forEach(ag => {
-ag.ses.forEach(se => {
-const s = se.stats;
-const outClass = s.outstanding > 0 ? 'class="due"' : 'class="zero"';
-const achClass = s.achPct >= 100 ? 'class="ach-good"' : '';
+            data.rsmGroups.forEach(rg => {
+                rg.asms.forEach(ag => {
+                    ag.ses.forEach(se => {
+                        slNo++;
+                        const s = se.stats;
+                        const ach = s.achPct;
+                        const achCls = ach >= 80 ? "ach-high" : (ach >= 60 ? "ach-medium" : "ach-low");
+                        
+                        targetSum += s.target;
+                        salesSum += s.net;
+                        collectionSum += s.collected;
+                        
+                        rows += `<tr class="row-se">
+                            <td>${slNo}</td>
+                            <td>${esc(se.userCode || '-')}</td>
+                            <td>${esc(se.name || '-')}</td>
+                            <td>${esc(se.territory || '-')}</td>
+                            <td>${money(s.target)}</td>
+                            <td>${money(s.net)}</td>
+                            <td class="${achCls}" style="text-align:center;">${ach.toFixed(0)}%</td>
+                            <td>${money(s.collected)}</td>
+                        </tr>`;
+                    });
 
-rows += `<tr class="se-row">
-<td>${s.slNo}</td>
-<td>${esc(se.userCode || 'N/A')}</td>
-<td>${esc(se.name || 'N/A')}</td>
-<td>${esc(se.territory || 'N/A')}</td>
-<td>${s.target.toLocaleString()}</td>
-<td>${s.tp.toLocaleString()}</td>
-<td>${s.net.toLocaleString()}</td>
-<td ${achClass} style="text-align:center;">${s.achPct.toFixed(0)}%</td>
-<td>${s.collected.toLocaleString()}</td>
-<td ${outClass}>${s.outstanding.toLocaleString()}</td>
-</tr>`;
-});
+                    const aT = ag.asmTotal;
+                    const aAch = aT.target > 0 ? (aT.net / aT.target * 100) : 0;
+                    const aAchCls = aAch >= 80 ? "ach-high" : (aAch >= 60 ? "ach-medium" : "ach-low");
 
-const aT = ag.asmTotal;
-const aAchPct = aT.target > 0 ? (aT.net / aT.target * 100) : 0;
+                    targetSum += aT.target;
+                    salesSum += aT.net;
+                    collectionSum += aT.total;
 
-rows += `<tr class="asm-row">
-<td colspan="4">ASM — ${esc(ag.asm.name || 'N/A')}</td>
-<td>${aT.target.toLocaleString()}</td>
-<td>${aT.tp.toLocaleString()}</td>
-<td>${aT.net.toLocaleString()}</td>
-<td style="text-align:center;">${aAchPct.toFixed(0)}%</td>
-<td>${aT.total.toLocaleString()}</td>
-<td>${aT.outstanding.toLocaleString()}</td>
-</tr>`;
-});
+                    rows += `<tr class="row-asm">
+                        <td>${slNo}</td>
+                        <td>${esc(ag.asm.userCode || '-')}</td>
+                        <td>${esc(ag.asm.name || '-')}</td>
+                        <td>${esc(ag.asm.area || '-')}</td>
+                        <td>${money(aT.target)}</td>
+                        <td>${money(aT.net)}</td>
+                        <td class="${aAchCls}" style="text-align:center;">${aAch.toFixed(0)}%</td>
+                        <td>${money(aT.total)}</td>
+                    </tr>`;
+                });
 
-const rT = rg.rsmTotal;
-const rAchPct = rT.target > 0 ? (rT.net / rT.target * 100) : 0;
+                const rT = rg.rsmTotal;
+                const rAch = rT.target > 0 ? (rT.net / rT.target * 100) : 0;
+                const rAchCls = rAch >= 80 ? "ach-high" : (rAch >= 60 ? "ach-medium" : "ach-low");
 
-rows += `<tr class="rsm-row">
-<td colspan="4">RSM — ${esc(rg.rsm.name || 'N/A')}</td>
-<td>${rT.target.toLocaleString()}</td>
-<td>${rT.tp.toLocaleString()}</td>
-<td>${rT.net.toLocaleString()}</td>
-<td style="text-align:center;">${rAchPct.toFixed(0)}%</td>
-<td>${rT.total.toLocaleString()}</td>
-<td>${rT.outstanding.toLocaleString()}</td>
-</tr>`;
-});
+                targetSum += rT.target;
+                salesSum += rT.net;
+                collectionSum += rT.total;
 
-if (data.adminGroup) {
-const aT = data.adminGroup.totals;
-rows += `<tr class="rsm-row" style="background:#5C1D24; color:#D4AF37;">
-<td colspan="4">${esc(data.adminGroup.name)} (Direct Entry)</td>
-<td>${aT.target.toLocaleString()}</td>
-<td>${aT.tp.toLocaleString()}</td>
-<td>${aT.net.toLocaleString()}</td>
-<td style="text-align:center;">-</td>
-<td>${aT.total.toLocaleString()}</td>
-<td>${aT.outstanding.toLocaleString()}</td>
-</tr>`;
-}
+                rows += `<tr class="row-rsm">
+                    <td>${slNo}</td>
+                    <td>${esc(rg.rsm.userCode || '-')}</td>
+                    <td>${esc(rg.rsm.name || '-')}</td>
+                    <td>${esc(rg.rsm.region || '-')}</td>
+                    <td>${money(rT.target)}</td>
+                    <td>${money(rT.net)}</td>
+                    <td class="${rAchCls}" style="text-align:center;">${rAch.toFixed(0)}%</td>
+                    <td>${money(rT.total)}</td>
+                </tr>`;
+            });
 
-if (rows === '') {
-rows = `<tr><td colspan="10" style="text-align:center; padding:20px;">No data found for the selected period.</td></tr>`;
-}
+            if (data.adminGroup) {
+                const aT = data.adminGroup.totals;
+                salesSum += aT.net;
+                collectionSum += aT.total;
+                
+                rows += `<tr class="row-admin">
+                    <td>${slNo}</td>
+                    <td>${esc(data.adminGroup.userCode || '-')}</td>
+                    <td>${esc(data.adminGroup.name || '-')}</td>
+                    <td>-</td>
+                    <td>${money(aT.target)}</td>
+                    <td>${money(aT.net)}</td>
+                    <td style="text-align:center;">-</td>
+                    <td>${money(aT.total)}</td>
+                </tr>`;
+            }
 
-let grandTotalRow = '';
-const g = data.grandTotal;
-const gAchPct = g.target > 0 ? (g.net / g.target * 100) : 0;
-grandTotalRow = `<tr class="rsm-row" style="background:#000; color:#FFF;">
-<td colspan="4">GRAND TOTAL</td>
-<td>${g.target.toLocaleString()}</td>
-<td>${g.tp.toLocaleString()}</td>
-<td>${g.net.toLocaleString()}</td>
-<td style="text-align:center;">${gAchPct.toFixed(0)}%</td>
-<td>${g.total.toLocaleString()}</td>
-<td>${g.outstanding.toLocaleString()}</td>
-</tr>`;
+            if (rows === '') {
+                rows = `<tr><td colspan="8" style="text-align:center; padding:20px;">No data found for the selected period.</td></tr>`;
+            }
 
-const html = `<!DOCTYPE html><html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Achievement Report</title>
-<style>
-*{box-sizing:border-box;}
-body{margin:0;padding:20px;font-family:Arial,sans-serif;background:#f4f6f8;color:#222;}
-.report{max-width:1500px;margin:auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 3px 15px rgba(0,0,0,.08);}
-.header{text-align:center;margin-bottom:15px;}
-.header h2{margin:0;font-size:24px;}
-.header p{margin:5px 0 0;color:#666;}
-.table-wrapper{overflow-x:auto;}
-table{width:100%;min-width:1200px;border-collapse:collapse;}
-th,td{border:1px solid #d9d9d9;padding:9px 8px;font-size:13px;}
-th{background:#f1f3f5;text-align:center;white-space:nowrap;}
-td{text-align:right;}
-td:nth-child(1),td:nth-child(2),td:nth-child(3),td:nth-child(4){text-align:left;}
-.se-row{background:#fff;}
-.asm-row{background:#e9ecef;font-weight:bold;}
-.asm-row td{border-top:2px solid #888;border-bottom:2px solid #888;}
-.rsm-row{background:#222;color:#fff;font-weight:bold;}
-.rsm-row td{border-color:#555;}
-.ach-good{font-weight:bold;}
-.due{color:#c62828;font-weight:bold;}
-.zero{color:#198754;font-weight:bold;}
-@media print{
-body{background:#fff;padding:0;}
-.report{max-width:100%;padding:0;box-shadow:none;}
-.header{margin-bottom:10px;}
-table{min-width:100%;}
-}
-</style>
-</head>
-<body>
-<div class="report">
-<div class="header">
-<h2>Achievement Report</h2>
-<p>Month: ${monthName}</p>
-</div>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr>
-<th>SL NO</th>
-<th>EMP Code</th>
-<th>Name of MPO</th>
-<th>Territory</th>
-<th>Target</th>
-<th>Total TP</th>
-<th>Net Sales</th>
-<th>Ach%</th>
-<th>Total</th>
-<th>Outstanding</th>
-</tr>
-</thead>
-<tbody>
-${rows}
-${grandTotalRow}
-</tbody>
-</table>
-</div>
-</div>
-<script>window.onload=function(){setTimeout(function(){window.print();},300);};<\/script>
+            const overallAch = targetSum > 0 ? Math.round((salesSum / targetSum) * 100) : 0;
+            const reportDate = new Date().toLocaleDateString('en-GB');
+
+            const html = `<!DOCTYPE html><html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Achievement Report</title>
+                <style>
+                    *{box-sizing:border-box;}
+                    body{margin:0;padding:20px;font-family:Arial,Helvetica,sans-serif;background:#f5f6f8;color:#222;}
+                    .report-container{max-width:1000px;margin:auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+                    .report-header{text-align:center;margin-bottom:15px;}
+                    .report-header h1{margin:0;font-size:24px;}
+                    .report-header p{margin:5px 0 0;color:#777;font-size:13px;}
+                    .report-info{display:flex;justify-content:space-between;margin-bottom:10px;font-size:12px;}
+                    .table-wrap{width:100%;overflow-x:auto;}
+                    table{width:100%;border-collapse:collapse;table-layout:auto;}
+                    th,td{border:1px solid #bfc5cc;padding:7px 10px;font-size:12px;white-space:nowrap;}
+                    th{background:#eef1f4;color:#222;text-align:center;font-weight:700;}
+                    td{text-align:right;}
+                    td:nth-child(1),td:nth-child(2),td:nth-child(3),td:nth-child(4){text-align:left;}
+                    .row-se:nth-child(even){background:#fcfcfc;}
+                    .row-asm{background:#f2f7fc;font-weight:bold;}
+                    .row-rsm{background:#fffaf2;font-weight:bold;}
+                    .row-admin{background:#faf6ff;font-weight:bold;}
+                    .ach-high{color:#2f6b4f;font-weight:700;}
+                    .ach-medium{color:#8a6418;font-weight:700;}
+                    .ach-low{color:#a04444;font-weight:700;}
+                    tfoot th{background:#f1f3f5;color:#222;font-weight:700;text-align:right;}
+                    tfoot th:nth-child(1), tfoot th:nth-child(2), tfoot th:nth-child(3), tfoot th:nth-child(4) { text-align:left; }
+                    @media print{
+                        *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
+                        body{margin:0;padding:0;background:#fff;}
+                        .report-container{max-width:none;padding:0;background:#fff;box-shadow:none;border-radius:0;}
+                        .report-header{margin-bottom:7px;}
+                        .report-header h1{font-size:19px;}
+                        .report-header p{font-size:10px;}
+                        .report-info{font-size:9px;margin-bottom:6px;}
+                        table{width:100%;}
+                        th,td{font-size:8px;padding:4px 3px;}
+                        th{background:#eef1f4 !important;}
+                        .row-se:nth-child(even){background:#fcfcfc !important;}
+                        .row-asm{background:#f2f7fc !important;}
+                        .row-rsm{background:#fffaf2 !important;}
+                        .row-admin{background:#faf6ff !important;}
+                        tfoot th{background:#f1f3f5 !important;}
+                        @page{size:A4 landscape;margin:6mm;}
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="report-container">
+                    <div class="report-header">
+                        <h1>🏆 Achievement Report</h1>
+                        <p>Sales Achievement & Collection Report - ${monthName}</p>
+                    </div>
+                    <div class="report-info">
+                        <div><strong>Report Date:</strong> <span>${reportDate}</span></div>
+                        <div><strong>Period:</strong> Monthly</div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SL NO</th>
+                                    <th>EMP Code</th>
+                                    <th>Name of MPO</th>
+                                    <th>Territory</th>
+                                    <th>Target</th>
+                                    <th>Net Sales</th>
+                                    <th>Ach%</th>
+                                    <th>Collection</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4">GRAND TOTAL</th>
+                                    <th>${money(targetSum)}</th>
+                                    <th>${money(salesSum)}</th>
+                                    <th>${overallAch}%</th>
+                                    <th>${money(collectionSum)}</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <script>window.onload=function(){setTimeout(function(){window.print();},300);};<\/script>
+            </body>
+            </html>`;
+
+            const iframe = document.createElement('iframe');
+            iframe.style.position = "absolute";
+            iframe.style.width = "0px";
+            iframe.style.height = "0px";
+            iframe.style.border = "none";
+            document.body.appendChild(iframe);
+            iframe.contentWindow.document.open();
+            iframe.contentWindow.document.write(html);
+            iframe.contentWindow.document.close();
+            setTimeout(() => {
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+                setTimeout(() => {
+                    if (iframe.parentNode) document.body.removeChild(iframe);
+                }, 1500);
+            }, 500);
+        }
+    </script>
 </body>
-</html>`;
-
-const iframe = document.createElement('iframe');
-iframe.style.position = "absolute";
-iframe.style.width = "0px";
-iframe.style.height = "0px";
-iframe.style.border = "none";
-document.body.appendChild(iframe);
-iframe.contentWindow.document.open();
-iframe.contentWindow.document.write(html);
-iframe.contentWindow.document.close();
-setTimeout(() => {
-if (iframe.parentNode) document.body.removeChild(iframe);
-}, 1500);
-}
-</script></body>
 </html>
