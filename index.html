@@ -99,15 +99,38 @@
             #print-area, #print-area * { visibility: visible; }
             #print-area { position: absolute; left: 0; top: 0; width: 100%; display: block; }
             .no-print { display: none !important; }
-            .invoice-container { box-shadow: none; border: none; margin: 0 auto; padding: 0; width: 100%; max-width: 100%; border-bottom: 2px dashed #000; min-height: auto; }
+            
+            /* প্রিন্টের সময় পেজের উচ্চতা ধরে রাখার জন্য আপডেট করা হয়েছে */
+            .invoice-container { 
+                box-shadow: none; 
+                border: none; 
+                margin: 0 auto; 
+                padding: 0; 
+                width: 100%; 
+                max-width: 100%; 
+                border-bottom: 2px dashed #000; 
+                min-height: 275mm; 
+                display: flex; 
+                flex-direction: column; 
+            }
+            
             .watermark { opacity: 0.1 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             .invoice-copy-badge { border: 2px solid #000080 !important; background: transparent !important; }
-            .signature-area { display: flex; justify-content: space-between; width: 100%; padding-top: 40px; gap: 10px; }
+            
+            /* সিগনেচার এরিয়া একদম নিচে ঠেলে দেওয়ার জন্য */
+            .signature-area { 
+                display: flex; 
+                justify-content: space-between; 
+                width: 100%; 
+                padding-top: 40px; 
+                gap: 10px; 
+                margin-top: auto !important; 
+            }
             .sig-line { width: 30%; border-top: 1px dashed #000; text-align: center; padding-top: 5px; font-size: 11px; color: #000; }
         }
         
         #sidebar { transition: transform 0.3s ease; z-index: 50; }
-        @media (max-width: 768px) {
+        @media (max-width: 100px) {
             .header-top { flex-direction: column; align-items: flex-start; }
             .company-info { text-align: left; min-width: 100%; }
             .signature-area { flex-direction: column; gap: 30px; align-items: center; }
