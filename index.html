@@ -99,8 +99,6 @@
             #print-area, #print-area * { visibility: visible; }
             #print-area { position: absolute; left: 0; top: 0; width: 100%; display: block; }
             .no-print { display: none !important; }
-            
-            /* প্রিন্টের সময় পেজের উচ্চতা ধরে রাখার জন্য আপডেট করা হয়েছে */
             .invoice-container { 
                 box-shadow: none; 
                 border: none; 
@@ -113,11 +111,8 @@
                 display: flex; 
                 flex-direction: column; 
             }
-            
             .watermark { opacity: 0.1 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             .invoice-copy-badge { border: 2px solid #000080 !important; background: transparent !important; }
-            
-            /* সিগনেচার এরিয়া একদম নিচে ঠেলে দেওয়ার জন্য */
             .signature-area { 
                 display: flex; 
                 justify-content: space-between; 
@@ -130,18 +125,23 @@
         }
         
         #sidebar { transition: transform 0.3s ease; z-index: 50; }
-        @media (max-width: 100px) {
+        /* 1000px এ মোবাইল হামবার্গার মেনু অ্যাক্টিভ হবে */
+        @media (max-width: 768px) {
             .header-top { flex-direction: column; align-items: flex-start; }
             .company-info { text-align: left; min-width: 100%; }
             .signature-area { flex-direction: column; gap: 30px; align-items: center; }
             .sig-line { width: 100%; }
             .summary-section { justify-content: flex-start; }
             .summary-box { width: 100%; }
-            #sidebar { position: absolute; top: 0; left: 0; height: 100%; max-height: 100vh; width: 250px; transform: translateX(-100%); }
+            #sidebar { position: fixed; top: 0; left: 0; height: 100%; max-height: 100vh; width: 250px; transform: translateX(-100%); }
             #sidebar.open { transform: translateX(0); box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
             #mobile-menu-btn { display: block !important; }
+            .w98-table th, .w98-table td { font-size: 11px; padding: 3px; }
+            .inv-table th, .inv-table td { white-space: normal; }
         }
-        @media (min-width: 769px) { #mobile-menu-btn { display: none !important; } }
+        @media (min-width: 1001px) { 
+            #mobile-menu-btn { display: none !important; } 
+        }
     </style>
 </head>
 <body>
@@ -179,8 +179,8 @@
     </div>
 
     <div id="app-screen" class="hidden min-h-screen p-1 sm:p-2 relative">
-        <div class="win98-window flex flex-col md:flex-row h-[calc(100vh-16px)] md:h-[calc(100vh-20px)] overflow-hidden">
-            <aside id="sidebar" class="w-full md:w-64 win98-inset m-1 flex flex-col overflow-y-auto">
+        <div class="win98-window flex flex-col lg:flex-row h-[calc(100vh-16px)] lg:h-[calc(100vh-20px)] overflow-hidden">
+            <aside id="sidebar" class="w-full lg:w-64 win98-inset m-1 flex flex-col overflow-y-auto">
                 <div class="win98-outset m-1 p-2 flex items-center space-x-2">
                     <img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="Logo" class="w-10 h-10 border border-black object-cover">
                     <div>
@@ -202,7 +202,7 @@
                         <a href="#" data-page="cat-weight" class="admin-only menu-item"><i class="fas fa-layer-group w-4"></i> Category & Weight</a>
                         <a href="#" data-page="users" class="admin-only menu-item"><i class="fas fa-user-shield w-4"></i> User Mgmt</a>
                         <a href="#" data-page="salary-target" class="admin-only menu-item"><i class="fas fa-money-check-alt w-4"></i> Salary & Target</a>
-                        <a href="#" data-page="quarterly-target" class="admin-only menu-item"><i class="fas fa-bullseye w-4"></i> Quarterly Target</a>
+                        <a href="#" data-page="quarterly-target" class="admin-only menu-item"><i class="fas fa-bullseye w-4"></i> Quarterly Target Setup</a>
                         <a href="#" data-page="discount-setup" class="admin-only menu-item"><i class="fas fa-percentage w-4"></i> Discount Setup</a>
                         <a href="#" data-page="customers" class="menu-item can-view-customers"><i class="fas fa-users w-4"></i> Customer Mgmt</a>
                     </div>
@@ -211,7 +211,7 @@
                         <a href="#" data-page="reports" class="menu-item can-view-reports"><i class="fas fa-chart-line w-4"></i> Sales & Due Reports</a>
                         <a href="#" data-page="sm-report" class="menu-item admin-rsm-asm-only"><i class="fas fa-user-tie w-4"></i> Salesman Performance</a>
                         <a href="#" data-page="commission-report" class="menu-item admin-only"><i class="fas fa-hand-holding-usd w-4"></i> Commission Report</a>
-                        <a href="#" data-page="quarterly-report" class="menu-item admin-rsm-asm-only"><i class="fas fa-calendar-alt w-4"></i> Quarterly Sales Report</a>
+                        <a href="#" data-page="quarterly-report" class="menu-item admin-rsm-asm-only"><i class="fas fa-calendar-alt w-4"></i> Quarterly Target Report</a>
                         <a href="#" data-page="achievement-report" class="menu-item admin-rsm-asm-only"><i class="fas fa-trophy w-4"></i> Achievement Report</a>
                     </div>
                 </nav>
@@ -224,12 +224,12 @@
                         <h2 id="page-title" class="text-sm font-bold">Dashboard</h2>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <button id="theme-toggle" class="text-xs hover:underline">Toggle Theme</button>
-                        <span class="hidden md:block">|</span>
+                        <button id="theme-toggle" class="text-xs hover:underline hidden lg:block">Toggle Theme</button>
+                        <span class="hidden lg:block">|</span>
                         <div class="flex items-center space-x-1 cursor-pointer relative" id="profile-container">
                             <img id="nav-avatar" src="https://ui-avatars.com/api/?name=Admin&background=5C1D24&color=fff" class="w-5 h-5" alt="User">
-                            <span id="user-name" class="hidden md:block text-xs">Admin</span>
-                            <i class="fas fa-chevron-down text-[10px]"></i>
+                            <span id="user-name" class="hidden lg:block text-xs">Admin</span>
+                            <i class="fas fa-chevron-down text-[10px] hidden lg:block"></i>
                             <div id="profile-menu" class="hidden absolute right-0 top-8 w-48 win98-window z-50">
                                 <a href="#" onclick="openProfileSettings()" class="menu-item"><i class="fas fa-user-cog mr-2"></i> Profile Setting</a>
                                 <a href="#" onclick="openChangePassword()" class="menu-item"><i class="fas fa-key mr-2"></i> Change Password</a>
@@ -262,7 +262,7 @@
 
         const State = { 
             currentUser: null, currentPage: null, currentView: null, products: [], users: [], customers: [], orders: [], cart: [], categories: [], weights: [], 
-            settings: { discount: [{ min: 1000, max: 5000, percent: 1 }, { min: 5001, max: 999999, percent: 2 }] },
+            settings: { discount: [{ min: 1000, max: 5000, percent: 1 }, { min: 5001, max: 999999, percent: 2 }], quarterlyIncentive: { SE: 3000, ASM: 1500, RSM: 1000 } },
             commissionSettings: { hockerMinQty: 50, hockerRate: 2, dealerMinQty: 100, dealerRate: 1, adminPct: 2 }
         };
 
@@ -382,9 +382,12 @@
                 const settings = s.val();
                 if (settings && Array.isArray(settings.discount)) State.settings.discount = settings.discount;
                 if (settings && settings.commission) State.commissionSettings = settings.commission;
+                if (settings && settings.quarterlyIncentive) State.settings.quarterlyIncentive = settings.quarterlyIncentive;
                 if (State.currentPage === 'discount-setup') renderDiscountSetup();
                 if (State.currentPage === 'commission-report') renderCommissionReport();
                 if (State.currentPage === 'order-entry') calculateSpecialDiscount();
+                if (State.currentPage === 'quarterly-target') renderQuarterlyTarget();
+                if (State.currentPage === 'quarterly-report') renderQuarterlyReport();
             });
             db.ref('customers').on('value', (s) => { State.customers = []; s.forEach(c => { const val = c.val(); val.id = c.key; State.customers.push(val); }); if (State.currentPage === 'customers') renderCustomers(); if (State.currentPage === 'dashboard') renderDashboard(); if (State.currentPage === 'order-entry') renderOrderEntry(); if (State.currentPage === 'reports') renderReports(); if (State.currentPage === 'delivery-summary') generateDeliverySummary(); if (State.currentPage === 'commission-report') renderCommissionReport(); });
             db.ref('orders').on('value', (s) => { 
@@ -414,7 +417,7 @@
                     case 'cat-weight': document.getElementById('page-title').textContent = 'Category & Weight'; renderCatWeight(); break;
                     case 'users': document.getElementById('page-title').textContent = 'System Users'; renderUsers(); break;
                     case 'salary-target': document.getElementById('page-title').textContent = 'Salary & Target'; renderSalaryTarget(); break;
-                    case 'quarterly-target': document.getElementById('page-title').textContent = 'Quarterly Target'; renderQuarterlyTarget(); break;
+                    case 'quarterly-target': document.getElementById('page-title').textContent = 'Quarterly Target Setup – Incentive Structure'; renderQuarterlyTarget(); break;
                     case 'discount-setup': document.getElementById('page-title').textContent = 'Special Discount Setup'; renderDiscountSetup(); break;
                     case 'customers': document.getElementById('page-title').textContent = 'Customer Management'; renderCustomers(); break;
                     case 'order-entry': document.getElementById('page-title').textContent = 'Order Entry'; renderOrderEntry(); break;
@@ -422,7 +425,7 @@
                     case 'reports': document.getElementById('page-title').textContent = 'Sales & Due Reports'; renderReports(); break;
                     case 'sm-report': document.getElementById('page-title').textContent = 'Salesman Performance'; renderSalesmanReport(); break;
                     case 'commission-report': document.getElementById('page-title').textContent = 'Commission Report'; renderCommissionReport(); break;
-                    case 'quarterly-report': document.getElementById('page-title').textContent = 'Quarterly Sales Report'; renderQuarterlyReport(); break;
+                    case 'quarterly-report': document.getElementById('page-title').textContent = 'Quarterly Target Achievement Report'; renderQuarterlyReport(); break;
                     case 'achievement-report': document.getElementById('page-title').textContent = 'Achievement Report'; renderAchievementReport(); break;
                     case 'delivery-summary': document.getElementById('page-title').textContent = 'Delivery Summary'; renderDeliverySummary(); break;
                 }
@@ -447,6 +450,7 @@
         function saveWeight(e, id) { e.preventDefault(); const label = document.getElementById('w_label').value; if (id) db.ref('settings/weights/' + id).update({ label: label }); else db.ref('settings/weights').push({ label: label }); closeModal(); }
         function deleteWeight(id) { if (confirm('Are you sure?')) db.ref('settings/weights/' + id).remove(); }
 
+        // --- DASHBOARD: Sales Overview removed, Logo added ---
         function renderDashboard() {
             const role = State.currentUser.role;
             const isC = !['ADMIN', 'OPERATOR', 'AC', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
@@ -456,15 +460,12 @@
             else if (role === 'SE') { statCustomers = State.customers.filter(u => u.assignedSE === State.currentUser.id).length; statDue = State.customers.filter(u => u.assignedSE === State.currentUser.id).reduce((s, u) => s + (u.due || 0), 0); } 
             else if (isC) { statDue = State.currentUser.due || 0; } 
             else { statCustomers = State.customers.length; statDue = State.customers.reduce((s, u) => s + (u.due || 0), 0); }
-            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">${!isC ? `<div class="win98-outset p-2"><p class="text-xs">Total Products</p><p class="text-lg font-bold">${statProducts}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Customers</p><p class="text-lg font-bold">${statCustomers}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Due</p><p class="text-lg font-bold">৳ ${statDue}</p></div>` : `<div class="win98-outset p-2 col-span-2 md:col-span-4"><p class="text-xs">Welcome, ${esc(State.currentUser.name)}!</p><p class="text-lg font-bold mt-1">Your Current Due: ৳ ${statDue}</p></div>`}</div><div class="win98-window p-2"><div class="win98-titlebar text-xs mb-2">Sales Overview</div><canvas id="salesChart" height="80"></canvas></div>`;
-            const ctx = document.getElementById('salesChart').getContext('2d');
-            if(window.myChart) window.myChart.destroy();
-            window.myChart = new Chart(ctx, { type: 'bar', data: { labels: ['Mon', 'Tue', 'Wed', 'Thu'], datasets: [{ label: 'Sales', data: [12, 19, 15, 25], backgroundColor: '#000080' }] } });
+            document.getElementById('main-content').innerHTML = `<div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">${!isC ? `<div class="win98-outset p-2"><p class="text-xs">Total Products</p><p class="text-lg font-bold">${statProducts}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Customers</p><p class="text-lg font-bold">${statCustomers}</p></div><div class="win98-outset p-2"><p class="text-xs">Total Due</p><p class="text-lg font-bold">৳ ${statDue}</p></div>` : `<div class="win98-outset p-2 col-span-2 md:col-span-4"><p class="text-xs">Welcome, ${esc(State.currentUser.name)}!</p><p class="text-lg font-bold mt-1">Your Current Due: ৳ ${statDue}</p></div>`}</div><div class="win98-window p-4 flex flex-col items-center justify-center" style="min-height: 300px;"><img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" alt="RAFI FOOD Logo" class="w-32 h-32 mb-4 border-2 border-black object-cover"><h2 class="text-2xl font-bold text-[#000080]">RAFI FOOD</h2><p class="text-xs text-gray-600 mt-2">Sales & Distribution Management System</p></div>`;
         }
 
         function renderProducts() {
             const cE = State.currentUser.role === 'ADMIN';
-            let rows = State.products.length > 0 ? State.products.map(p => `<tr><td><img src="${p.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(p.code || 'N/A')}</td><td>${esc(p.name || 'N/A')}</td><td>${esc(p.category || 'N/A')}</td><td>${formatWeight(p.weight)}</td><td>৳${p.mrp || 0}</td><td>৳${p.rPrice || 0} / ৳${p.dPrice || 0} / ৳${p.hPrice || 0}</td><td>${p.stock || 0}</td><td class="text-right">${cE ? `<button onclick="editProduct('${p.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteProduct('${p.id}')" class="w98-btn" style="padding: 2px 6px;">Del</button>` : '-'}</td></tr>`).join('') : `<tr><td colspan="9" class="text-center p-4">No products found.</td></tr>`;
+            let rows = State.products.length > 0 ? State.products.map(p => `<tr><td><img src="${p.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(p.code || 'N/A')}</td><td>${esc(p.name || 'N/A')}</td><td>${esc(p.category || 'N/A')}</td><td>${formatWeight(p.weight)}</td><td>৳${p.mrp || 0}</td><td>৳${p.rPrice || 0} / ৳${p.dPrice || 0} / ৳${p.hPrice || 0}</td><td>${p.stock || 0}</td><td class="text-right">${cE ? `<button onclick="editProduct('${p.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteProduct('${p.id}')" class="w98-btn" style="padding: 2px 6px; color:red;">Del</button>` : '-'}</td></tr>`).join('') : `<tr><td colspan="9" class="text-center p-4">No products found.</td></tr>`;
             document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">Products List</h3>${cE ? `<button onclick="addProduct()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add Product</button>` : ''}</div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>Code</th><th>Name</th><th>Category</th><th>Weight</th><th>MRP</th><th>R/D/H Price</th><th>Stock</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
         }
         function getProductCategoryOptions(selectedCategory) { return State.categories.length === 0 ? `<option value="General" ${selectedCategory === 'General' ? 'selected' : ''}>General</option>` : State.categories.map(c => `<option value="${esc(c.name)}" ${selectedCategory === c.name ? 'selected' : ''}>${esc(c.name)}</option>`).join(''); }
@@ -498,16 +499,64 @@
         }
         function saveSalaryTarget(e, id) { e.preventDefault(); const data = { target: parseFloat(document.getElementById('u_target').value) || 0, basicSalary: parseFloat(document.getElementById('u_salary').value) || 0, ta: parseFloat(document.getElementById('u_ta').value) || 0, da: parseFloat(document.getElementById('u_da').value) || 0 }; db.ref('users/' + id).update(data); alert('Salary & Target updated successfully!'); closeModal(); }
         
-        // --- Quarterly Target Module ---
+        // --- Quarterly Target Setup – Incentive Structure ---
         function renderQuarterlyTarget() {
             if (State.currentUser.role !== 'ADMIN') { document.getElementById('main-content').innerHTML = '<div class="p-4 text-red-600 font-bold">Access Denied</div>'; return; }
+            const inc = State.settings?.quarterlyIncentive || { SE: 3000, ASM: 1500, RSM: 1000 };
+            
+            const incentiveHtml = `
+                <div class="win98-window p-2 mb-4">
+                    <div class="win98-titlebar mb-2"><span><i class="fas fa-trophy mr-2"></i> Quarterly Target Achieve Incentive Structure</span></div>
+                    <div class="p-3">
+                        <div class="win98-inset p-2 mb-3 overflow-x-auto">
+                            <table class="w98-table text-xs">
+                                <thead><tr><th>Designation</th><th class="text-center">Quarterly Target Achieve</th><th class="text-center">Incentive Amount (৳)</th></tr></thead>
+                                <tbody>
+                                    <tr><td class="font-bold">SE</td><td class="text-center">100% Target Achieve</td><td class="text-center"><input type="number" id="inc_SE" value="${inc.SE || 3000}" class="w98-input" style="width: 120px; text-align: center; margin: 0 auto;" required></td></tr>
+                                    <tr><td class="font-bold">ASM</td><td class="text-center">100% Target Achieve</td><td class="text-center"><input type="number" id="inc_ASM" value="${inc.ASM || 1500}" class="w98-input" style="width: 120px; text-align: center; margin: 0 auto;" required></td></tr>
+                                    <tr><td class="font-bold">RSM</td><td class="text-center">100% Target Achieve</td><td class="text-center"><input type="number" id="inc_RSM" value="${inc.RSM || 1000}" class="w98-input" style="width: 120px; text-align: center; margin: 0 auto;" required></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="win98-inset p-2 mb-3 text-xs">
+                            <p class="font-bold mb-1">System Logic:</p>
+                            <ul class="list-disc list-inside space-y-1 text-[11px]">
+                                <li>Quarterly Target আলাদাভাবে সেট করা যাবে (Q1 / Q2 / Q3 / Q4)।</li>
+                                <li>SE, ASM ও RSM-এর জন্য আলাদা Target সেট করা যাবে।</li>
+                                <li>Quarter শেষে Achieved % = Actual Achievement ÷ Quarterly Target × 100</li>
+                                <li>100% বা তার বেশি Achieve হলে Incentive Eligible হবে।</li>
+                                <li>Target Achieve না করলে Incentive = ৳0</li>
+                                <li>Incentive Amount Settings থেকে পরিবর্তন করা যাবে।</li>
+                            </ul>
+                        </div>
+                        <div class="flex justify-end"><button onclick="saveIncentiveSettings()" class="w98-btn"><i class="fas fa-save mr-1"></i> Save Incentive Settings</button></div>
+                    </div>
+                </div>`;
+            
             const empUsers = State.users.filter(u => ['RSM', 'ASM', 'SE'].includes(u.role));
             let rows = empUsers.length > 0 ? empUsers.map(u => `<tr><td><img src="${u.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(u.userCode || 'N/A')}</td><td>${esc(u.name || 'N/A')}</td><td>${esc(u.role || 'N/A')}</td><td>৳ ${u.q1Target || 0}</td><td>৳ ${u.q2Target || 0}</td><td>৳ ${u.q3Target || 0}</td><td>৳ ${u.q4Target || 0}</td><td class="text-right"><button onclick="editQuarterlyTarget('${u.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button></td></tr>`).join('') : `<tr><td colspan="9" class="text-center p-4">No employees found.</td></tr>`;
-            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">Quarterly Target Setup</h3></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>Emp ID</th><th>Name</th><th>Role</th><th>Q1 Target</th><th>Q2 Target</th><th>Q3 Target</th><th>Q4 Target</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+            const targetHtml = `<div class="win98-window p-2"><div class="win98-titlebar mb-2"><span><i class="fas fa-bullseye mr-2"></i> Quarterly Target Setup (3 Months Each)</span></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>Emp ID</th><th>Name</th><th>Role</th><th>Q1 (Jan-Mar)</th><th>Q2 (Apr-Jun)</th><th>Q3 (Jul-Sep)</th><th>Q4 (Oct-Dec)</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+            
+            document.getElementById('main-content').innerHTML = incentiveHtml + targetHtml;
         }
+        
+        function saveIncentiveSettings() {
+            const data = {
+                SE: parseFloat(document.getElementById('inc_SE').value) || 3000,
+                ASM: parseFloat(document.getElementById('inc_ASM').value) || 1500,
+                RSM: parseFloat(document.getElementById('inc_RSM').value) || 1000
+            };
+            db.ref('settings/quarterlyIncentive').set(data).then(() => {
+                State.settings.quarterlyIncentive = data;
+                alert('Incentive settings saved successfully!');
+            });
+        }
+        
         function editQuarterlyTarget(id) {
             const u = State.users.find(x => x.id === id);
-            openModal(`Edit Quarterly Target: ${u.name}`, `<form onsubmit="saveQuarterlyTarget(event, '${u.id}')"><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Q1 Target (Jan-Mar) ৳:</label><input type="number" id="u_q1" value="${u.q1Target || 0}" class="w98-input"></div><div><label>Q2 Target (Apr-Jun) ৳:</label><input type="number" id="u_q2" value="${u.q2Target || 0}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Q3 Target (Jul-Sep) ৳:</label><input type="number" id="u_q3" value="${u.q3Target || 0}" class="w98-input"></div><div><label>Q4 Target (Oct-Dec) ৳:</label><input type="number" id="u_q4" value="${u.q4Target || 0}" class="w98-input"></div></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update Targets</button></div></form>`);
+            const inc = State.settings?.quarterlyIncentive || { SE: 3000, ASM: 1500, RSM: 1000 };
+            const roleInc = inc[u.role] || 0;
+            openModal(`Edit Quarterly Target: ${u.name}`, `<form onsubmit="saveQuarterlyTarget(event, '${u.id}')"><div class="win98-inset p-2 mb-3 text-xs"><p class="font-bold mb-1">Incentive Info for ${esc(u.role)}:</p><p>100% Target Achieve হলে Incentive: <strong class="text-green-700">৳ ${roleInc}</strong></p><p class="text-[10px] text-gray-600 mt-1">Incentive Amount পরিবর্তন করতে উপরের Incentive Structure সেকশন থেকে করুন।</p></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Q1 Target (Jan-Mar) ৳:</label><input type="number" id="u_q1" value="${u.q1Target || 0}" class="w98-input"></div><div><label>Q2 Target (Apr-Jun) ৳:</label><input type="number" id="u_q2" value="${u.q2Target || 0}" class="w98-input"></div></div><div class="grid grid-cols-2 gap-2 mb-2"><div><label>Q3 Target (Jul-Sep) ৳:</label><input type="number" id="u_q3" value="${u.q3Target || 0}" class="w98-input"></div><div><label>Q4 Target (Oct-Dec) ৳:</label><input type="number" id="u_q4" value="${u.q4Target || 0}" class="w98-input"></div></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update Targets</button></div></form>`);
         }
         function saveQuarterlyTarget(e, id) { e.preventDefault(); const data = { q1Target: parseFloat(document.getElementById('u_q1').value) || 0, q2Target: parseFloat(document.getElementById('u_q2').value) || 0, q3Target: parseFloat(document.getElementById('u_q3').value) || 0, q4Target: parseFloat(document.getElementById('u_q4').value) || 0 }; db.ref('users/' + id).update(data); alert('Quarterly Targets updated successfully!'); closeModal(); }
 
@@ -1037,61 +1086,178 @@
             `;
         }
 
-        // --- Quarterly Sales Report Module ---
+        // --- Quarterly Target Achievement & Incentive Report Module ---
         function renderQuarterlyReport() {
             if (!['ADMIN', 'RSM', 'ASM'].includes(State.currentUser.role)) { document.getElementById('main-content').innerHTML = '<div class="p-4 text-red-600 font-bold">Access Denied</div>'; return; }
             const currentYear = new Date().getFullYear();
+            const inc = State.settings?.quarterlyIncentive || { SE: 3000, ASM: 1500, RSM: 1000 };
+            
             document.getElementById('main-content').innerHTML = `
                 <div class="win98-window p-2">
-                    <div class="win98-titlebar mb-2">Quarterly Sales Report</div>
-                    <div class="p-2 flex gap-2 items-end mb-4">
-                        <div><label>Year:</label><input type="number" id="qr_year" class="w98-input" value="${currentYear}"></div>
+                    <div class="win98-titlebar mb-2">Quarterly Target Achievement & Incentive Report</div>
+                    <div class="p-2 flex flex-col md:flex-row gap-2 items-end mb-4">
+                        <div><label>Year:</label><input type="number" id="qr_year" class="w98-input" value="${currentYear}" style="width:100px;"></div>
+                        <div><label>Quarter:</label>
+                            <select id="qr_quarter" class="w98-select">
+                                <option value="1">Q1 (Jan-Mar)</option>
+                                <option value="2">Q2 (Apr-Jun)</option>
+                                <option value="3">Q3 (Jul-Sep)</option>
+                                <option value="4">Q4 (Oct-Dec)</option>
+                            </select>
+                        </div>
                         <button onclick="calcQuarterlyReport()" class="w98-btn">Generate Report</button>
+                        <button onclick="printQuarterlyReport()" class="w98-btn"><i class="fas fa-print mr-1"></i> Print</button>
                     </div>
-                    <div id="qr_report_area" class="p-2">Select year and generate report.</div>
+                    
+                    <!-- Incentive Structure Info -->
+                    <div class="win98-inset p-2 mb-4">
+                        <h4 class="font-bold mb-2 text-xs">Incentive Structure (100% Target Achieve):</h4>
+                        <div class="grid grid-cols-3 gap-2 text-xs">
+                            <div class="win98-outset p-2 text-center"><p class="font-bold">SE</p><p class="text-lg font-bold text-green-700">৳${inc.SE || 3000}</p></div>
+                            <div class="win98-outset p-2 text-center"><p class="font-bold">ASM</p><p class="text-lg font-bold text-green-700">৳${inc.ASM || 1500}</p></div>
+                            <div class="win98-outset p-2 text-center"><p class="font-bold">RSM</p><p class="text-lg font-bold text-green-700">৳${inc.RSM || 1000}</p></div>
+                        </div>
+                    </div>
+                    
+                    <div id="qr_report_area" class="p-2">Select year and quarter, then click Generate Report.</div>
                 </div>`;
         }
-        function calcQuarterlyReport() {
-            const year = parseInt(document.getElementById('qr_year').value); if(!year) return alert('Invalid Year');
+        
+        function getQuarterlyData() {
+            const year = parseInt(document.getElementById('qr_year')?.value) || new Date().getFullYear();
+            const quarter = parseInt(document.getElementById('qr_quarter')?.value) || 1;
+            const inc = State.settings?.quarterlyIncentive || { SE: 3000, ASM: 1500, RSM: 1000 };
+            const startMonth = (quarter - 1) * 3;
+            const endMonth = startMonth + 2;
+            const targetField = `q${quarter}Target`;
+            
             let salesmen = State.users.filter(u => ['SE', 'ASM', 'RSM'].includes(u.role));
-            if (State.currentUser.role === 'ASM') salesmen = salesmen.filter(u => u.assignedASM === State.currentUser.id);
-            else if (State.currentUser.role === 'RSM') salesmen = salesmen.filter(u => u.assignedRSM === State.currentUser.id || (Array.isArray(u.assignedRSM) && u.assignedRSM.includes(State.currentUser.id)));
-
-            let adminOrders = State.orders.filter(o => o.status === 'Delivered' && o.salesRole === 'ADMIN' && new Date(o.orderDate).getFullYear() === year);
-            const adminSales = adminOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0);
-
-            let rows = salesmen.map(u => {
-                let fOrders = State.orders.filter(o => o.status === 'Delivered' && (o.entryBy === u.id || o.entryBy === u.userCode) && new Date(o.orderDate).getFullYear() === year);
-                let q = [0, 0, 0, 0];
-                fOrders.forEach(o => { const m = new Date(o.orderDate).getMonth(); q[Math.floor(m / 3)] += (o.netTotal || o.grossTotal || 0); });
-                const total = q[0] + q[1] + q[2] + q[3];
+            if (State.currentUser.role === 'ASM') salesmen = salesmen.filter(u => u.assignedASM === State.currentUser.id || u.id === State.currentUser.id);
+            else if (State.currentUser.role === 'RSM') salesmen = salesmen.filter(u => u.assignedRSM === State.currentUser.id || (Array.isArray(u.assignedRSM) && u.assignedRSM.includes(State.currentUser.id)) || u.id === State.currentUser.id);
+            
+            let results = [];
+            let totals = { target: 0, achievement: 0, incentive: 0 };
+            
+            salesmen.forEach(u => {
+                const target = parseFloat(u[targetField]) || 0;
                 
-                const tQ = [
-                    parseFloat(u.q1Target || 0), parseFloat(u.q2Target || 0), parseFloat(u.q3Target || 0), parseFloat(u.q4Target || 0)
-                ];
+                let fOrders = State.orders.filter(o => {
+                    if (o.status !== 'Delivered') return false;
+                    const d = new Date(o.orderDate);
+                    if (d.getFullYear() !== year) return false;
+                    const m = d.getMonth();
+                    return m >= startMonth && m <= endMonth;
+                });
                 
+                if (u.role === 'SE') {
+                    fOrders = fOrders.filter(o => o.entryBy === u.id || o.entryBy === u.userCode);
+                } else if (u.role === 'ASM') {
+                    const teamSeIds = State.users.filter(se => se.role === 'SE' && se.assignedASM === u.id).map(se => se.id);
+                    const teamSeCodes = State.users.filter(se => se.role === 'SE' && se.assignedASM === u.id).map(se => se.userCode);
+                    fOrders = fOrders.filter(o => teamSeIds.includes(o.entryBy) || teamSeCodes.includes(o.entryBy));
+                } else if (u.role === 'RSM') {
+                    const teamSeIds = State.users.filter(se => {
+                        if (se.role !== 'SE') return false;
+                        if (se.assignedRSM === u.id) return true;
+                        if (Array.isArray(se.assignedRSM) && se.assignedRSM.includes(u.id)) return true;
+                        return false;
+                    }).map(se => se.id);
+                    const teamSeCodes = State.users.filter(se => {
+                        if (se.role !== 'SE') return false;
+                        if (se.assignedRSM === u.id) return true;
+                        if (Array.isArray(se.assignedRSM) && se.assignedRSM.includes(u.id)) return true;
+                        return false;
+                    }).map(se => se.userCode);
+                    fOrders = fOrders.filter(o => teamSeIds.includes(o.entryBy) || teamSeCodes.includes(o.entryBy));
+                }
+                
+                const achievement = fOrders.reduce((s, o) => s + (o.netTotal || o.grossTotal || 0), 0);
+                const achPct = target > 0 ? (achievement / target * 100) : 0;
+                const isEligible = achPct >= 100;
+                const incentiveAmount = isEligible ? (inc[u.role] || 0) : 0;
+                
+                totals.target += target;
+                totals.achievement += achievement;
+                totals.incentive += incentiveAmount;
+                
+                results.push({ user: u, target, achievement, achPct, isEligible, incentiveAmount });
+            });
+            
+            return { results, totals, year, quarter, inc };
+        }
+        
+        function calcQuarterlyReport() {
+            const data = getQuarterlyData();
+            const quarterNames = ['Q1 (Jan-Mar)', 'Q2 (Apr-Jun)', 'Q3 (Jul-Sep)', 'Q4 (Oct-Dec)'];
+            
+            let rows = data.results.map(r => {
+                const achCls = r.isEligible ? 'text-green-700 font-bold' : 'text-red-600';
                 return `<tr>
-                    <td>${esc(u.userCode || '-')}</td>
-                    <td>${esc(u.name || '-')}</td>
-                    <td>${esc(u.role || '-')}</td>
-                    <td class="text-right">৳ ${q[0].toFixed(0)} / ${tQ[0].toFixed(0)}</td>
-                    <td class="text-right">৳ ${q[1].toFixed(0)} / ${tQ[1].toFixed(0)}</td>
-                    <td class="text-right">৳ ${q[2].toFixed(0)} / ${tQ[2].toFixed(0)}</td>
-                    <td class="text-right">৳ ${q[3].toFixed(0)} / ${tQ[3].toFixed(0)}</td>
-                    <td class="text-right font-bold">৳ ${total.toFixed(0)}</td>
+                    <td>${esc(r.user.userCode || '-')}</td>
+                    <td>${esc(r.user.name || '-')}</td>
+                    <td>${esc(r.user.role || '-')}</td>
+                    <td class="text-right">৳ ${r.target.toFixed(0)}</td>
+                    <td class="text-right">৳ ${r.achievement.toFixed(0)}</td>
+                    <td class="text-center ${achCls}">${r.achPct.toFixed(1)}%</td>
+                    <td class="text-center">${r.isEligible ? '<span class="status-badge status-delivered">Eligible</span>' : '<span class="status-badge status-cancelled">Not Eligible</span>'}</td>
+                    <td class="text-right font-bold ${r.isEligible ? 'text-green-700' : ''}">৳ ${r.incentiveAmount.toFixed(0)}</td>
                 </tr>`;
             }).join('');
-
-            rows += `<tr class="cat-subtotal"><td></td><td>Admin Sales</td><td>ADMIN</td><td class="text-right" colspan="6">৳ ${adminSales.toFixed(0)}</td></tr>`;
-
+            
+            if (rows === '') rows = `<tr><td colspan="8" class="text-center p-4">No data found for this quarter.</td></tr>`;
+            
             document.getElementById('qr_report_area').innerHTML = `
                 <div class="win98-inset p-1 overflow-x-auto">
                     <table class="w98-table text-xs">
-                        <thead><tr><th>Emp Code</th><th>Name</th><th>Role</th><th class="text-right">Q1 (Sales/Target)</th><th class="text-right">Q2 (Sales/Target)</th><th class="text-right">Q3 (Sales/Target)</th><th class="text-right">Q4 (Sales/Target)</th><th class="text-right">Total Sales</th></tr></thead>
+                        <thead><tr>
+                            <th>Emp Code</th>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th class="text-right">Quarterly Target</th>
+                            <th class="text-right">Achievement</th>
+                            <th class="text-center">Achievement %</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-right">Incentive</th>
+                        </tr></thead>
                         <tbody>${rows}</tbody>
+                        <tfoot><tr class="cat-subtotal">
+                            <td colspan="3" class="text-right">TOTAL:</td>
+                            <td class="text-right">৳ ${data.totals.target.toFixed(0)}</td>
+                            <td class="text-right">৳ ${data.totals.achievement.toFixed(0)}</td>
+                            <td></td>
+                            <td></td>
+                            <td class="text-right">৳ ${data.totals.incentive.toFixed(0)}</td>
+                        </tr></tfoot>
                     </table>
                 </div>
             `;
+        }
+        
+        function printQuarterlyReport() {
+            const data = getQuarterlyData();
+            const quarterNames = ['Q1 (Jan-Mar)', 'Q2 (Apr-Jun)', 'Q3 (Jul-Sep)', 'Q4 (Oct-Dec)'];
+            const inc = data.inc;
+            
+            let rows = data.results.map(r => {
+                const achColor = r.isEligible ? 'color:#2f6b4f;' : 'color:#a04444;';
+                const statusBg = r.isEligible ? 'background:#D1FAE5;' : 'background:#FEE2E2;';
+                return `<tr>
+                    <td>${esc(r.user.userCode || '-')}</td>
+                    <td>${esc(r.user.name || '-')}</td>
+                    <td style="text-align:center;">${esc(r.user.role || '-')}</td>
+                    <td style="text-align:right;">৳ ${r.target.toFixed(0)}</td>
+                    <td style="text-align:right;">৳ ${r.achievement.toFixed(0)}</td>
+                    <td style="text-align:center; ${achColor} font-weight:bold;">${r.achPct.toFixed(1)}%</td>
+                    <td style="text-align:center; ${statusBg} font-weight:bold;">${r.isEligible ? 'Eligible' : 'Not Eligible'}</td>
+                    <td style="text-align:right; font-weight:bold; ${r.isEligible ? 'color:#2f6b4f;' : ''}">৳ ${r.incentiveAmount.toFixed(0)}</td>
+                </tr>`;
+            }).join('');
+            
+            if (rows === '') rows = `<tr><td colspan="8" style="text-align:center; padding:20px;">No data found for this quarter.</td></tr>`;
+            
+            const html = `<!DOCTYPE html><html><head><title>Quarterly Target Achievement Report</title><style>body { font-family: Tahoma, sans-serif; margin: 20px; }h2 { text-align: center; margin-bottom: 5px; }p { text-align: center; margin-top: 0; }.inc-box { display: flex; justify-content: center; gap: 20px; margin: 15px 0; }.inc-card { border: 1px solid #000; padding: 10px 20px; text-align: center; }.inc-card p { margin: 0; }table { width: 100%; border-collapse: collapse; margin-top: 15px; }th, td { border: 1px solid #000; padding: 6px; font-size: 11px; text-align: left; }th { background: #e0e0e0; font-weight: bold; }</style></head><body><h2>RAFI FOOD - Quarterly Target Achievement & Incentive Report</h2><p>Year: ${data.year} | Quarter: ${quarterNames[data.quarter - 1]}</p><div class="inc-box"><div class="inc-card"><p><b>SE Incentive</b></p><p style="font-size:18px; color:green;">৳ ${inc.SE || 3000}</p></div><div class="inc-card"><p><b>ASM Incentive</b></p><p style="font-size:18px; color:green;">৳ ${inc.ASM || 1500}</p></div><div class="inc-card"><p><b>RSM Incentive</b></p><p style="font-size:18px; color:green;">৳ ${inc.RSM || 1000}</p></div></div><table><thead><tr><th>Emp Code</th><th>Name</th><th>Role</th><th style="text-align:right;">Quarterly Target</th><th style="text-align:right;">Achievement</th><th style="text-align:center;">Achievement %</th><th style="text-align:center;">Status</th><th style="text-align:right;">Incentive</th></tr></thead><tbody>${rows}</tbody><tfoot><tr style="background:#dbeafe; font-weight:bold;"><td colspan="3" style="text-align:right;">TOTAL:</td><td style="text-align:right;">৳ ${data.totals.target.toFixed(0)}</td><td style="text-align:right;">৳ ${data.totals.achievement.toFixed(0)}</td><td></td><td></td><td style="text-align:right;">৳ ${data.totals.incentive.toFixed(0)}</td></tr></tfoot></table></body></html>`;
+            
+            const iframe = document.createElement('iframe'); iframe.style.position = "absolute"; iframe.style.width = "0px"; iframe.style.height = "0px"; iframe.style.border = "none"; iframe.onload = function() { iframe.contentWindow.focus(); iframe.contentWindow.print(); setTimeout(() => { if (iframe.parentNode) document.body.removeChild(iframe); }, 1000); }; document.body.appendChild(iframe); iframe.contentWindow.document.open(); iframe.contentWindow.document.write(html); iframe.contentWindow.document.close();
         }
 
         // --- Achievement Report Module ---
