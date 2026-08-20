@@ -125,7 +125,6 @@
         }
         
         #sidebar { transition: transform 0.3s ease; z-index: 50; }
-        /* 1000px এ মোবাইল হামবার্গার মেনু অ্যাক্টিভ হবে */
         @media (max-width: 768px) {
             .header-top { flex-direction: column; align-items: flex-start; }
             .company-info { text-align: left; min-width: 100%; }
@@ -213,6 +212,7 @@
                         <a href="#" data-page="commission-report" class="menu-item admin-only"><i class="fas fa-hand-holding-usd w-4"></i> Commission Report</a>
                         <a href="#" data-page="quarterly-report" class="menu-item admin-rsm-asm-only"><i class="fas fa-calendar-alt w-4"></i> Quarterly Target Report</a>
                         <a href="#" data-page="achievement-report" class="menu-item admin-rsm-asm-only"><i class="fas fa-trophy w-4"></i> Achievement Report</a>
+                        <a href="#" data-page="stock-fifo" class="menu-item can-view-reports"><i class="fas fa-boxes-stacked w-4"></i> Stock Report FIFO</a>
                     </div>
                 </nav>
             </aside>
@@ -245,7 +245,7 @@
     </div>
 
     <div id="modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4" style="background: rgba(0,0,0,0.5);">
-        <div class="win98-window w-full max-w-lg max-h-[90vh] flex flex-col">
+        <div class="win98-window w-full max-w-4xl max-h-[90vh] flex flex-col">
             <div class="win98-titlebar">
                 <span id="modal-title">Modal Title</span>
                 <button onclick="closeModal()" class="w98-btn" style="padding: 0 5px; min-width: 20px;">X</button>
@@ -263,7 +263,7 @@
         const State = { 
             currentUser: null, currentPage: null, currentView: null, products: [], users: [], customers: [], orders: [], cart: [], categories: [], weights: [], 
             settings: { discount: [{ min: 1000, max: 5000, percent: 1 }, { min: 5001, max: 999999, percent: 2 }], quarterlyIncentive: { SE: 3000, ASM: 1500, RSM: 1000 } },
-            commissionSettings: { hockerMinQty: 50, hockerRate: 2, dealerMinQty: 100, dealerRate: 1, adminPct: 2 }
+            commissionSettings: { hockerMinVal: 5000, hockerPct: 2, dealerMinVal: 10000, dealerPct: 1, adminPct: 2 }
         };
 
         function formatWeight(w) {
@@ -360,7 +360,7 @@
         function savePassword(e) { e.preventDefault(); const n = document.getElementById('new_pass').value; if (State.currentUser.id === 'superadmin') alert('Super Admin password cannot be changed here.'); else { db.ref('users/' + State.currentUser.id).update({ password: n }); alert('Password updated successfully!'); } closeModal(); }
 
         function initFirebaseListeners() {
-            db.ref('products').on('value', (s) => { State.products = []; s.forEach(c => { const val = c.val(); val.id = c.key; State.products.push(val); }); if (State.currentPage === 'products') renderProducts(); if (State.currentPage === 'dashboard') renderDashboard(); if (State.currentPage === 'order-entry') renderOrderEntry(); });
+            db.ref('products').on('value', (s) => { State.products = []; s.forEach(c => { const val = c.val(); val.id = c.key; State.products.push(val); }); if (State.currentPage === 'products') renderProducts(); if (State.currentPage === 'dashboard') renderDashboard(); if (State.currentPage === 'order-entry') renderOrderEntry(); if (State.currentPage === 'stock-fifo') renderStockFIFO(); });
             db.ref('users').on('value', (s) => { 
                 State.users = []; s.forEach(c => { const val = c.val(); val.id = c.key; State.users.push(val); }); 
                 if (State.currentPage === 'users') renderUsers(); 
@@ -428,6 +428,7 @@
                     case 'quarterly-report': document.getElementById('page-title').textContent = 'Quarterly Target Achievement Report'; renderQuarterlyReport(); break;
                     case 'achievement-report': document.getElementById('page-title').textContent = 'Achievement Report'; renderAchievementReport(); break;
                     case 'delivery-summary': document.getElementById('page-title').textContent = 'Delivery Summary'; renderDeliverySummary(); break;
+                    case 'stock-fifo': document.getElementById('page-title').textContent = 'Stock Report FIFO (Fast In First Out)'; renderStockFIFO(); break;
                 }
             }, 200);
         }
@@ -450,7 +451,7 @@
         function saveWeight(e, id) { e.preventDefault(); const label = document.getElementById('w_label').value; if (id) db.ref('settings/weights/' + id).update({ label: label }); else db.ref('settings/weights').push({ label: label }); closeModal(); }
         function deleteWeight(id) { if (confirm('Are you sure?')) db.ref('settings/weights/' + id).remove(); }
 
-        // --- DASHBOARD: Sales Overview removed, Logo added ---
+        // --- DASHBOARD ---
         function renderDashboard() {
             const role = State.currentUser.role;
             const isC = !['ADMIN', 'OPERATOR', 'AC', 'RSM', 'ASM', 'SE', 'DA'].includes(role);
@@ -466,8 +467,112 @@
         function renderProducts() {
             const cE = State.currentUser.role === 'ADMIN';
             let rows = State.products.length > 0 ? State.products.map(p => `<tr><td><img src="${p.image || 'https://via.placeholder.com/40'}" class="w-8 h-8 border border-black"></td><td>${esc(p.code || 'N/A')}</td><td>${esc(p.name || 'N/A')}</td><td>${esc(p.category || 'N/A')}</td><td>${formatWeight(p.weight)}</td><td>৳${p.mrp || 0}</td><td>৳${p.rPrice || 0} / ৳${p.dPrice || 0} / ৳${p.hPrice || 0}</td><td>${p.stock || 0}</td><td class="text-right">${cE ? `<button onclick="editProduct('${p.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button> <button onclick="deleteProduct('${p.id}')" class="w98-btn" style="padding: 2px 6px; color:red;">Del</button>` : '-'}</td></tr>`).join('') : `<tr><td colspan="9" class="text-center p-4">No products found.</td></tr>`;
-            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2"><h3 class="font-bold">Products List</h3>${cE ? `<button onclick="addProduct()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add Product</button>` : ''}</div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>Code</th><th>Name</th><th>Category</th><th>Weight</th><th>MRP</th><th>R/D/H Price</th><th>Stock</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+            document.getElementById('main-content').innerHTML = `<div class="win98-window p-2"><div class="flex justify-between mb-2 flex-wrap gap-2"><h3 class="font-bold">Products List</h3><div class="flex gap-2 flex-wrap">${cE ? `<button onclick="openStockReceiveModal()" class="w98-btn"><i class="fas fa-truck-loading mr-1"></i> Receive Stock</button><button onclick="viewStockHistory()" class="w98-btn"><i class="fas fa-history mr-1"></i> Stock History</button><button onclick="addProduct()" class="w98-btn"><i class="fas fa-plus mr-1"></i> Add Product</button>` : ''}</div></div><div class="win98-inset p-1 overflow-x-auto"><table class="w98-table text-xs"><thead><tr><th>Img</th><th>Code</th><th>Name</th><th>Category</th><th>Weight</th><th>MRP</th><th>R/D/H Price</th><th>Stock</th><th class="text-right">Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
         }
+
+        function openStockReceiveModal() {
+            const productOptions = State.products.map(p => `<option value="${p.id}">${esc(p.code)} - ${esc(p.name)} (${formatWeight(p.weight)})</option>`).join('');
+            openModal('Receive New Stock', `
+                <form onsubmit="saveStockReceived(event)">
+                    <div class="mb-3">
+                        <label class="block mb-1">Product Search (Name / Code):</label>
+                        <input type="text" id="stk_search" class="w98-input" placeholder="Type to filter list below..." oninput="filterStockProducts()">
+                    </div>
+                    <div class="mb-3">
+                        <label class="block mb-1">Select Product <span class="text-red-600">*</span>:</label>
+                        <select id="stk_prod_id" class="w98-select" required>
+                            <option value="">-- Select Product --</option>
+                            ${productOptions}
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label>Received Qty <span class="text-red-600">*</span>:</label>
+                        <input type="number" id="stk_qty" class="w98-input" required min="1">
+                    </div>
+                    <div class="mb-3">
+                        <label>Received From <span class="text-red-600">*</span>:</label>
+                        <input type="text" id="stk_from" class="w98-input" placeholder="e.g., Manufacturer, Supplier Name" required>
+                    </div>
+                    <div class="flex justify-end mt-4">
+                        <button type="submit" class="w98-btn">Save Stock Received</button>
+                    </div>
+                </form>
+            `);
+        }
+
+        function filterStockProducts() {
+            const term = document.getElementById('stk_search').value.toLowerCase();
+            const filtered = State.products.filter(p => (p.name || '').toLowerCase().includes(term) || (p.code || '').toLowerCase().includes(term));
+            const select = document.getElementById('stk_prod_id');
+            select.innerHTML = '<option value="">-- Select Product --</option>' + filtered.map(p => `<option value="${p.id}">${esc(p.code)} - ${esc(p.name)} (${formatWeight(p.weight)})</option>`).join('');
+        }
+
+        function saveStockReceived(e) {
+            e.preventDefault();
+            const pId = document.getElementById('stk_prod_id').value;
+            if (!pId) return alert('Please select a product!');
+
+            const qty = parseInt(document.getElementById('stk_qty').value) || 0;
+            const from = document.getElementById('stk_from').value;
+
+            const product = State.products.find(p => p.id === pId);
+            if (!product) return alert('Product not found!');
+
+            const currentStock = parseInt(product.stock) || 0;
+            const updatedStock = currentStock + qty;
+
+            const prodUpdate = {
+                stock: updatedStock
+            };
+
+            const historyRecord = {
+                productId: pId,
+                productName: product.name,
+                productCode: product.code,
+                receivedQty: qty,
+                receivedFrom: from,
+                previousStock: currentStock,
+                updatedStock: updatedStock,
+                date: new Date().toISOString()
+            };
+
+            db.ref('products/' + pId).update(prodUpdate).then(() => {
+                db.ref('stockHistory').push(historyRecord).then(() => {
+                    alert(`Stock received successfully! Updated Stock: ${updatedStock}`);
+                    closeModal();
+                });
+            });
+        }
+
+        function viewStockHistory() {
+            openModal('Stock Receive History', `<div id="stock-history-container" class="p-2"><i class="fas fa-spinner fa-spin"></i> Loading...</div>`);
+            db.ref('stockHistory').once('value', (snapshot) => {
+                let html = '';
+                let rows = [];
+                snapshot.forEach(c => { const h = c.val(); h.id = c.key; rows.push(h); });
+                rows.sort((a,b) => new Date(b.date) - new Date(a.date));
+                
+                if (rows.length > 0) {
+                    html = `<div class="win98-inset p-1 overflow-x-auto max-h-[60vh]"><table class="w98-table text-xs">
+                        <thead><tr><th>Date</th><th>Product</th><th>Qty</th><th>Prev Stock</th><th>New Stock</th><th>Received From</th></tr></thead>
+                        <tbody>
+                        ${rows.map(h => `<tr>
+                            <td>${safeDate(h.date)}</td>
+                            <td>${esc(h.productName || 'N/A')}</td>
+                            <td class="text-center font-bold text-green-600">+${h.receivedQty || 0}</td>
+                            <td class="text-center">${h.previousStock || 0}</td>
+                            <td class="text-center font-bold">${h.updatedStock || 0}</td>
+                            <td>${esc(h.receivedFrom || 'N/A')}</td>
+                        </tr>`).join('')}
+                        </tbody>
+                    </table></div>`;
+                } else {
+                    html = '<p class="text-center p-4">No stock received history found.</p>';
+                }
+                document.getElementById('stock-history-container').innerHTML = html;
+            });
+        }
+
         function getProductCategoryOptions(selectedCategory) { return State.categories.length === 0 ? `<option value="General" ${selectedCategory === 'General' ? 'selected' : ''}>General</option>` : State.categories.map(c => `<option value="${esc(c.name)}" ${selectedCategory === c.name ? 'selected' : ''}>${esc(c.name)}</option>`).join(''); }
         function addProduct() { openModal('Add Product', `<form onsubmit="saveProduct(event, '')"><div class="mb-3 flex flex-col items-center"><img id="img_preview" src="https://via.placeholder.com/100" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="p_image" accept="image/*" onchange="previewImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2"><div><label>Code:</label><input type="text" id="p_code" class="w98-input" required></div><div><label>Name:</label><input type="text" id="p_name" class="w98-input" required></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Category:</label><select id="p_cat" class="w98-select" required>${getProductCategoryOptions('')}</select></div><div><label>Weight:</label><select id="p_weight" class="w98-select" required>${getWeightOptions('')}</select></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>MRP:</label><input type="number" id="p_mrp" class="w98-input" required></div><div><label>Stock:</label><input type="number" id="p_stock" class="w98-input" required></div></div><div class="grid grid-cols-3 gap-2 mt-2"><div><label>R-Price:</label><input type="number" id="p_r" class="w98-input" required></div><div><label>D-Price:</label><input type="number" id="p_d" class="w98-input" required></div><div><label>H-Price:</label><input type="number" id="p_h" class="w98-input" required></div></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Save Product</button></div></form>`); }
         function editProduct(id) { const p = State.products.find(x => x.id === id); openModal('Edit Product', `<form onsubmit="saveProduct(event, '${p.id}')"><div class="mb-3 flex flex-col items-center"><img id="img_preview" src="${p.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 mb-2 border-2 border-black"><input type="file" id="p_image" accept="image/*" onchange="previewImage(this)" class="text-xs"></div><div class="grid grid-cols-2 gap-2"><div><label>Code:</label><input type="text" id="p_code" value="${esc(p.code || '')}" class="w98-input" required></div><div><label>Name:</label><input type="text" id="p_name" value="${esc(p.name || '')}" class="w98-input" required></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>Category:</label><select id="p_cat" class="w98-select" required>${getProductCategoryOptions(p.category || '')}</select></div><div><label>Weight:</label><select id="p_weight" class="w98-select" required>${getWeightOptions(p.weight)}</select></div></div><div class="grid grid-cols-2 gap-2 mt-2"><div><label>MRP:</label><input type="number" id="p_mrp" value="${p.mrp || 0}" class="w98-input" required></div><div><label>Stock:</label><input type="number" id="p_stock" value="${p.stock || 0}" class="w98-input" required></div></div><div class="grid grid-cols-3 gap-2 mt-2"><div><label>R-Price:</label><input type="number" id="p_r" value="${p.rPrice || 0}" class="w98-input" required></div><div><label>D-Price:</label><input type="number" id="p_d" value="${p.dPrice || 0}" class="w98-input" required></div><div><label>H-Price:</label><input type="number" id="p_h" value="${p.hPrice || 0}" class="w98-input" required></div></div><div class="flex justify-end mt-4"><button type="submit" class="w98-btn">Update Product</button></div></form>`); }
@@ -778,6 +883,17 @@
         function deleteOrder(id) { const o = State.orders.find(x => x.id === id); if (!o) return alert('Order not found!'); if (confirm(`Delete Invoice ${o.invoiceNo || ''}?`)) { if (o.customerId && o.due) { const c = State.customers.find(u => u.id === o.customerId); if (c) { const nD = (c.due || 0) - o.due; db.ref('customers/' + c.id).update({ due: nD }); } } db.ref('orders/' + id).remove().then(() => { alert('Order deleted!'); if (State.currentView === 'invoice_view') renderPage('invoices'); }); } }
         function toBn(n) { const b = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']; return String(n).replace(/[0-9]/g, d => b[d]); }
         function formatBnDate(dateStr) { try { const d = new Date(dateStr); if (isNaN(d.getTime())) return 'N/A'; const months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর']; return `${toBn(d.getDate())} ${months[d.getMonth()]}, ${toBn(d.getFullYear())}`; } catch(e) { return 'N/A'; } }
+        function formatBnShortDate(dateStr) { 
+            try { 
+                if(!dateStr) return '-'; 
+                const d = new Date(dateStr); 
+                if (isNaN(d.getTime())) return '-'; 
+                const day = String(d.getDate()).padStart(2, '0'); 
+                const month = String(d.getMonth() + 1).padStart(2, '0'); 
+                const year = String(d.getFullYear()).slice(-2); 
+                return `${toBn(day)}-${toBn(month)}-${toBn(year)}`; 
+            } catch(e) { return '-'; } 
+        }
         function translateStatus(s) { const m = { 'Pending': 'পেন্ডিং', 'Accepted': 'অনুমোদিত', 'Delivered': 'ডেলিভার্ড', 'Cancelled': 'বাতিল', 'Returned': 'রিটার্ন/এডজাস্টেড' }; return m[s] || 'পেন্ডিং'; }
         function viewInvoice(id) {
             State.currentView = 'invoice_view'; const o = State.orders.find(x => x.id === id); if(!o) return alert('Invoice not found!');
@@ -785,10 +901,12 @@
             if (!iA && o.customerId !== State.currentUser.id) { return alert('Access Denied: You can only view your own invoices.'); }
             const gC = (t) => { 
                 const items = toArray(o.items);
-                const iH = items.map((i, idx) => `<tr><td class="text-center">${toBn(idx + 1)}</td><td>${esc(i.name || 'N/A')}</td><td class="text-right">${toBn((i.mrp || 0).toFixed(2))}</td><td class="text-right">${toBn((i.price || 0).toFixed(2))}</td><td class="text-right">${toBn(i.qty || 0)}</td><td class="text-right">${toBn(formatWeight(i.weight))}</td><td class="text-right">${toBn(((i.qty || 0) * (i.price || 0)).toFixed(2))}</td></tr>`).join('');
+                const iH = items.map((i, idx) => {
+                    return `<tr><td class="text-center">${toBn(idx + 1)}</td><td>${esc(i.name || 'N/A')}</td><td class="text-right">${toBn((i.mrp || 0).toFixed(2))}</td><td class="text-right">${toBn((i.price || 0).toFixed(2))}</td><td class="text-right">${toBn(i.qty || 0)}</td><td class="text-right">${toBn(formatWeight(i.weight))}</td><td class="text-right">${toBn(((i.qty || 0) * (i.price || 0)).toFixed(2))}</td></tr>`;
+                }).join('');
                 let sdPercentText = '';
                 if (o.specialDiscount > 0) { let p = o.specialDiscountPercent; if (!p && o.grossTotal > 0) { let ratio = o.specialDiscount / o.grossTotal; if (Math.abs(ratio - 0.01) < 0.001) p = 1; else if (Math.abs(ratio - 0.02) < 0.001) p = 2; } sdPercentText = p ? ` (${toBn(p)}%)` : ''; }
-                return `<div class="invoice-container"><div class="invoice-copy-badge">${t}</div><img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" class="watermark" alt="Watermark"><div class="header-top"><div class="company-info"><strong>Rafi Food Product</strong><br>Mosjid para Chuadanga, Chuadanga sadar-7200<br>+৮৮০ 1756144900 | rafifoodproducts@gmail.com</div></div><div class="divider"></div><div class="invoice-title">SALES INVOICE</div><div class="divider"></div><div class="meta-section"><div class="meta-left">Shop ID     : ${esc(o.customerCode || 'N/A')}<br>Shop Name   : ${esc(o.customerShopName || 'N/A')}<br>Address     : ${esc(o.customerAddress || 'N/A')}<br>Mobile No   : ${toBn(o.customerMobile || 'N/A')}<br>Proprietor  : ${esc(o.customerName || 'N/A')}</div><div class="justyfi-right">Invoice No  : ${esc(o.invoiceNo || 'N/A')}<br>Order Date  : ${formatBnDate(o.orderDate)}<br>Status      : ${translateStatus(o.status)}<br>Order By    : ${esc(o.salesRole === 'ADMIN' ? 'Admin Sales' : (o.entryByName || o.entryBy || 'N/A'))}</div></div><table class="inv-table"><thead><tr><th class="text-center" style="width: 7%;">SL</th><th style="width: 35%;">Product Name</th><th class="text-right" style="width: 11%;">MRP</th><th class="text-right" style="width: 11%;">Rate</th><th class="text-right" style="width: 9%;">Qty</th><th class="text-right" style="width: 12%;">Unit Weight</th><th class="text-right" style="width: 15%;">Net Value</th></tr></thead><tbody>${iH}</tbody></table><div class="divider"></div><div class="summary-section"><div class="summary-box"><div class="summary-row"><span>Gross Value :</span><span>${toBn((o.grossTotal || 0).toFixed(2))} ৳</span></div>${o.specialDiscount > 0 ? `<div class="summary-row"><span>Discount${sdPercentText} :</span><span>- ${toBn((o.specialDiscount || 0).toFixed(2))} ৳</span></div>` : ''}<div class="summary-row"><span>Received    :</span><span>${toBn((o.paid || 0).toFixed(2))} ৳</span></div><div class="divider" style="margin: 4px 0;"></div><div class="summary-row"><strong>Pending Due :</strong><strong>${toBn((o.due || 0).toFixed(2))} ৳</strong></div></div></div><div class="signature-area"><div class="sig-line">Customer Signature</div><div class="sig-line">DA Signature</div><div class="sig-line">Authorized Signature</div></div></div>`; 
+                return `<div class="invoice-container"><div class="invoice-copy-badge">${t}</div><img src="https://www.appcreator24.com/srv/imgs/gen/4146836_ico.png?ts=1786242930" class="watermark" alt="Watermark"><div class="header-top"><div class="company-info"><strong>Rafi Food Product</strong><br>Mosjid para Chuadanga, Chuadanga sadar-7200<br>+৮৮০ 1756144900 | rafifoodproducts@gmail.com</div></div><div class="divider"></div><div class="invoice-title">SALES INVOICE</div><div class="divider"></div><div class="meta-section"><div class="meta-left">Shop ID     : ${esc(o.customerCode || 'N/A')}<br>Shop Name   : ${esc(o.customerShopName || 'N/A')}<br>Address     : ${esc(o.customerAddress || 'N/A')}<br>Mobile No   : ${toBn(o.customerMobile || 'N/A')}<br>Proprietor  : ${esc(o.customerName || 'N/A')}</div><div class="justyfi-right">Invoice No  : ${esc(o.invoiceNo || 'N/A')}<br>Order Date  : ${formatBnDate(o.orderDate)}<br>Status      : ${translateStatus(o.status)}<br>Order By    : ${esc(o.salesRole === 'ADMIN' ? 'Admin Sales' : (o.entryByName || o.entryBy || 'N/A'))}</div></div><table class="inv-table"><thead><tr><th class="text-center" style="width: 5%;">SL</th><th style="width: 35%;">Product Name</th><th class="text-right" style="width: 12%;">MRP</th><th class="text-right" style="width: 12%;">Rate</th><th class="text-right" style="width: 8%;">Qty</th><th class="text-right" style="width: 13%;">Weight</th><th class="text-right" style="width: 15%;">Net Value</th></tr></thead><tbody>${iH}</tbody></table><div class="divider"></div><div class="summary-section"><div class="summary-box"><div class="summary-row"><span>Gross Value :</span><span>${toBn((o.grossTotal || 0).toFixed(2))} ৳</span></div>${o.specialDiscount > 0 ? `<div class="summary-row"><span>Discount${sdPercentText} :</span><span>- ${toBn((o.specialDiscount || 0).toFixed(2))} ৳</span></div>` : ''}<div class="summary-row"><span>Received    :</span><span>${toBn((o.paid || 0).toFixed(2))} ৳</span></div><div class="divider" style="margin: 4px 0;"></div><div class="summary-row"><strong>Pending Due :</strong><strong>${toBn((o.due || 0).toFixed(2))} ৳</strong></div></div></div><div class="signature-area"><div class="sig-line">Customer Signature</div><div class="sig-line">DA Signature</div><div class="sig-line">Authorized Signature</div></div></div>`; 
             };
             document.getElementById('main-content').innerHTML = `<div id="print-area"><div class="no-print" style="text-align:center;"><button class="back-btn" onclick="renderPage('invoices')">Back to Invoices</button></div>${gC("Customer Copy")}<div class="page-break"></div>${gC("Office Copy")}<button class="print-btn no-print" onclick="window.print()">ইনভয়েস প্রিন্ট করুন / PDF সেভ করুন</button></div>`;
             window.scrollTo(0, 0);
@@ -1000,28 +1118,46 @@
         // --- Commission Report Module ---
         function renderCommissionReport() {
             if (State.currentUser.role !== 'ADMIN') { document.getElementById('main-content').innerHTML = '<div class="p-4 text-red-600 font-bold">Access Denied</div>'; return; }
-            const today = new Date().toISOString().slice(0, 10);
+            
+            const today = new Date();
+            const currentDay = today.toISOString().slice(0, 10);
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().slice(0, 10);
             const cs = State.commissionSettings || {};
             document.getElementById('main-content').innerHTML = `
                 <div class="win98-window p-2">
                     <div class="win98-titlebar mb-2">Commission & Incentive Report</div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 p-2 mb-4 win98-inset">
-                        <div><label>From Date:</label><input type="date" id="comm_start" class="w98-input" value="${today}"></div>
-                        <div><label>To Date:</label><input type="date" id="comm_end" class="w98-input" value="${today}"></div>
+                        <div><label>From Date:</label><input type="date" id="comm_start" class="w98-input" value="${firstDay}"></div>
+                        <div><label>To Date:</label><input type="date" id="comm_end" class="w98-input" value="${currentDay}"></div>
                         <div><label>Type:</label><select id="comm_type" class="w98-select"><option value="HOCKER">Hocker</option><option value="DEALER">Dealer</option><option value="ADMIN">Admin Sales</option></select></div>
                         <div class="md:col-span-3 flex justify-end"><button onclick="calcCommission()" class="w98-btn">Generate Summary</button></div>
                     </div>
                     <div class="win98-window p-2 mb-4">
                         <div class="win98-titlebar mb-2">Commission Rules Setup</div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 p-2">
-                            <div><label>Hocker Min Qty:</label><input type="number" id="cs_h_min" class="w98-input" value="${cs.hockerMinQty || 0}"></div>
-                            <div><label>Hocker Comm/Qty (৳):</label><input type="number" id="cs_h_rate" class="w98-input" value="${cs.hockerRate || 0}"></div>
-                            <div></div>
-                            <div><label>Dealer Min Qty:</label><input type="number" id="cs_d_min" class="w98-input" value="${cs.dealerMinQty || 0}"></div>
-                            <div><label>Dealer Comm/Qty (৳):</label><input type="number" id="cs_d_rate" class="w98-input" value="${cs.dealerRate || 0}"></div>
-                            <div></div>
-                            <div><label>Admin Incentive (%):</label><input type="number" id="cs_a_pct" class="w98-input" value="${cs.adminPct || 0}"></div>
-                            <div class="md:col-span-2 flex items-end justify-end"><button onclick="saveCommSettings()" class="w98-btn">Save Rules</button></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-2">
+                            <fieldset class="border border-black p-2">
+                                <legend class="text-xs font-bold">Hocker Commission</legend>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div><label>Min Order Value (৳):</label><input type="number" id="cs_h_min" class="w98-input" value="${cs.hockerMinVal || 0}"></div>
+                                    <div><label>Comm %:</label><input type="number" step="0.01" id="cs_h_rate" class="w98-input" value="${cs.hockerPct || 0}"></div>
+                                </div>
+                                <p class="text-[10px] mt-1 text-gray-600">Rule: Total Order Value ≥ Min Order Value হলে Comm % প্রযোজ্য হবে।</p>
+                            </fieldset>
+                            <fieldset class="border border-black p-2">
+                                <legend class="text-xs font-bold">Dealer Commission</legend>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div><label>Min Order Value (৳):</label><input type="number" id="cs_d_min" class="w98-input" value="${cs.dealerMinVal || 0}"></div>
+                                    <div><label>Comm %:</label><input type="number" step="0.01" id="cs_d_rate" class="w98-input" value="${cs.dealerPct || 0}"></div>
+                                </div>
+                                <p class="text-[10px] mt-1 text-gray-600">Rule: Total Order Value ≥ Min Order Value হলে Comm % প্রযোজ্য হবে।</p>
+                            </fieldset>
+                            <fieldset class="border border-black p-2 md:col-span-2">
+                                <legend class="text-xs font-bold">Admin Sales Incentive</legend>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div><label>Admin Incentive (%):</label><input type="number" step="0.01" id="cs_a_pct" class="w98-input" value="${cs.adminPct || 0}"></div>
+                                    <div class="flex items-end justify-end"><button onclick="saveCommSettings()" class="w98-btn">Save Rules</button></div>
+                                </div>
+                            </fieldset>
                         </div>
                     </div>
                     <div id="comm_report_area" class="p-2">Select options and click Generate Summary.</div>
@@ -1029,10 +1165,10 @@
         }
         function saveCommSettings() {
             const data = {
-                hockerMinQty: parseFloat(document.getElementById('cs_h_min').value) || 0,
-                hockerRate: parseFloat(document.getElementById('cs_h_rate').value) || 0,
-                dealerMinQty: parseFloat(document.getElementById('cs_d_min').value) || 0,
-                dealerRate: parseFloat(document.getElementById('cs_d_rate').value) || 0,
+                hockerMinVal: parseFloat(document.getElementById('cs_h_min').value) || 0,
+                hockerPct: parseFloat(document.getElementById('cs_h_rate').value) || 0,
+                dealerMinVal: parseFloat(document.getElementById('cs_d_min').value) || 0,
+                dealerPct: parseFloat(document.getElementById('cs_d_rate').value) || 0,
                 adminPct: parseFloat(document.getElementById('cs_a_pct').value) || 0
             };
             db.ref('settings/commission').update(data).then(() => alert('Commission rules saved!'));
@@ -1065,11 +1201,15 @@
                     groupedData[cId].totalSales += (o.netTotal || o.grossTotal || 0);
                 });
 
-                const minQty = type === 'HOCKER' ? (cs.hockerMinQty || 0) : (cs.dealerMinQty || 0);
-                const rate = type === 'HOCKER' ? (cs.hockerRate || 0) : (cs.dealerRate || 0);
+                const minVal = type === 'HOCKER' ? (cs.hockerMinVal || 0) : (cs.dealerMinVal || 0);
+                const pct = type === 'HOCKER' ? (cs.hockerPct || 0) : (cs.dealerPct || 0);
 
                 Object.keys(groupedData).forEach(k => {
-                    if (groupedData[k].totalQty >= minQty) groupedData[k].commission = groupedData[k].totalQty * rate;
+                    if (groupedData[k].totalSales >= minVal) {
+                        groupedData[k].commission = groupedData[k].totalSales * (pct / 100);
+                    } else {
+                        groupedData[k].commission = 0;
+                    }
                 });
             }
 
@@ -1079,7 +1219,7 @@
             document.getElementById('comm_report_area').innerHTML = `
                 <div class="win98-inset p-1 overflow-x-auto">
                     <table class="w98-table text-xs">
-                        <thead><tr><th>Name / Shop</th><th class="text-center">Total Qty</th><th class="text-right">Total Sales</th><th class="text-right">Commission/Incentive</th></tr></thead>
+                        <thead><tr><th>Name / Shop</th><th class="text-center">Total Qty</th><th class="text-right">Total Order Value</th><th class="text-right">Commission/Incentive</th></tr></thead>
                         <tbody>${rows}</tbody>
                     </table>
                 </div>
@@ -1338,6 +1478,47 @@
             if (rows === '') rows = `<tr><td colspan="10" style="text-align:center; padding:20px;">No data found for the selected period.</td></tr>`;
             const overallAch = targetSum > 0 ? Math.round((salesSum / targetSum) * 100) : 0; const reportDate = new Date().toLocaleDateString('en-GB');
             const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Achievement Report</title><style>*{box-sizing:border-box;}body{margin:0;padding:20px;font-family:Arial,Helvetica,sans-serif;background:#f5f6f8;color:#222;}.report-container{max-width:1600px;margin:auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.06);}.report-header{text-align:center;margin-bottom:15px;}.report-header h1{margin:0;font-size:24px;}.report-header p{margin:5px 0 0;color:#777;font-size:13px;}.report-info{display:flex;justify-content:space-between;margin-bottom:10px;font-size:12px;}.table-wrap{width:100%;overflow-x:auto;}table{width:100%;border-collapse:collapse;table-layout:auto;}th,td{border:1px solid #bfc5cc;padding:5px 4px;font-size:11px;white-space:nowrap;}th{background:#eef1f4;color:#222;text-align:center;font-weight:700;}td{text-align:right;}td:nth-child(1),td:nth-child(2),td:nth-child(3),td:nth-child(4),td:nth-child(5),td:nth-child(6){text-align:left;}.row-se:nth-child(even){background:#fcfcfc;}.row-asm{background:#f2f7fc;}.row-rsm{background:#fffaf2;}.row-admin{background:#faf6ff;}.ach-high{color:#2f6b4f;font-weight:700;}.ach-medium{color:#8a6418;font-weight:700;}.ach-low{color:#a04444;font-weight:700;}tfoot th{background:#f1f3f5;color:#222;font-weight:700;}@media print{*{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}body{margin:0;padding:0;background:#fff;}.report-container{max-width:none;padding:0;background:#fff;box-shadow:none;border-radius:0;}.report-header{margin-bottom:7px;}.report-header h1{font-size:19px;}.report-header p{font-size:10px;}.report-info{font-size:9px;margin-bottom:6px;}table{width:100%;}th,td{font-size:9px;padding:3px 2px;}th{background:#eef1f4 !important;}.row-se:nth-child(even){background:#fcfcfc !important;}.row-asm{background:#f2f7fc !important;}.row-rsm{background:#fffaf2 !important;}.row-admin{background:#faf6ff !important;}tfoot th{background:#f1f3f5 !important;}@page{size:A4 landscape;margin:6mm;}}</style></head><body><div class="report-container"><div class="report-header"><h1>🏆 Achievement Report</h1><p>Sales Achievement & Collection Report - ${monthName}</p></div><div class="report-info"><div><strong>Report Date:</strong> <span>${reportDate}</span></div><div><strong>Period:</strong> Monthly</div></div><div class="table-wrap"><table><thead><tr><th>SL NO</th><th>EMP Code</th><th>Name of MPO</th><th>Territory</th><th>Designation</th><th>Joining Date</th><th>Target</th><th>Net Sales</th><th>Ach%</th><th>Total</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><th colspan="6">GRAND TOTAL (RSM + Admin Sales)</th><th>${money(targetSum)}</th><th>${money(salesSum)}</th><th>${overallAch}%</th><th>${money(collectionSum)}</th></tr></tfoot></table></div></div></body></html>`;
+            const iframe = document.createElement('iframe'); iframe.style.position = "absolute"; iframe.style.width = "0px"; iframe.style.height = "0px"; iframe.style.border = "none"; iframe.onload = function() { iframe.contentWindow.focus(); iframe.contentWindow.print(); setTimeout(() => { if (iframe.parentNode) document.body.removeChild(iframe); }, 1000); }; document.body.appendChild(iframe); iframe.contentWindow.document.open(); iframe.contentWindow.document.write(html); iframe.contentWindow.document.close();
+        }
+        
+        // --- Stock Report FIFO (Fast In First Out) Module ---
+        function renderStockFIFO() {
+            const role = State.currentUser.role;
+            const isAdmin = role === 'ADMIN';
+            
+            let products = [...State.products];
+            // Sort by name alphabetically
+            products.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+            
+            let rows = products.length > 0 ? products.map(p => `<tr><td>${esc(p.code || 'N/A')}</td><td>${esc(p.name || 'N/A')}</td><td>${esc(p.category || 'N/A')}</td><td>${formatWeight(p.weight)}</td><td class="text-center">${p.stock || 0}</td><td class="text-center">${isAdmin ? `<button onclick="editProduct('${p.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button>` : '-'}</td></tr>`).join('') : `<tr><td colspan="6" class="text-center p-4">No products found.</td></tr>`;
+            
+            document.getElementById('main-content').innerHTML = `
+            <div class="win98-window p-2">
+                <div class="win98-titlebar mb-2"><span><i class="fas fa-boxes-stacked mr-2"></i>Stock Report</span></div>
+                <div class="p-2">
+                    <div class="flex justify-end mb-2 gap-2">
+                        <button onclick="printStockFIFO()" class="w98-btn"><i class="fas fa-print mr-1"></i> Print Report</button>
+                    </div>
+                </div>
+                <div class="win98-inset p-1 overflow-x-auto">
+                    <table class="w98-table text-xs">
+                        <thead><tr><th>Code</th><th>Name</th><th>Category</th><th>Weight</th><th class="text-center">Stock</th><th class="text-center">Action</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            </div>`;
+        }
+
+        function printStockFIFO() {
+            let products = [...State.products];
+            products.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+            
+            let rows = products.map(p => `<tr><td>${esc(p.code || 'N/A')}</td><td>${esc(p.name || 'N/A')}</td><td>${esc(p.category || 'N/A')}</td><td style="text-align:center;">${p.stock || 0}</td></tr>`).join('');
+            if (rows === '') rows = `<tr><td colspan="4" style="text-align:center; padding:20px;">No products found.</td></tr>`;
+            
+            const reportDate = new Date().toLocaleDateString('en-GB');
+            const html = `<!DOCTYPE html><html><head><title>Stock Report</title><style>body{font-family:Tahoma,sans-serif;margin:20px;}h2{text-align:center;margin-bottom:5px;}p{text-align:center;margin-top:0;}table{width:100%;border-collapse:collapse;margin-top:15px;}th,td{border:1px solid #000;padding:5px;font-size:11px;text-align:left;}th{background:#e0e0e0;}</style></head><body><h2>RAFI FOOD - Stock Report</h2><p>Report Date: ${reportDate}</p><table><thead><tr><th>Code</th><th>Name</th><th>Category</th><th style="text-align:center;">Stock</th></tr></thead><tbody>${rows}</tbody></table></body></html>`;
+            
             const iframe = document.createElement('iframe'); iframe.style.position = "absolute"; iframe.style.width = "0px"; iframe.style.height = "0px"; iframe.style.border = "none"; iframe.onload = function() { iframe.contentWindow.focus(); iframe.contentWindow.print(); setTimeout(() => { if (iframe.parentNode) document.body.removeChild(iframe); }, 1000); }; document.body.appendChild(iframe); iframe.contentWindow.document.open(); iframe.contentWindow.document.write(html); iframe.contentWindow.document.close();
         }
     </script>
