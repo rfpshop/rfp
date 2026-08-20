@@ -1120,8 +1120,12 @@
             if (State.currentUser.role !== 'ADMIN') { document.getElementById('main-content').innerHTML = '<div class="p-4 text-red-600 font-bold">Access Denied</div>'; return; }
             
             const today = new Date();
-            const currentDay = today.toISOString().slice(0, 10);
-            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().slice(0, 10);
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const currentDay = `${yyyy}-${mm}-${dd}`;
+            const firstDay = `${yyyy}-${mm}-01`;
+            
             const cs = State.commissionSettings || {};
             document.getElementById('main-content').innerHTML = `
                 <div class="win98-window p-2">
@@ -1487,7 +1491,6 @@
             const isAdmin = role === 'ADMIN';
             
             let products = [...State.products];
-            // Sort by name alphabetically
             products.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
             
             let rows = products.length > 0 ? products.map(p => `<tr><td>${esc(p.code || 'N/A')}</td><td>${esc(p.name || 'N/A')}</td><td>${esc(p.category || 'N/A')}</td><td>${formatWeight(p.weight)}</td><td class="text-center">${p.stock || 0}</td><td class="text-center">${isAdmin ? `<button onclick="editProduct('${p.id}')" class="w98-btn" style="padding: 2px 6px;">Edit</button>` : '-'}</td></tr>`).join('') : `<tr><td colspan="6" class="text-center p-4">No products found.</td></tr>`;
